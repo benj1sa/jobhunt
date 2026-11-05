@@ -1,0 +1,89 @@
+# Candidate profile used for scoring. Edit freely; every change produces a new profile hash
+# and `jobhunt score` recomputes scores for it.
+
+[candidate]
+name = "Ben Saenz"
+graduation = "December 2026 (may slip to Spring 2027)"
+years_experience = 0.5  # two internships
+us_citizen = true
+needs_sponsorship = false
+has_clearance = false
+degree = "bachelors"
+skills = [
+  "Python", "TypeScript", "JavaScript", "C", "C++", "SQL",
+  "PyTorch", "Machine Learning", "Computer Vision",
+  "Next.js", "React", "Node.js", "Supabase", "PostgreSQL", "Vercel",
+  "Git", "CI/CD", "Linux", "Embedded Systems", "REST APIs",
+]
+interests = """
+Computer engineering senior. Most excited by applied ML and AI engineering: building and evaluating
+models and LLM-powered systems that ship to real users. Strong full-stack background (built and run a
+Next.js + Supabase platform for a 200+ student program) and embedded/systems internship experience
+(set-top box software, static analysis tooling in CI/CD). Interested in AI safety and evaluation, but
+want a stable path with room to grow, ideally toward a field where a later PhD makes sense, such as
+healthcare/biomedical ML. Values mentorship and engineering rigor over brand name.
+"""
+preferred_locations = ["Maryland", "MD", "Washington, DC", "Virginia", "VA", "Remote", "New York", "Philadelphia"]
+preferred_domains = ["healthcare", "biomedical", "ai safety", "education", "research", "developer tools"]
+
+# Each topic becomes one Jev yes/no question: "Would the person in this job spend much of their time on <description>?"
+# Describe observable work, not feelings. weight (0-1) = how much a match counts.
+[[candidate.interest_topics]]
+name = "applied ML"
+description = "building, training or evaluating machine learning models"
+weight = 1.0
+
+[[candidate.interest_topics]]
+name = "LLM products"
+description = "building products or features on top of large language models"
+weight = 0.9
+
+[[candidate.interest_topics]]
+name = "healthcare"
+description = "healthcare, biomedical or clinical problems"
+weight = 0.9
+
+[[candidate.interest_topics]]
+name = "AI evaluation and safety"
+description = "testing, evaluating or improving the reliability and safety of AI systems"
+weight = 0.8
+
+[[candidate.interest_topics]]
+name = "full-stack"
+description = "building web applications end to end, from database to user interface"
+weight = 0.6
+
+# Growth goals feed the learning component together with a mentorship question.
+[[candidate.growth_goals]]
+name = "ML in production"
+description = "deploying machine learning models that real users rely on"
+
+[[candidate.growth_goals]]
+name = "systems at scale"
+description = "designing or operating software systems that serve many users"
+
+[companies]
+dream = ["Anthropic", "OpenAI", "Google", "Pinterest"]
+warm = ["Comcast"]
+high_competition = ["Google", "Meta", "Apple", "Amazon", "Microsoft", "OpenAI", "Anthropic", "SpaceX", "Pinterest", "Netflix"]
+avoid = []
+
+[weights.value]
+interest = 0.30
+learning = 0.20
+domain = 0.10
+compensation = 0.15
+company = 0.10
+location = 0.15
+
+[weights.likelihood]
+skills = 0.30
+experience = 0.20
+level = 0.15
+freshness = 0.15
+competition = 0.10
+warm = 0.10
+
+[compensation]
+floor_usd = 70000
+target_usd = 120000

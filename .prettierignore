@@ -1,0 +1,5 @@
+.venv/
+jobhunt.egg-info/
+tmp/
+.*/**/*.md
+docs/dev/database.md

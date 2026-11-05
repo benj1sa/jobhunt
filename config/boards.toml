@@ -1,0 +1,51 @@
+# Company job boards polled directly on every `jobhunt ingest`.
+# Only postings whose titles pass the title filter become leads, so large boards are fine.
+#
+# ats: greenhouse | lever | ashby
+# token: the board slug, e.g. greenhouse "durable" from job-boards.greenhouse.io/durable,
+#        lever "palantir" from jobs.lever.co/palantir, ashby "openai" from jobs.ashbyhq.com/openai
+#
+# `jobhunt resolve` also uses this file to map career-site links like
+# pinterestcareers.com/...?gh_jid=123 to the right Greenhouse board.
+
+[[board]]
+ats = "greenhouse"
+token = "durable"
+company = "Durable"
+
+[[board]]
+ats = "greenhouse"
+token = "citian"
+company = "Citian"
+
+[[board]]
+ats = "greenhouse"
+token = "msfcareers"
+company = "Medecins Sans Frontieres"
+
+[[board]]
+ats = "greenhouse"
+token = "nimblerobotics"
+company = "Nimble"
+
+[[board]]
+ats = "greenhouse"
+token = "pinterest"  # unverified slug: `jobhunt health` flags it if wrong
+company = "Pinterest"
+domains = ["pinterestcareers.com"]
+
+[[board]]
+ats = "greenhouse"
+token = "trexsolutionsllc"  # unverified slug: `jobhunt health` flags it if wrong
+company = "T-Rex Solutions"
+domains = ["trexsolutionsllc.com"]
+
+[[board]]
+ats = "ashby"
+token = "openai"
+company = "OpenAI"
+
+[[board]]
+ats = "greenhouse"
+token = "anthropic"  # unverified slug: `jobhunt health` flags it if wrong
+company = "Anthropic"
