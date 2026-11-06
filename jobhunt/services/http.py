@@ -67,6 +67,11 @@ class HttpClient:
     ) -> None:
         await self._client.aclose()
 
+    @property
+    def client(self) -> httpx.AsyncClient:
+        """The underlying client, for callers that need streaming or their own retry policy."""
+        return self._client
+
     async def request(self, method: str, url: str, **kwargs: Any) -> httpx.Response:
         """Send a request with retries on transient failures. Raises `NotFoundError` on 404/410."""
         async for attempt in AsyncRetrying(

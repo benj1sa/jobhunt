@@ -23,6 +23,7 @@ from ..schemas.config import BoardConfig
 from ..sources.base import RawLead, Source
 from .ats import AtsPosting, fetch_posting
 from .http import HttpClient, NotFoundError
+from .progress import NULL_PROGRESS, Progress
 from .text import content_hash, html_to_text
 from .urls import AtsRef, find_ats_links, is_aggregator, is_blocked, normalize_url, parse_ats, posting_url_for
 
@@ -107,7 +108,9 @@ async def upsert_leads(session: AsyncSession, leads: Sequence[RawLead]) -> int:
     return created
 
 
-async def ingest(session: AsyncSession, client: HttpClient, sources: Sequence[Source]) -> list[IngestResult]:
+async def ingest(
+    session: AsyncSession, client: HttpClient, sources: Sequence[Source], progress: Progress = NULL_PROGRESS
+) -> list[IngestResult]:
     """Run every source concurrently, then store results sequentially. One failing source never stops the rest."""
     runs: list[IngestRun] = []
     for source in sources:
@@ -116,14 +119,26 @@ async def ingest(session: AsyncSession, client: HttpClient, sources: Sequence[So
         runs.append(run)
     await session.commit()
 
-    fetched = await asyncio.gather(*(source.fetch(client) for source in sources), return_exceptions=True)
+    progress.start(len(sources))
+
+    async def fetch(source: Source) -> list[RawLead]:
+        try:
+            leads = await source.fetch(client)
+        except Exception:
+            progress.advance(ok=False, item=source.name)
+            raise
+        progress.advance(item=f"{source.name}: {len(leads)} leads")
+        return leads
+
+    fetched = await asyncio.gather(*(fetch(source) for source in sources), return_exceptions=True)
 
     results: list[IngestResult] = []
     for source, run, outcome in zip(sources, runs, fetched, strict=True):
         if isinstance(outcome, BaseException):
             # HTTP failures are expected (a moved board, an outage); a traceback adds nothing. Bugs keep theirs.
             expected = isinstance(outcome, (NotFoundError, httpx.HTTPError))
-            logger.error("Source %s failed: %s", source.name, outcome, exc_info=None if expected else outcome)
+            # Summarized by the CLI (and `jobhunt health`), so only logged in --verbose runs.
+            logger.info("Source %s failed: %s", source.name, outcome, exc_info=None if expected else outcome)
             run.status = RunStatus.FAILED
             run.error = f"{type(outcome).__name__}: {outcome}"[:2000]
         else:
@@ -266,6 +281,7 @@ async def resolve_leads(
     boards: list[BoardConfig],
     client: HttpClient | None,
     limit: int | None = None,
+    progress: Progress = NULL_PROGRESS,
 ) -> ResolveStats:
     """Resolve every `new` lead. Commits after each lead so a crash loses at most one lead's work."""
     stmt = select(Lead).where(Lead.status == LeadStatus.NEW).order_by(Lead.discovered_at)
@@ -273,11 +289,13 @@ async def resolve_leads(
         stmt = stmt.limit(limit)
     leads = (await session.execute(stmt)).scalars().all()
     stats = ResolveStats()
+    progress.start(len(leads))
     for lead in leads:
+        label = f"{lead.company} - {lead.title}"
         try:
             job, created = await resolve_lead(session, lead, boards, client)
         except Exception as exc:
-            logger.exception("Failed to resolve lead %s (%s)", lead.id, lead.url)
+            logger.debug("Failed to resolve lead %s (%s)", lead.id, lead.url, exc_info=True)
             await session.rollback()
             lead = await session.get(Lead, lead.id) or lead
             lead.status = LeadStatus.FAILED
@@ -291,6 +309,7 @@ async def resolve_leads(
                 stats.resolved += 1
                 stats.new_jobs += int(created)
         await session.commit()
+        progress.advance(ok=lead.status != LeadStatus.FAILED, item=label)
     # Watch the full board of every company a lead just led us to (imported here to avoid an import cycle).
     from .boards import discover_boards
 
@@ -343,6 +362,7 @@ async def hydrate_jobs(
     client: HttpClient,
     refresh: bool = False,
     limit: int | None = None,
+    progress: Progress = NULL_PROGRESS,
 ) -> HydrateStats:
     """Fetch full descriptions for open jobs without a snapshot (or all open jobs with `refresh`).
 
@@ -355,7 +375,19 @@ async def hydrate_jobs(
     if limit:
         stmt = stmt.limit(limit)
     jobs = list((await session.execute(stmt)).scalars().all())
-    outcomes = await asyncio.gather(*(_fetch_for_job(client, job) for job in jobs), return_exceptions=True)
+    progress.start(len(jobs))
+
+    async def fetch(job: Job) -> AtsPosting | tuple[str, str]:
+        label = f"{job.company} - {job.title}"
+        try:
+            outcome = await _fetch_for_job(client, job)
+        except Exception:
+            progress.advance(ok=False, item=label)
+            raise
+        progress.advance(item=label)
+        return outcome
+
+    outcomes = await asyncio.gather(*(fetch(job) for job in jobs), return_exceptions=True)
 
     stats = HydrateStats()
     for job, outcome in zip(jobs, outcomes, strict=True):

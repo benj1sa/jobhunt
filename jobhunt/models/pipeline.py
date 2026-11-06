@@ -74,6 +74,28 @@ class WatchedBoard(Base):
     items_last: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
 
+class LlmUsage(Base):
+    """Token use and cost of one pipeline step's model calls (one row per step, provider and model per run).
+
+    `cost_usd` is what the provider reported when it reports cost (OpenRouter does), otherwise an estimate from
+    list prices, flagged by `cost_estimated`. `jobhunt status` uses these rows to estimate the next run.
+    """
+
+    __tablename__ = "llm_usage"
+
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    stage: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    provider: Mapped[str] = mapped_column(String(32), nullable=False)
+    model: Mapped[str] = mapped_column(String(128), nullable=False)
+    calls: Mapped[int] = mapped_column(Integer, nullable=False)
+    items: Mapped[int] = mapped_column(Integer, nullable=False)
+    input_tokens: Mapped[int] = mapped_column(Integer, nullable=False)
+    output_tokens: Mapped[int] = mapped_column(Integer, nullable=False)
+    cost_usd: Mapped[float] = mapped_column(Float, nullable=False)
+    cost_estimated: Mapped[bool] = mapped_column(nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=utcnow)
+
+
 class Job(Base):
     """A canonical job posting, deduplicated across every source that mentioned it.
 

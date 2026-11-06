@@ -20,7 +20,8 @@ NO = 0.3
 
 # v2: added `open_to_new_grads` (direct, observable) because reading "max 2 years out of school" as a level was
 # unreliable in the first live run, and named the new-grad-program case in the internship criteria.
-SCREEN_VERSION = "screen-v2"
+# v3: added `bachelors_accepted`, so postings that require a master's or PhD skip extraction and leave the queue.
+SCREEN_VERSION = "screen-v3"
 FIT_VERSION = "fit-v1"
 
 
@@ -32,7 +33,8 @@ def _slug(name: str) -> str:
 #
 # Truth table (code below):
 #   entry_level = max(open_to_new_grads, P(experience level is "new grad" or "1-2 years"))
-#   any signal clearly no  (role < NO, internship > YES, US < NO, entry_level < NO)    -> REJECT, skip extraction
+#   any signal clearly no  (role < NO, internship > YES, US < NO, entry_level < NO,
+#                           bachelors_accepted < NO)                                   -> REJECT, skip extraction
 #   every signal clearly yes                                                          -> PASS
 #   anything else                                                                     -> UNSETTLED
 # PASS and UNSETTLED both go to extraction, where the LLM's reading settles it; only REJECT saves the call.
@@ -56,7 +58,30 @@ def screen_state(title: str, company: str, location: str | None, description: st
     }
 
 
-def screen_questions() -> dict[str, Question]:
+# Asked only when the profile's degree is a bachelor's (or lower): someone with a master's has nothing to screen out.
+GRADUATE_DEGREES = ("masters", "phd")
+
+
+def screen_questions(degree: str = "bachelors") -> dict[str, Question]:
+    questions = _base_screen_questions()
+    if degree.lower() not in GRADUATE_DEGREES:
+        questions["bachelors_accepted"] = NoulQuestion(
+            instructions="Can someone whose highest degree is a bachelor's apply for the job in `posting`?",
+            criteria=NoulCriteria(
+                true=(
+                    "The posting accepts a bachelor's degree, lists a bachelor's as the minimum, mentions a master's "
+                    "or PhD only as preferred or a plus, or does not ask for a graduate degree at all."
+                ),
+                false=(
+                    "The posting requires a master's or PhD, for example 'MS or PhD required', 'PhD or MS in "
+                    "Computer Science', or 'currently pursuing a PhD', even if it adds 'or equivalent experience'."
+                ),
+            ),
+        )
+    return questions
+
+
+def _base_screen_questions() -> dict[str, Question]:
     return {
         "software_ai_ml_role": NoulQuestion(
             instructions="Is the job in `posting` an engineering role that builds software, AI systems or ML systems?",
@@ -124,24 +149,30 @@ def decide_screen(response: SystemOneResponse) -> ScreenDecision:
     }
     # Either signal is enough evidence that the role is entry level; reject only when both say no.
     signals["entry_level"] = max(signals["experience_entry_levels"], signals["open_to_new_grads"])
+    # Only asked for a bachelor's-level profile (see screen_questions); absent means "not a concern".
+    degree_asked = "bachelors_accepted" in response.answers
+    if degree_asked:
+        signals["bachelors_accepted"] = response.noul("bachelors_accepted")
     clear_no = {
         "not a software/AI/ML role": signals["software_ai_ml_role"] < NO,
         "internship": signals["internship"] > YES,
         "not in the US": signals["us_location"] < NO,
         "not entry level": signals["entry_level"] < NO,
+        "requires a master's or PhD": degree_asked and signals["bachelors_accepted"] < NO,
     }
     clear_yes = (
         signals["software_ai_ml_role"] > YES
         and signals["internship"] < NO
         and signals["us_location"] > YES
         and signals["entry_level"] > YES
+        and (not degree_asked or signals["bachelors_accepted"] > YES)
     )
     if any(clear_no.values()):
         return ScreenDecision(ScreenOutcome.REJECT, "; ".join(k for k, v in clear_no.items() if v), signals)
     if clear_yes:
         return ScreenDecision(ScreenOutcome.PASS, "all screen signals clear", signals)
-    decisive = ("software_ai_ml_role", "internship", "us_location", "entry_level")
-    unsettled = [name for name in decisive if NO <= signals[name] <= YES]
+    decisive = ("software_ai_ml_role", "internship", "us_location", "entry_level", "bachelors_accepted")
+    unsettled = [name for name in decisive if name in signals and NO <= signals[name] <= YES]
     return ScreenDecision(ScreenOutcome.UNSETTLED, "unsettled: " + ", ".join(unsettled), signals)
 
 

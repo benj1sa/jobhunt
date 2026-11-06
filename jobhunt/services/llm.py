@@ -1,4 +1,8 @@
-"""Minimal OpenRouter client for schema-validated structured outputs."""
+"""Structured-output LLM clients: OpenRouter (API key, pay per token) and ChatGPT (your plan, see chatgpt.py).
+
+Both share `LlmClient.structured`: send a JSON schema, validate the reply with Pydantic, and retry once with the
+validation error so the model can correct itself.
+"""
 
 import json
 import re
@@ -10,6 +14,7 @@ from pydantic import BaseModel, SecretStr, ValidationError
 
 from ..schemas.extraction import strict_json_schema
 from .http import HttpClient, NotFoundError
+from .usage import UsageMeter
 
 logger = getLogger(__name__)
 
@@ -23,21 +28,14 @@ class LlmError(Exception):
 
 
 class LlmConfigError(LlmError):
-    """OpenRouter refused the request itself (bad key, no credits, unknown model, no provider that supports the
-    requested parameters). Every later call would fail the same way, so callers should stop, not continue."""
+    """The provider refused the request itself (bad key, no credits, unknown model, expired ChatGPT sign-in, plan
+    limit reached). Every later call would fail the same way, so callers should stop, not continue."""
 
 
-class OpenRouterClient:
-    """Calls `/chat/completions` with `response_format: json_schema` and validates the reply with Pydantic.
+class LlmClient:
+    """Base for providers. Subclasses implement `_complete` (one request, returns the reply text)."""
 
-    `provider.require_parameters` makes OpenRouter route only to providers that honor structured outputs, and
-    a validation failure is retried once with the error appended so the model can correct itself.
-    """
-
-    def __init__(self, http: HttpClient, api_key: SecretStr, base_url: str) -> None:
-        self._http = http
-        self._api_key = api_key
-        self._base_url = base_url.rstrip("/")
+    name = "llm"
 
     async def structured(
         self, model: str, system: str, user: str, schema: type[T], json_schema: dict[str, Any] | None = None
@@ -55,12 +53,36 @@ class OpenRouterClient:
                 return schema.model_validate_json(FENCE_RE.sub("", content.strip()))
             except ValidationError as exc:
                 last_error = exc
-                logger.warning("%s returned invalid %s (attempt %d): %s", model, schema.__name__, attempt + 1, exc)
+                logger.debug("%s returned invalid %s (attempt %d): %s", model, schema.__name__, attempt + 1, exc)
                 messages += [
                     {"role": "assistant", "content": content},
                     {"role": "user", "content": f"That JSON failed validation:\n{exc}\nReturn corrected JSON only."},
                 ]
         raise LlmError(f"{model} could not produce a valid {schema.__name__}: {last_error}")
+
+    async def _complete(
+        self,
+        model: str,
+        messages: list[dict[str, str]],
+        schema: type[BaseModel],
+        json_schema: dict[str, Any] | None = None,
+    ) -> str:
+        raise NotImplementedError
+
+
+class OpenRouterClient(LlmClient):
+    """Calls `/chat/completions` with `response_format: json_schema`.
+
+    `provider.require_parameters` makes OpenRouter route only to providers that honor structured outputs.
+    """
+
+    name = "openrouter"
+
+    def __init__(self, http: HttpClient, api_key: SecretStr, base_url: str, meter: UsageMeter | None = None) -> None:
+        self._http = http
+        self._api_key = api_key
+        self._base_url = base_url.rstrip("/")
+        self._meter = meter
 
     async def _complete(
         self,
@@ -106,6 +128,16 @@ class OpenRouterClient:
                 ) from exc
             raise
         payload = response.json()
+        usage = payload.get("usage") if isinstance(payload, dict) else None
+        if self._meter is not None and isinstance(usage, dict):
+            cost = usage.get("cost")
+            self._meter.record(
+                "openrouter",
+                model,
+                int(usage.get("prompt_tokens") or 0),
+                int(usage.get("completion_tokens") or 0),
+                float(cost) if isinstance(cost, (int, float)) else None,
+            )
         if "error" in payload:
             raise LlmError(json.dumps(payload["error"])[:500])
         try:

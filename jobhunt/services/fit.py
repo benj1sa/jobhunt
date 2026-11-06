@@ -13,7 +13,7 @@ from ..models.pipeline import Job
 from ..questions import FIT_VERSION, FitSignals, combine_fit, fit_questions, fit_state
 from ..schemas.extraction import Alignment, FitJudgment, JobRequirements
 from ..schemas.profile import Profile
-from .llm import OpenRouterClient
+from .llm import LlmClient
 from .typesafe import TypeSafeClient
 
 logger = getLogger(__name__)
@@ -63,13 +63,12 @@ class JevFitProvider:
 
 
 class LlmFitProvider:
-    """One OpenRouter call per job, judging the free-text interests paragraph."""
+    """One LLM call per job (OpenRouter or your ChatGPT plan), judging the free-text interests paragraph."""
 
-    name = "openrouter"
-
-    def __init__(self, llm: OpenRouterClient, model: str) -> None:
+    def __init__(self, llm: LlmClient, model: str) -> None:
         self._llm = llm
         self._model = model
+        self.name = getattr(llm, "name", "openrouter")
 
     def cache_key(self, profile: Profile) -> str:
         return _hash("openrouter", self._model, profile.candidate.interests)
@@ -91,5 +90,5 @@ class LlmFitProvider:
             learning=ALIGNMENT_SCORE[judgment.learning_potential],
             interest_note=f"{judgment.interest_alignment.value} alignment",
             learning_note=f"{judgment.learning_potential.value} learning",
-            detail={"provider": "openrouter", "model": self._model, "rationale": judgment.rationale},
+            detail={"provider": self.name, "model": self._model, "rationale": judgment.rationale},
         )

@@ -68,6 +68,32 @@ class Settings(DatabaseSettings):
         description="User-Agent header sent to job boards.",
     )
 
+    llm_provider: Literal["openrouter", "chatgpt"] = Field(
+        default="openrouter",
+        description=(
+            "Who runs extraction, LLM fit and skills-classify: 'openrouter' (API key, pay per token) or 'chatgpt' "
+            "(your ChatGPT plan after `jobhunt chatgpt login`; laptop only, no API-key fallback)."
+        ),
+    )
+    chatgpt_model: str = Field(
+        default="gpt-5.6-luna",
+        description="ChatGPT plan model for extraction and skills-classify. `jobhunt chatgpt models` lists options.",
+    )
+    chatgpt_fit_model: str = Field(
+        default="gpt-5.6-luna",
+        description="ChatGPT plan model for the LLM fit judgment (used when FIT_PROVIDER picks the LLM).",
+    )
+    chatgpt_reasoning_effort: Literal["none", "minimal", "low", "medium", "high", "xhigh"] | None = Field(
+        default="low",
+        description=(
+            "Reasoning effort for ChatGPT plan models. Extraction is reading, not puzzle-solving: 'low' keeps it "
+            "fast and light on the plan allowance. Unset to use the model's default."
+        ),
+    )
+    chatgpt_credentials_path: Path = Field(
+        default=Path("~/.config/jobhunt/chatgpt.json"),
+        description="Where the ChatGPT sign-in tokens are stored (outside the repo, file mode 0600).",
+    )
     openrouter_api_key: SecretStr | None = Field(
         default=None,
         description="OpenRouter API key. Leave unset to run the pipeline on rules only (no extraction or LLM fit).",
@@ -106,9 +132,12 @@ class Settings(DatabaseSettings):
         default=24000,
         description="Description characters sent to the Jev screen (default context is 32k tokens per question).",
     )
-    fit_provider: Literal["auto", "jev", "openrouter", "none"] = Field(
+    fit_provider: Literal["auto", "jev", "llm", "openrouter", "chatgpt", "none"] = Field(
         default="auto",
-        description="Who judges fit: 'auto' uses Jev when TYPESAFE_API_KEY is set, else OpenRouter, else nothing.",
+        description=(
+            "Who judges fit: 'auto' uses Jev when TYPESAFE_API_KEY is set, else the LLM_PROVIDER model, else "
+            "nothing. 'llm' (or 'openrouter'/'chatgpt') always uses the LLM_PROVIDER model."
+        ),
     )
 
     simplify_listings_url: str = Field(

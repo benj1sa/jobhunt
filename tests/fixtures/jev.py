@@ -28,13 +28,15 @@ def screen_response(
     us: float = 0.9,
     levels: list[float] | None = None,
     new_grads: float = 0.5,
+    bachelors: float | None = 0.9,
 ) -> dict[str, Any]:
-    return response(
-        {
-            "software_ai_ml_role": noul(role),
-            "internship": noul(internship),
-            "us_location": noul(us),
-            "open_to_new_grads": noul(new_grads),
-            "experience_level": score(levels or [0.7, 0.2, 0.08, 0.02]),
-        }
-    )
+    answers = {
+        "software_ai_ml_role": noul(role),
+        "internship": noul(internship),
+        "us_location": noul(us),
+        "open_to_new_grads": noul(new_grads),
+        "experience_level": score(levels or [0.7, 0.2, 0.08, 0.02]),
+    }
+    if bachelors is not None:  # None: the question wasn't asked (graduate-degree profile)
+        answers["bachelors_accepted"] = noul(bachelors)
+    return response(answers)

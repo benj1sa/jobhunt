@@ -1,0 +1,1735 @@
+skill,group,group_name,kind,jobs,required_in,weighted,you_have_it
+Python,languages,Programming languages,tool,356,244,197.02,yes
+C++,languages,Programming languages,tool,214,186,105.63,yes
+Java,languages,Programming languages,tool,164,88,86.85,no
+Git,ci_cd_vcs,CI/CD & version control,tool,142,62,73.10,yes
+Go,languages,Programming languages,tool,132,61,72.19,no
+Kubernetes,infra_devops,"Containers, infrastructure & DevOps",tool,127,29,70.55,no
+Docker,infra_devops,"Containers, infrastructure & DevOps",tool,127,15,70.03,no
+CI/CD,ci_cd_vcs,CI/CD & version control,concept,131,14,68.16,yes
+React,web_frontend,Web frontend,tool,115,30,65.00,yes
+C#,languages,Programming languages,tool,108,41,54.85,no
+PostgreSQL,databases,Databases & SQL,tool,94,10,52.35,yes
+Linux,infra_devops,"Containers, infrastructure & DevOps",tool,103,51,49.48,yes
+SQL,databases,Databases & SQL,tool,90,55,48.18,yes
+Machine Learning,ml_core,Machine learning (core),concept,70,43,44.49,yes
+JavaScript,languages,Programming languages,tool,84,60,43.84,yes
+C,languages,Programming languages,tool,95,87,43.74,yes
+Angular,web_frontend,Web frontend,tool,81,13,43.52,no
+Distributed systems,backend_apis,Backend & APIs,concept,78,25,40.41,no
+TypeScript,languages,Programming languages,tool,66,39,39.78,yes
+Amazon Web Services,cloud,Cloud platforms,tool,67,13,38.44,no
+Large Language Models,llm_genai,LLMs & generative AI,concept,58,32,38.07,no
+Data Structures and Algorithms,cs_fundamentals,CS fundamentals & software design,concept,66,64,36.88,no
+Terraform,infra_devops,"Containers, infrastructure & DevOps",tool,69,12,35.89,no
+SQL Server,databases,Databases & SQL,tool,65,7,34.55,no
+AI agents,agents,AI agents & tool protocols,concept,49,17,33.97,no
+Full-stack development,web_frontend,Web frontend,concept,62,57,33.41,no
+Bazel,ci_cd_vcs,CI/CD & version control,tool,63,0,32.24,no
+Scala,languages,Programming languages,tool,59,4,31.97,no
+Kafka,data_engineering,Data engineering & big data,tool,56,2,29.81,no
+Ansible,infra_devops,"Containers, infrastructure & DevOps",tool,57,10,29.08,no
+PyTorch,ml_frameworks,ML frameworks & libraries,tool,40,27,27.00,yes
+Make,infra_devops,"Containers, infrastructure & DevOps",tool,49,0,25.36,no
+Npm,infra_devops,"Containers, infrastructure & DevOps",tool,49,0,25.36,no
+Pip,infra_devops,"Containers, infrastructure & DevOps",tool,48,0,24.72,no
+Rust,languages,Programming languages,tool,48,35,24.37,no
+Debugging,cs_fundamentals,CS fundamentals & software design,concept,49,28,24.01,no
+Gradle,infra_devops,"Containers, infrastructure & DevOps",tool,46,0,23.57,no
+REST APIs,backend_apis,Backend & APIs,concept,43,25,23.40,yes
+Unix,infra_devops,"Containers, infrastructure & DevOps",tool,45,1,23.14,no
+Software engineering,cs_fundamentals,CS fundamentals & software design,concept,43,18,22.91,no
+Software testing,testing,Testing,concept,43,23,22.71,no
+Puppet,infra_devops,"Containers, infrastructure & DevOps",tool,44,0,22.17,no
+Optimization,systems_perf,"Systems, performance & GPU",concept,42,4,22.11,no
+Buck,infra_devops,"Containers, infrastructure & DevOps",tool,43,0,21.77,no
+Pants,infra_devops,"Containers, infrastructure & DevOps",tool,43,0,21.77,no
+ActiveMQ,backend_apis,Backend & APIs,tool,41,0,20.69,no
+RabbitMQ,backend_apis,Backend & APIs,tool,41,0,20.69,no
+Retrieval-Augmented Generation,llm_genai,LLMs & generative AI,concept,27,4,19.05,no
+Agile,process,Process & collaboration tools,concept,42,17,18.83,no
+Performance analysis,systems_perf,"Systems, performance & GPU",concept,35,2,18.49,no
+Networking,networking,Networking & protocols,concept,41,10,18.42,no
+TensorFlow,ml_frameworks,ML frameworks & libraries,tool,27,18,18.41,no
+TCP/IP,networking,Networking & protocols,concept,40,1,18.19,no
+Security,security_identity,Security & identity,concept,35,6,18.18,no
+Microsoft Azure,cloud,Cloud platforms,tool,34,7,18.15,no
+AI coding tools,ai_dev_tools,AI coding tools,concept,30,13,17.96,no
+APIs,backend_apis,Backend & APIs,concept,30,22,17.95,no
+Single page web applications,web_frontend,Web frontend,concept,34,1,17.11,no
+Prompt engineering,llm_genai,LLMs & generative AI,concept,26,9,17.02,no
+Deep Learning,ml_core,Machine learning (core),concept,22,16,15.86,no
+Google Cloud,cloud,Cloud platforms,tool,26,6,14.85,no
+Automated testing,testing,Testing,concept,26,11,14.56,no
+Spark,data_engineering,Data engineering & big data,tool,23,10,13.90,no
+HTML,web_frontend,Web frontend,tool,28,19,13.45,no
+Unit testing,testing,Testing,concept,30,10,13.44,no
+Natural Language Processing,nlp_speech,NLP & speech,concept,20,10,13.32,no
+Cloud computing,cloud,Cloud platforms,concept,22,5,13.05,no
+Computer Vision,cv_imaging,Computer vision & imaging,concept,21,6,12.99,yes
+Reinforcement learning,ml_core,Machine learning (core),concept,18,7,12.82,no
+Relational databases,databases,Databases & SQL,concept,24,14,12.65,no
+NET,languages,Programming languages,tool,26,18,12.58,no
+Bash,languages,Programming languages,tool,27,16,12.42,no
+MCP,agents,AI agents & tool protocols,tool,19,2,12.16,no
+AI/ML,ml_core,Machine learning (core),concept,21,14,11.98,no
+DevOps,infra_devops,"Containers, infrastructure & DevOps",concept,25,8,11.21,no
+CSS,web_frontend,Web frontend,tool,22,14,11.06,no
+Pandas,analytics_bi,"Analytics, statistics & BI",tool,18,10,10.99,no
+Windows,infra_devops,"Containers, infrastructure & DevOps",tool,25,8,10.58,no
+TCP/UDP,networking,Networking & protocols,tool,24,2,10.33,no
+Evals,llm_genai,LLMs & generative AI,concept,14,4,10.31,no
+Infrastructure as code,infra_devops,"Containers, infrastructure & DevOps",tool,17,0,10.29,no
+R,languages,Programming languages,tool,18,16,10.18,no
+Computer architecture,systems_perf,"Systems, performance & GPU",concept,22,4,10.05,no
+Object-oriented programming,cs_fundamentals,CS fundamentals & software design,concept,22,20,9.93,no
+NumPy,analytics_bi,"Analytics, statistics & BI",tool,16,9,9.67,no
+Statistics,analytics_bi,"Analytics, statistics & BI",concept,16,11,9.42,no
+Fine-tuning,ml_core,Machine learning (core),concept,13,0,9.32,no
+Secure boot,embedded_hw,"Embedded, hardware & firmware",concept,22,0,9.27,no
+Monitoring,security_identity,Security & identity,concept,18,2,9.16,no
+Data modeling,databases,Databases & SQL,concept,16,13,9.04,no
+Robotics,robotics,Robotics & autonomy,concept,19,3,8.98,no
+Databases,databases,Databases & SQL,concept,18,10,8.89,no
+Embedded systems,embedded_hw,"Embedded, hardware & firmware",concept,20,3,8.67,yes
+MLOps,mlops_serving,"MLOps, training & serving",concept,13,2,8.66,no
+Simulation,robotics,Robotics & autonomy,concept,18,2,8.50,no
+Container technologies,infra_devops,"Containers, infrastructure & DevOps",concept,15,9,8.47,no
+Node.js,web_frontend,Web frontend,tool,14,7,8.42,yes
+Observability,infra_devops,"Containers, infrastructure & DevOps",concept,13,2,8.33,no
+Concurrency,systems_perf,"Systems, performance & GPU",concept,17,13,7.99,no
+Data pipelines,data_engineering,Data engineering & big data,concept,14,6,7.97,no
+Object-oriented design,cs_fundamentals,CS fundamentals & software design,concept,15,14,7.82,no
+Databricks,data_engineering,Data engineering & big data,tool,13,4,7.80,no
+HTTP,backend_apis,Backend & APIs,tool,14,5,7.77,no
+Multi-agent systems,agents,AI agents & tool protocols,concept,11,0,7.69,no
+Operating systems,systems_perf,"Systems, performance & GPU",concept,15,10,7.44,no
+LLM APIs,llm_genai,LLMs & generative AI,concept,12,2,7.30,no
+Power BI,analytics_bi,"Analytics, statistics & BI",tool,14,7,7.26,no
+NoSQL,databases,Databases & SQL,concept,13,0,7.08,no
+Scikit-learn,ml_frameworks,ML frameworks & libraries,tool,11,7,7.04,no
+Agent frameworks,agents,AI agents & tool protocols,concept,10,1,7.00,no
+Scrum,process,Process & collaboration tools,concept,16,4,6.96,no
+Model evaluation,ml_core,Machine learning (core),concept,10,4,6.92,no
+Retrieval,llm_genai,LLMs & generative AI,concept,10,3,6.68,no
+A/B testing,analytics_bi,"Analytics, statistics & BI",concept,9,1,6.66,no
+JSON,backend_apis,Backend & APIs,tool,13,8,6.60,no
+LLM-as-judge,llm_genai,LLMs & generative AI,concept,9,0,6.51,no
+ROS 2,robotics,Robotics & autonomy,tool,13,4,6.27,no
+LLM evaluation,llm_genai,LLMs & generative AI,concept,9,2,6.22,no
+I2C,embedded_hw,"Embedded, hardware & firmware",tool,14,0,6.18,no
+SPI,embedded_hw,"Embedded, hardware & firmware",tool,14,0,6.18,no
+Jenkins,ci_cd_vcs,CI/CD & version control,tool,13,3,6.00,no
+Assembly,languages,Programming languages,tool,14,14,5.97,no
+Hive SQL,data_engineering,Data engineering & big data,tool,9,4,5.70,no
+Tableau,analytics_bi,"Analytics, statistics & BI",tool,10,3,5.64,no
+MySQL,databases,Databases & SQL,tool,10,7,5.35,no
+Workflow automation,process,Process & collaboration tools,concept,10,3,5.34,no
+CUDA,systems_perf,"Systems, performance & GPU",tool,10,1,5.30,no
+Applied cryptography,security_identity,Security & identity,concept,12,0,5.26,no
+ROS,robotics,Robotics & autonomy,tool,11,3,5.22,no
+Jira,process,Process & collaboration tools,tool,13,7,5.22,no
+CockroachDB,databases,Databases & SQL,tool,10,0,5.16,no
+FastAPI,backend_apis,Backend & APIs,tool,7,1,5.03,no
+Makefiles,infra_devops,"Containers, infrastructure & DevOps",tool,9,0,5.01,no
+Build systems,infra_devops,"Containers, infrastructure & DevOps",concept,10,1,5.00,no
+GitHub Actions,ci_cd_vcs,CI/CD & version control,tool,10,0,4.99,no
+Claude,llm_genai,LLMs & generative AI,tool,8,2,4.96,no
+Recommendation systems,recsys_ads,"Recommendation, ads & growth modeling",concept,7,1,4.89,no
+Image processing,cv_imaging,Computer vision & imaging,concept,8,5,4.80,no
+Machine learning model deployment,mlops_serving,"MLOps, training & serving",concept,8,0,4.74,no
+Tcpdump,networking,Networking & protocols,tool,10,0,4.73,no
+Wireshark,networking,Networking & protocols,tool,10,0,4.73,no
+Test-driven development,testing,Testing,concept,11,5,4.72,no
+XML,backend_apis,Backend & APIs,tool,11,6,4.70,no
+Next.js,web_frontend,Web frontend,tool,7,3,4.59,yes
+Vue.js,web_frontend,Web frontend,tool,8,4,4.58,no
+Graph algorithms,cs_fundamentals,CS fundamentals & software design,concept,10,3,4.55,no
+Linux kernel,systems_perf,"Systems, performance & GPU",concept,11,1,4.55,no
+Matplotlib,analytics_bi,"Analytics, statistics & BI",tool,8,5,4.50,no
+Uplift modeling,recsys_ads,"Recommendation, ads & growth modeling",concept,6,0,4.40,no
+SciPy,analytics_bi,"Analytics, statistics & BI",tool,7,1,4.38,no
+Signal processing,analytics_bi,"Analytics, statistics & BI",concept,8,2,4.34,no
+Structured outputs,llm_genai,LLMs & generative AI,concept,6,0,4.29,no
+Real-time operating systems,systems_perf,"Systems, performance & GPU",concept,10,1,4.27,no
+Data science,analytics_bi,"Analytics, statistics & BI",concept,7,5,4.22,no
+Spring Boot,backend_apis,Backend & APIs,tool,8,4,4.22,no
+HSM,security_identity,Security & identity,tool,10,0,4.20,no
+TPM,security_identity,Security & identity,tool,10,0,4.20,no
+Buildkite,ci_cd_vcs,CI/CD & version control,tool,8,0,4.15,no
+ETL,data_engineering,Data engineering & big data,concept,8,6,4.11,no
+Shell scripting,languages,Programming languages,tool,8,6,4.10,no
+Data mining,analytics_bi,"Analytics, statistics & BI",concept,8,7,4.05,no
+SQS,cloud,Cloud platforms,tool,7,2,3.99,no
+Integration testing,testing,Testing,concept,8,2,3.98,no
+Source control,ci_cd_vcs,CI/CD & version control,concept,7,2,3.96,no
+Software development lifecycle,cs_fundamentals,CS fundamentals & software design,concept,8,3,3.95,no
+Statistical modeling,analytics_bi,"Analytics, statistics & BI",concept,6,4,3.85,no
+GraphQL,backend_apis,Backend & APIs,tool,7,3,3.84,no
+OAuth 2.0,security_identity,Security & identity,tool,7,0,3.83,no
+OpenID Connect,security_identity,Security & identity,tool,7,0,3.83,no
+MLflow,mlops_serving,"MLOps, training & serving",tool,6,3,3.80,no
+Claude Code,ai_dev_tools,AI coding tools,tool,6,2,3.79,no
+Agile software development,process,Process & collaboration tools,concept,8,2,3.76,no
+HPC,systems_perf,"Systems, performance & GPU",concept,6,0,3.73,no
+Operations research,analytics_bi,"Analytics, statistics & BI",concept,5,1,3.69,no
+Device drivers,embedded_hw,"Embedded, hardware & firmware",concept,8,4,3.67,no
+Statistical analysis,analytics_bi,"Analytics, statistics & BI",concept,5,4,3.67,no
+Code review,process,Process & collaboration tools,concept,7,4,3.65,no
+Memory management,systems_perf,"Systems, performance & GPU",concept,8,4,3.64,no
+TensorRT-LLM,mlops_serving,"MLOps, training & serving",tool,5,1,3.63,no
+vLLM,mlops_serving,"MLOps, training & serving",tool,5,1,3.63,no
+Real-time rendering,systems_perf,"Systems, performance & GPU",concept,8,0,3.59,no
+Vector databases,llm_genai,LLMs & generative AI,concept,5,0,3.54,no
+Redis,backend_apis,Backend & APIs,tool,6,3,3.52,no
+Lambda,cloud,Cloud platforms,tool,7,3,3.51,no
+CAN,embedded_hw,"Embedded, hardware & firmware",tool,8,0,3.49,no
+Redux,web_frontend,Web frontend,tool,6,2,3.46,no
+Cloud infrastructure,cloud,Cloud platforms,concept,5,3,3.46,no
+gRPC,backend_apis,Backend & APIs,tool,6,3,3.45,no
+Telemetry,infra_devops,"Containers, infrastructure & DevOps",concept,6,2,3.43,no
+Plotly,analytics_bi,"Analytics, statistics & BI",tool,6,1,3.43,no
+LangChain,llm_genai,LLMs & generative AI,tool,5,2,3.42,no
+Qt,embedded_hw,"Embedded, hardware & firmware",tool,8,0,3.42,no
+Time-series analysis,analytics_bi,"Analytics, statistics & BI",concept,5,2,3.40,no
+DynamoDB,databases,Databases & SQL,tool,6,2,3.38,no
+USB,embedded_hw,"Embedded, hardware & firmware",tool,7,0,3.34,no
+MongoDB,databases,Databases & SQL,tool,5,2,3.26,no
+Web services,backend_apis,Backend & APIs,concept,6,3,3.22,no
+MATLAB,languages,Programming languages,tool,7,2,3.20,no
+GitLab CI,ci_cd_vcs,CI/CD & version control,tool,6,0,3.20,no
+Helm,infra_devops,"Containers, infrastructure & DevOps",tool,6,0,3.18,no
+YAML,backend_apis,Backend & APIs,tool,6,4,3.15,no
+Scripting,languages,Programming languages,tool,6,2,3.15,no
+RLHF,llm_genai,LLMs & generative AI,tool,4,0,3.11,no
+Flask,backend_apis,Backend & APIs,tool,4,1,3.09,no
+Ethernet,networking,Networking & protocols,concept,7,0,3.09,no
+Gdb,systems_perf,"Systems, performance & GPU",tool,7,0,3.09,no
+Perf,systems_perf,"Systems, performance & GPU",tool,7,0,3.09,no
+DPO,llm_genai,LLMs & generative AI,tool,4,0,3.08,no
+SFT,llm_genai,LLMs & generative AI,tool,4,0,3.08,no
+Advertising,recsys_ads,"Recommendation, ads & growth modeling",concept,4,0,2.98,no
+LTV estimation,recsys_ads,"Recommendation, ads & growth modeling",concept,4,0,2.98,no
+MapReduce,data_engineering,Data engineering & big data,tool,4,4,2.98,no
+Sequence modeling,ml_core,Machine learning (core),concept,4,0,2.98,no
+LLM applications,llm_genai,LLMs & generative AI,concept,4,2,2.93,no
+API design,backend_apis,Backend & APIs,concept,5,4,2.93,no
+Pytest,testing,Testing,tool,5,1,2.90,no
+Airflow,data_engineering,Data engineering & big data,tool,5,1,2.90,no
+Guardrails,llm_genai,LLMs & generative AI,concept,4,2,2.87,no
+GitHub Copilot,ai_dev_tools,AI coding tools,tool,5,1,2.78,no
+ONNX,ml_frameworks,ML frameworks & libraries,tool,4,0,2.77,no
+TensorRT,mlops_serving,"MLOps, training & serving",tool,4,0,2.77,no
+Cursor,ai_dev_tools,AI coding tools,tool,4,2,2.76,no
+Hadoop,data_engineering,Data engineering & big data,tool,4,3,2.72,no
+Big data,data_engineering,Data engineering & big data,concept,5,2,2.72,no
+Delta Lake,data_engineering,Data engineering & big data,tool,5,1,2.67,no
+Django,backend_apis,Backend & APIs,tool,4,0,2.64,no
+Numerical analysis,analytics_bi,"Analytics, statistics & BI",concept,6,1,2.62,no
+Oracle,databases,Databases & SQL,tool,5,2,2.62,no
+Event-driven architecture,backend_apis,Backend & APIs,concept,5,0,2.61,no
+Podman,infra_devops,"Containers, infrastructure & DevOps",tool,5,4,2.60,no
+Backend development,backend_apis,Backend & APIs,concept,4,2,2.58,no
+JAX,ml_frameworks,ML frameworks & libraries,tool,4,4,2.56,no
+Elasticsearch,databases,Databases & SQL,tool,4,1,2.56,no
+CSV,backend_apis,Backend & APIs,tool,5,5,2.55,no
+Gazebo,robotics,Robotics & autonomy,tool,5,1,2.54,no
+Monte Carlo simulation,testing,Testing,concept,5,0,2.54,no
+Data visualization,analytics_bi,"Analytics, statistics & BI",concept,5,3,2.54,no
+Perl,languages,Programming languages,tool,6,6,2.53,no
+DMA,embedded_hw,"Embedded, hardware & firmware",tool,6,0,2.53,no
+Ftrace,systems_perf,"Systems, performance & GPU",tool,6,0,2.53,no
+JTAG,embedded_hw,"Embedded, hardware & firmware",tool,6,0,2.53,no
+PCIe,embedded_hw,"Embedded, hardware & firmware",tool,6,0,2.53,no
+eBPF,systems_perf,"Systems, performance & GPU",tool,6,0,2.53,no
+NCCL,systems_perf,"Systems, performance & GPU",tool,5,0,2.53,no
+S3,cloud,Cloud platforms,tool,5,4,2.53,no
+Express,web_frontend,Web frontend,tool,4,1,2.52,no
+Design of Experiments,analytics_bi,"Analytics, statistics & BI",concept,4,1,2.52,no
+Modbus,embedded_hw,"Embedded, hardware & firmware",tool,6,0,2.51,no
+VISA,embedded_hw,"Embedded, hardware & firmware",tool,6,0,2.51,no
+Batch processing,,,,5,0,2.47,no
+Hardware-in-the-loop testing,testing,Testing,concept,5,1,2.44,no
+Jupyter,analytics_bi,"Analytics, statistics & BI",tool,4,3,2.44,no
+Metabase,analytics_bi,"Analytics, statistics & BI",tool,5,0,2.43,no
+TLS,security_identity,Security & identity,tool,5,0,2.41,no
+Geospatial analysis,geospatial,Geospatial,concept,4,0,2.39,no
+Evolutionary program search,ml_core,Machine learning (core),concept,3,0,2.37,no
+KV caching,llm_genai,LLMs & generative AI,concept,3,0,2.37,no
+Prompt caching,llm_genai,LLMs & generative AI,concept,3,0,2.37,no
+multilingual NLP,nlp_speech,NLP & speech,concept,3,0,2.37,no
+Causal inference,analytics_bi,"Analytics, statistics & BI",concept,3,3,2.30,no
+Accessibility,web_frontend,Web frontend,concept,4,1,2.25,no
+JUnit,testing,Testing,tool,4,3,2.21,no
+Embeddings,ml_core,Machine learning (core),concept,3,1,2.21,no
+GoogleTest,testing,Testing,tool,4,0,2.19,no
+Journalctl,infra_devops,"Containers, infrastructure & DevOps",tool,4,0,2.19,no
+Jq,languages,Programming languages,tool,4,0,2.19,no
+Ray,data_engineering,Data engineering & big data,tool,4,0,2.19,no
+Robot Framework,testing,Testing,tool,4,0,2.19,no
+Rosbag,robotics,Robotics & autonomy,tool,4,0,2.19,no
+Unittest,testing,Testing,tool,4,0,2.19,no
+Distillation,ml_core,Machine learning (core),concept,3,0,2.19,no
+GPIB,embedded_hw,"Embedded, hardware & firmware",tool,5,0,2.17,no
+VLAN,networking,Networking & protocols,tool,5,0,2.17,no
+Analog-to-digital conversion,embedded_hw,"Embedded, hardware & firmware",concept,5,0,2.16,no
+Data governance,data_engineering,Data engineering & big data,concept,4,2,2.15,no
+Information retrieval,,,,3,2,2.12,no
+AWS CDK,cloud,Cloud platforms,tool,4,0,2.12,no
+Asynchronous processing,,,,4,0,2.12,no
+ECS,cloud,Cloud platforms,tool,4,0,2.12,no
+Step Functions,cloud,Cloud platforms,tool,4,0,2.12,no
+Streaming pipelines,,,,4,0,2.12,no
+Backend systems,backend_apis,Backend & APIs,concept,3,3,2.11,no
+WebGL,web_frontend,Web frontend,concept,4,0,2.10,no
+Modular design,cs_fundamentals,CS fundamentals & software design,concept,5,5,2.10,no
+Microsoft Entra ID,security_identity,Security & identity,tool,4,0,2.09,no
+Hugging Face,ml_frameworks,ML frameworks & libraries,tool,3,1,2.09,no
+Knowledge graphs,recsys_ads,"Recommendation, ads & growth modeling",concept,3,0,2.08,no
+ChatGPT,llm_genai,LLMs & generative AI,tool,4,0,2.07,no
+Design patterns,cs_fundamentals,CS fundamentals & software design,concept,4,2,2.06,no
+Front-end development,web_frontend,Web frontend,concept,4,2,2.06,no
+Distributed training,mlops_serving,"MLOps, training & serving",concept,3,2,2.02,no
+Waterfall,process,Process & collaboration tools,concept,5,4,2.01,no
+Data processing,,,,4,3,1.96,no
+SAFe,process,Process & collaboration tools,concept,5,1,1.95,no
+Cloud-init,infra_devops,"Containers, infrastructure & DevOps",tool,4,0,1.95,no
+InfiniBand,networking,Networking & protocols,tool,4,0,1.95,no
+RoCE,networking,Networking & protocols,tool,4,0,1.95,no
+Vector search,llm_genai,LLMs & generative AI,concept,3,1,1.94,no
+GPU computing,systems_perf,"Systems, performance & GPU",concept,3,0,1.94,no
+Software development,,,,4,3,1.92,no
+DNS,networking,Networking & protocols,tool,4,1,1.91,no
+Relational database design,databases,Databases & SQL,concept,4,2,1.91,no
+Codex,ai_dev_tools,AI coding tools,tool,3,0,1.89,no
+Real-time data processing,data_engineering,Data engineering & big data,concept,3,1,1.87,no
+Seaborn,analytics_bi,"Analytics, statistics & BI",tool,3,3,1.86,no
+Data validation,,,,4,4,1.84,no
+Qlik,analytics_bi,"Analytics, statistics & BI",tool,3,0,1.84,no
+Android,mobile,Mobile,tool,4,1,1.83,no
+Jest,testing,Testing,tool,3,1,1.83,no
+OpenTelemetry,infra_devops,"Containers, infrastructure & DevOps",tool,3,1,1.82,no
+Agile methodologies,,,,4,3,1.81,no
+Access controls,,,,3,1,1.78,no
+Presentation software,,,,4,4,1.78,no
+Protocol Buffers,backend_apis,Backend & APIs,tool,3,1,1.77,no
+ClickHouse,databases,Databases & SQL,tool,4,0,1.76,no
+Point clouds,cv_imaging,Computer vision & imaging,concept,3,0,1.76,no
+Performance testing,testing,Testing,concept,4,1,1.76,no
+JWT,security_identity,Security & identity,tool,3,0,1.76,no
+SSO,security_identity,Security & identity,concept,3,0,1.76,no
+Database design,databases,Databases & SQL,concept,4,2,1.73,no
+CMake,ci_cd_vcs,CI/CD & version control,tool,4,1,1.72,no
+OpenCV,ml_frameworks,ML frameworks & libraries,tool,3,1,1.71,no
+J2EE,backend_apis,Backend & APIs,tool,4,4,1.71,no
+JSP,backend_apis,Backend & APIs,tool,4,4,1.71,no
+HubSpot,enterprise_platforms,Enterprise platforms,tool,3,1,1.71,no
+Data warehousing,data_engineering,Data engineering & big data,concept,3,1,1.68,no
+Microservices,backend_apis,Backend & APIs,concept,3,2,1.66,no
+Credit assignment,ml_core,Machine learning (core),concept,2,0,1.65,no
+Judge calibration,llm_genai,LLMs & generative AI,concept,2,0,1.65,no
+Predictive analytics,analytics_bi,"Analytics, statistics & BI",concept,3,0,1.65,no
+Command-line interfaces,cs_fundamentals,CS fundamentals & software design,concept,3,3,1.64,no
+Grep,infra_devops,"Containers, infrastructure & DevOps",tool,3,0,1.64,no
+Tail,infra_devops,"Containers, infrastructure & DevOps",tool,3,0,1.64,no
+IDE,,,,3,3,1.60,no
+Frontend frameworks,web_frontend,Web frontend,concept,3,2,1.59,no
+Anomaly detection,ml_core,Machine learning (core),concept,2,2,1.59,no
+Argo CD,ci_cd_vcs,CI/CD & version control,tool,3,0,1.58,no
+VB .NET,languages,Programming languages,tool,4,3,1.57,no
+SQLAlchemy,backend_apis,Backend & APIs,tool,2,1,1.57,no
+Post-training,llm_genai,LLMs & generative AI,concept,2,1,1.57,no
+MLIR,mlops_serving,"MLOps, training & serving",tool,3,0,1.57,no
+Kotlin,languages,Programming languages,tool,3,3,1.56,no
+Data engineering,data_engineering,Data engineering & big data,concept,3,2,1.55,no
+PHP,languages,Programming languages,tool,4,3,1.55,no
+Anthropic,,,,2,0,1.53,no
+OpenAI,,,,2,0,1.53,no
+Power Automate,enterprise_platforms,Enterprise platforms,tool,3,2,1.53,no
+Logging,,,,3,3,1.52,no
+Backend services,backend_apis,Backend & APIs,concept,3,2,1.52,no
+Cloud environments,,,,3,0,1.51,no
+Neo4j,databases,Databases & SQL,tool,3,1,1.51,no
+Model Context Protocol (MCP),,,,2,1,1.51,no
+Structured data,,,,2,2,1.51,no
+Unstructured data,,,,2,2,1.51,no
+Azure OpenAI,llm_genai,LLMs & generative AI,tool,2,0,1.50,no
+Experiment tracking,,,,2,0,1.49,no
+Cryptography,security_identity,Security & identity,concept,2,0,1.49,no
+FFmpeg,cv_imaging,Computer vision & imaging,tool,2,0,1.49,no
+End-to-end testing,,,,3,2,1.48,no
+OpenAI API,,,,2,2,1.48,no
+ARM,embedded_hw,"Embedded, hardware & firmware",tool,4,0,1.47,no
+Notebooks,,,,2,1,1.47,no
+MQTT,backend_apis,Backend & APIs,tool,3,2,1.46,no
+3D geometry,cv_imaging,Computer vision & imaging,concept,2,2,1.46,no
+Programming,,,,3,2,1.45,no
+Secure coding,,,,3,3,1.44,no
+Ontologies,cs_fundamentals,CS fundamentals & software design,concept,2,0,1.43,no
+Tool calling,,,,2,0,1.43,no
+SSH,security_identity,Security & identity,tool,2,0,1.43,no
+Bitbucket,ci_cd_vcs,CI/CD & version control,tool,4,0,1.42,no
+Multimodal large language models,llm_genai,LLMs & generative AI,concept,2,0,1.42,no
+GRPO,llm_genai,LLMs & generative AI,tool,2,0,1.42,no
+GNSS,geospatial,Geospatial,tool,3,0,1.42,no
+Troubleshooting,,,,3,2,1.41,no
+Data analytics,analytics_bi,"Analytics, statistics & BI",concept,3,3,1.41,no
+Oscilloscope,embedded_hw,"Embedded, hardware & firmware",tool,3,0,1.41,no
+UNIX-like operating systems,,,,3,0,1.40,no
+Systems programming,systems_perf,"Systems, performance & GPU",concept,2,1,1.39,no
+CDN,networking,Networking & protocols,concept,3,0,1.39,no
+Caching,cs_fundamentals,CS fundamentals & software design,concept,3,0,1.39,no
+Playwright,testing,Testing,tool,2,0,1.38,no
+AI productivity tools,ai_dev_tools,AI coding tools,concept,2,2,1.38,no
+Accessible technology,,,,2,0,1.38,no
+Compute technologies,,,,2,0,1.38,no
+Hardware architecture,,,,2,0,1.38,no
+Infrastructure,,,,2,0,1.38,no
+Mobile application development,,,,2,2,1.38,no
+Parallel systems,,,,2,2,1.38,no
+Ranking,,,,2,0,1.38,no
+Security software development,,,,2,2,1.38,no
+Software systems development,,,,2,2,1.38,no
+Speech audio,,,,2,0,1.38,no
+Storage,,,,2,0,1.38,no
+Web application development,,,,2,2,1.38,no
+Spring,backend_apis,Backend & APIs,tool,3,1,1.36,no
+LangGraph,llm_genai,LLMs & generative AI,tool,2,1,1.36,no
+GitLab,ci_cd_vcs,CI/CD & version control,tool,3,1,1.36,no
+CAD,,,,3,1,1.36,no
+Responsive design,web_frontend,Web frontend,concept,3,3,1.35,no
+Compilers,systems_perf,"Systems, performance & GPU",concept,3,1,1.35,no
+Database software,,,,3,3,1.35,no
+Spreadsheet software,,,,3,3,1.35,no
+Word processing software,,,,3,3,1.35,no
+Salesforce,enterprise_platforms,Enterprise platforms,tool,2,0,1.34,no
+API integrations,backend_apis,Backend & APIs,concept,2,0,1.33,no
+Apollo,backend_apis,Backend & APIs,tool,2,0,1.33,no
+CRM data quality,enterprise_platforms,Enterprise platforms,concept,2,0,1.33,no
+Clay,,,,2,0,1.33,no
+Grok,llm_genai,LLMs & generative AI,tool,2,0,1.33,no
+Bayesian modeling,analytics_bi,"Analytics, statistics & BI",concept,2,1,1.33,no
+Digital twins,robotics,Robotics & autonomy,concept,2,0,1.33,no
+TCP,,,,3,2,1.32,no
+Snowflake,data_engineering,Data engineering & big data,tool,3,1,1.31,no
+AV1,cv_imaging,Computer vision & imaging,tool,2,0,1.31,no
+Visual Studio,enterprise_platforms,Enterprise platforms,tool,3,0,1.29,no
+Quantization,ml_core,Machine learning (core),concept,2,0,1.29,no
+Document processing,,,,2,0,1.28,no
+Programming languages,languages,Programming languages,concept,3,3,1.28,no
+State estimation,robotics,Robotics & autonomy,concept,3,0,1.27,no
+SGLang,mlops_serving,"MLOps, training & serving",tool,2,1,1.26,no
+Speculative decoding,llm_genai,LLMs & generative AI,concept,2,1,1.26,no
+Triton,systems_perf,"Systems, performance & GPU",tool,2,0,1.26,no
+OpenGL,systems_perf,"Systems, performance & GPU",tool,3,0,1.26,no
+Vulkan,systems_perf,"Systems, performance & GPU",tool,3,0,1.26,no
+Storage systems,systems_perf,"Systems, performance & GPU",concept,2,1,1.26,no
+Gemini,llm_genai,LLMs & generative AI,tool,2,1,1.25,no
+Video compression,cv_imaging,Computer vision & imaging,concept,2,2,1.25,no
+FPGA,embedded_hw,"Embedded, hardware & firmware",tool,3,0,1.24,no
+Unreal Engine,web_frontend,Web frontend,tool,3,0,1.23,no
+C2S,,,,3,1,1.23,no
+Scientific computing,,,,2,0,1.23,no
+Semantic Kernel,llm_genai,LLMs & generative AI,tool,2,0,1.23,no
+Simulation workflows,,,,2,0,1.23,no
+Surrogate models,,,,2,0,1.23,no
+BigQuery,data_engineering,Data engineering & big data,tool,2,1,1.23,no
+Prompting,,,,2,2,1.23,no
+Large language models (LLMs),,,,2,1,1.22,no
+Production monitoring,,,,2,1,1.22,no
+Documentation,,,,2,2,1.22,no
+A2A,agents,AI agents & tool protocols,tool,2,0,1.21,no
+Feature engineering,,,,2,2,1.20,no
+AI-assisted workflows,,,,2,1,1.20,no
+DICOM,health_data,Health data standards,tool,2,0,1.20,no
+FHIR,health_data,Health data standards,tool,2,0,1.20,no
+HL7,health_data,Health data standards,tool,2,0,1.20,no
+Systemd,infra_devops,"Containers, infrastructure & DevOps",tool,2,2,1.20,no
+Three.js,web_frontend,Web frontend,tool,3,0,1.19,no
+Oscilloscopes,,,,3,1,1.18,no
+Nginx,backend_apis,Backend & APIs,tool,2,0,1.17,no
+Confluence,,,,3,2,1.17,no
+MuJoCo,robotics,Robotics & autonomy,tool,2,0,1.17,no
+Internal developer platforms,infra_devops,"Containers, infrastructure & DevOps",concept,2,0,1.16,no
+Motion planning,robotics,Robotics & autonomy,concept,2,1,1.16,no
+Analytics,,,,2,1,1.16,no
+NET Core,backend_apis,Backend & APIs,tool,2,2,1.16,no
+Data privacy,,,,2,2,1.16,no
+Open-source,,,,2,0,1.16,no
+React Native,mobile,Mobile,tool,2,1,1.15,no
+Swift,languages,Programming languages,tool,2,1,1.15,no
+Pose estimation,cv_imaging,Computer vision & imaging,concept,2,2,1.15,no
+Cloud data platforms,cloud,Cloud platforms,concept,2,0,1.15,no
+Experimental design,,,,2,2,1.15,no
+ML lifecycle tools,mlops_serving,"MLOps, training & serving",concept,2,0,1.15,no
+Virtualization,infra_devops,"Containers, infrastructure & DevOps",concept,2,0,1.15,no
+Asynchronous programming,,,,2,1,1.14,no
+Software-in-the-loop testing,testing,Testing,concept,2,0,1.14,no
+MVC,,,,2,1,1.13,no
+Hardware interfaces,embedded_hw,"Embedded, hardware & firmware",concept,2,1,1.12,no
+Data quality,,,,2,2,1.12,no
+LLVM,systems_perf,"Systems, performance & GPU",tool,2,1,1.12,no
+Copilot Studio,enterprise_platforms,Enterprise platforms,tool,2,1,1.11,no
+Spectrum analyzers,embedded_hw,"Embedded, hardware & firmware",tool,3,0,1.11,no
+Cloud storage,,,,2,1,1.11,no
+Perception,,,,2,1,1.10,no
+Vitest,testing,Testing,tool,2,1,1.10,no
+Manufacturing,,,,2,0,1.10,no
+AWS CloudFormation,cloud,Cloud platforms,tool,2,0,1.10,no
+Neural networks,,,,2,2,1.09,no
+Game engines,cs_fundamentals,CS fundamentals & software design,concept,2,0,1.09,no
+TVM,mlops_serving,"MLOps, training & serving",tool,2,0,1.08,no
+AI-assisted development,,,,2,0,1.07,no
+EDA tools,embedded_hw,"Embedded, hardware & firmware",concept,2,1,1.07,no
+HBase,data_engineering,Data engineering & big data,tool,2,0,1.06,no
+SystemVerilog,embedded_hw,"Embedded, hardware & firmware",tool,2,0,1.06,no
+NX,,,,2,1,1.06,no
+Schematics,,,,2,1,1.05,no
+ETL/ELT,,,,2,1,1.05,no
+Microsoft Graph,enterprise_platforms,Enterprise platforms,tool,2,0,1.05,no
+SharePoint,enterprise_platforms,Enterprise platforms,tool,2,0,1.05,no
+Authentication,,,,2,1,1.04,no
+AWS Step Functions,,,,2,1,1.04,no
+Apache Flink,data_engineering,Data engineering & big data,tool,2,0,1.04,no
+Entity Framework,backend_apis,Backend & APIs,tool,2,2,1.04,no
+NVIDIA drivers,systems_perf,"Systems, performance & GPU",tool,2,0,1.03,no
+Certificates,security_identity,Security & identity,concept,2,0,1.03,no
+Linear algebra,cs_fundamentals,CS fundamentals & software design,concept,2,1,1.03,no
+Bamboo,ci_cd_vcs,CI/CD & version control,tool,2,0,1.02,no
+QUIC,networking,Networking & protocols,concept,2,0,1.01,no
+CompTIA Security+,security_identity,Security & identity,tool,2,0,1.01,no
+Isaac Sim,robotics,Robotics & autonomy,tool,2,1,1.01,no
+Dbt,data_engineering,Data engineering & big data,tool,2,0,1.00,no
+WordPress,web_frontend,Web frontend,tool,2,0,1.00,no
+D3.js,web_frontend,Web frontend,tool,2,0,0.98,no
+Imitation learning,ml_core,Machine learning (core),concept,2,1,0.98,no
+DDS,networking,Networking & protocols,tool,2,2,0.98,no
+PowerShell,languages,Programming languages,tool,2,0,0.97,no
+Artifactory,ci_cd_vcs,CI/CD & version control,tool,3,0,0.97,no
+Atlassian Suite,process,Process & collaboration tools,tool,3,0,0.97,no
+Green Hills INTEGRITY,embedded_hw,"Embedded, hardware & firmware",tool,3,0,0.97,no
+Open systems architecture,cs_fundamentals,CS fundamentals & software design,concept,3,3,0.97,no
+Red Hat Enterprise Linux,infra_devops,"Containers, infrastructure & DevOps",tool,3,0,0.97,no
+VxWorks,embedded_hw,"Embedded, hardware & firmware",tool,3,0,0.97,no
+Logic analyzer,embedded_hw,"Embedded, hardware & firmware",tool,2,0,0.97,no
+Integrated development environments (IDEs),process,Process & collaboration tools,concept,2,1,0.95,no
+SVN,ci_cd_vcs,CI/CD & version control,tool,2,2,0.95,no
+iOS,mobile,Mobile,tool,2,0,0.95,no
+Package management,infra_devops,"Containers, infrastructure & DevOps",concept,2,1,0.94,no
+Hibernate,backend_apis,Backend & APIs,tool,2,1,0.94,no
+Physical AI,,,,2,0,0.93,no
+Sensor integration,,,,2,1,0.93,no
+Bootstrap,,,,2,1,0.93,no
+API integration,,,,2,1,0.93,no
+SAST,,,,2,1,0.93,no
+Cypress,testing,Testing,tool,2,1,0.91,no
+Vite,,,,2,1,0.91,no
+IAM,cloud,Cloud platforms,tool,2,1,0.90,no
+Cloud technologies,,,,2,0,0.89,no
+Compiled languages,,,,2,2,0.88,no
+Hardware Security Modules (HSM),security_identity,Security & identity,tool,2,0,0.87,no
+Trusted Platform Modules (TPM),security_identity,Security & identity,tool,2,0,0.87,no
+Risk stratification,health_data,Health data standards,concept,1,1,0.87,no
+Segmentation,,,,1,1,0.87,no
+Database queries,,,,2,2,0.87,no
+RF test equipment,embedded_hw,"Embedded, hardware & firmware",tool,2,2,0.87,no
+S-parameters,embedded_hw,"Embedded, hardware & firmware",concept,2,0,0.87,no
+Spectrum analyzer,embedded_hw,"Embedded, hardware & firmware",tool,2,2,0.87,no
+Vector network analyzer,embedded_hw,"Embedded, hardware & firmware",tool,2,2,0.87,no
+Software integration,cs_fundamentals,CS fundamentals & software design,concept,2,2,0.87,no
+Programming fundamentals,,,,2,2,0.87,no
+WPF,enterprise_platforms,Enterprise platforms,tool,2,1,0.87,no
+MVVM,,,,2,2,0.86,no
+AWS Bedrock,cloud,Cloud platforms,tool,1,0,0.86,no
+Bedrock AgentCore,,,,1,0,0.86,no
+OpenAI SDK,,,,1,0,0.86,no
+Vector stores,,,,1,0,0.86,no
+Data lakes,data_engineering,Data engineering & big data,concept,2,1,0.85,no
+AWS DynamoDB,,,,2,2,0.84,no
+AWS EC2,,,,2,2,0.84,no
+AWS RDS,,,,2,2,0.84,no
+3D reconstruction,,,,1,0,0.84,no
+Augmented reality,,,,1,0,0.84,no
+Camera models,,,,1,1,0.84,no
+Core ML,,,,1,0,0.84,no
+Epipolar geometry,,,,1,1,0.84,no
+GPU training,,,,1,1,0.84,no
+Geospatial indexing,,,,1,0,0.84,no
+Image retrieval,,,,1,1,0.84,no
+Learned feature matching,,,,1,1,0.84,no
+Meshes,,,,1,0,0.84,no
+Multi-view pretraining,,,,1,0,0.84,no
+Pose parameterizations,,,,1,1,0.84,no
+SLAM,,,,1,1,0.84,no
+Self-supervised learning,,,,1,0,0.84,no
+Structure-from-motion,,,,1,1,0.84,no
+Visual localization,,,,1,1,0.84,no
+Bioinformatics,,,,1,1,0.84,no
+Clinical research,,,,1,0,0.83,no
+Longitudinal health data,,,,1,0,0.83,no
+Pretraining,,,,1,1,0.83,no
+health AI,,,,1,0,0.83,no
+Microsoft Excel,analytics_bi,"Analytics, statistics & BI",tool,2,1,0.83,no
+Microsoft PowerPoint,,,,2,1,0.83,no
+WebSockets,backend_apis,Backend & APIs,tool,2,2,0.83,no
+SSIS,data_engineering,Data engineering & big data,tool,2,2,0.83,no
+Candidate archives,,,,1,0,0.83,no
+P-values,,,,1,1,0.83,no
+Pareto selection,,,,1,0,0.83,no
+Regression suites,,,,1,0,0.83,no
+Skills,,,,1,0,0.83,no
+Tool search,,,,1,0,0.83,no
+Pareto optimization,,,,1,0,0.82,no
+Parquet,data_engineering,Data engineering & big data,tool,2,1,0.82,no
+MS SQL Server,,,,2,1,0.82,no
+DevSecOps,infra_devops,"Containers, infrastructure & DevOps",concept,2,1,0.81,no
+Microsoft Office,,,,2,2,0.81,no
+AI application frameworks,,,,1,1,0.81,no
+Backend programming,,,,1,1,0.81,no
+Data platforms,,,,1,1,0.81,no
+Human oversight,,,,1,1,0.81,no
+Model APIs,,,,1,1,0.81,no
+Model governance,,,,1,1,0.81,no
+Evaluation datasets,,,,1,0,0.80,no
+LLM judges,,,,1,0,0.80,no
+Tool-use agents,,,,1,0,0.80,no
+Video understanding,,,,1,0,0.80,no
+AI/ML applications,,,,1,1,0.80,no
+Cloud deployment,,,,1,0,0.80,no
+Developer documentation,,,,1,0,0.80,no
+SDK development,,,,1,0,0.80,no
+Scalable systems,,,,1,1,0.80,no
+secure API design,,,,1,0,0.80,no
+Embedded electronics,,,,2,0,0.80,no
+RF communication systems,,,,2,1,0.80,no
+ASP.NET,languages,Programming languages,tool,2,2,0.79,no
+Distributed applications,,,,1,0,0.79,no
+High-performance databases,,,,1,0,0.79,no
+Image data processing,,,,1,0,0.79,no
+Generative models,,,,1,0,0.79,no
+Low-precision training,,,,1,0,0.79,no
+Neural rendering,,,,1,0,0.79,no
+Pruning,,,,1,0,0.79,no
+Rendering pipelines,,,,1,0,0.79,no
+Dataset versioning,,,,1,0,0.79,no
+Evaluation metrics,,,,1,0,0.79,no
+Learning from human feedback,,,,1,0,0.79,no
+Synthetic data generation,,,,1,0,0.79,no
+Socket programming,,,,2,2,0.78,no
+Cloud development environments,,,,1,0,0.78,no
+Copilots,,,,1,0,0.78,no
+Dashboards,,,,1,0,0.78,no
+Data handling,,,,1,1,0.78,no
+Logs,,,,1,0,0.78,no
+Metrics,,,,1,0,0.78,no
+Software development fundamentals,,,,1,1,0.78,no
+Bare-metal programming,,,,2,0,0.78,no
+System programming,,,,2,2,0.78,no
+Agile/Scrum,,,,2,0,0.78,no
+Full software development life cycle,,,,2,0,0.78,no
+Fault tolerant systems,,,,2,0,0.78,no
+API orchestration,,,,1,0,0.77,no
+Azure AI services,,,,1,1,0.77,no
+Azure Document Intelligence,,,,1,0,0.77,no
+Claude API,,,,1,1,0.77,no
+GPU model hosting,,,,1,0,0.77,no
+Google,,,,1,0,0.77,no
+Governance,,,,1,0,0.77,no
+Legacy systems,,,,1,0,0.77,no
+Palantir,,,,1,0,0.77,no
+Production services,,,,1,1,0.77,no
+Semantic search,,,,1,0,0.77,no
+Vertex AI,,,,1,0,0.77,no
+Code signing,,,,2,0,0.76,no
+PKI,,,,2,0,0.76,no
+SAML,,,,2,0,0.76,no
+macOS,,,,2,0,0.76,no
+CS fundamentals,,,,1,1,0.76,no
+GenAI tools,,,,1,0,0.76,no
+AI-assisted coding tools,,,,1,0,0.76,no
+Image-based deep learning,,,,1,0,0.76,no
+Statistical methods,,,,1,0,0.76,no
+MCP servers,,,,1,0,0.76,no
+P&ID,,,,1,0,0.76,no
+Sensor fusion,robotics,Robotics & autonomy,concept,2,1,0.76,no
+Encryption,,,,2,1,0.76,no
+Hardware accelerators,,,,1,0,0.76,no
+Kernel optimization,,,,1,0,0.76,no
+Security-focused architecture,,,,1,0,0.75,no
+Blazor,web_frontend,Web frontend,tool,2,2,0.75,no
+Agentic AI architectures,,,,1,1,0.75,no
+Backbone,,,,1,0,0.75,no
+Function execution,,,,1,1,0.75,no
+LLM tool calling,,,,1,1,0.75,no
+NoSQL databases,,,,1,1,0.75,no
+CI pipelines,,,,1,0,0.75,no
+Web frontend,,,,1,0,0.75,no
+MATLAB/Simulink,,,,2,1,0.74,no
+Identity management,,,,1,0,0.74,no
+Threat detection,,,,1,0,0.74,no
+Web frontend development,,,,1,0,0.74,no
+Argo,,,,1,0,0.74,no
+Infrastructure systems,,,,1,1,0.74,no
+Orchestration and workflow runtimes,,,,1,1,0.74,no
+Production backend systems,,,,1,1,0.74,no
+Python asyncio,,,,1,0,0.74,no
+Temporal,,,,1,0,0.74,no
+ARM Cortex,,,,1,0,0.74,no
+AVC,,,,1,0,0.74,no
+CNN,,,,1,0,0.74,no
+Diffusion models,,,,1,0,0.74,no
+HEVC,,,,1,0,0.74,no
+PSNR,,,,1,1,0.74,no
+RISC-V,embedded_hw,"Embedded, hardware & firmware",tool,1,0,0.74,no
+RTOS,,,,1,0,0.74,no
+SSIM,,,,1,1,0.74,no
+Super-resolution,,,,1,0,0.74,no
+Transformer,,,,1,0,0.74,no
+VMAF,,,,1,1,0.74,no
+VP9,,,,1,0,0.74,no
+Embedded software,,,,2,1,0.74,no
+Amazon Bedrock,,,,1,0,0.74,no
+AutoGen,,,,1,0,0.74,no
+Command-line tools,,,,1,1,0.74,no
+CrewAI,,,,1,0,0.74,no
+Data sanitization,,,,1,0,0.74,no
+Deployment workflows,,,,1,0,0.74,no
+Hugging Face Transformers,,,,1,1,0.74,no
+LLM evaluation metrics,,,,1,0,0.74,no
+LLM evaluation methods,,,,1,0,0.74,no
+Coding agents,,,,1,0,0.73,no
+Graders,,,,1,0,0.73,no
+Synthetic data,,,,1,0,0.73,no
+Tool-using agents,,,,1,0,0.73,no
+production ML systems,,,,1,0,0.73,no
+Data tools,,,,1,0,0.73,no
+Applied mathematics,,,,1,1,0.73,no
+CMOS layout,,,,1,0,0.73,no
+Combinatorial optimization,,,,1,1,0.73,no
+DRC,,,,1,0,0.73,no
+Electronic design automation,,,,1,1,0.73,no
+LVS,,,,1,0,0.73,no
+Large-scale EDA software development,,,,1,0,0.73,no
+Machine learning for chip design,,,,1,1,0.73,no
+Schematic-to-layout translation,,,,1,0,0.73,no
+AI safety,,,,1,1,0.73,no
+Agent runtimes,,,,1,1,0.73,no
+Context management,,,,1,1,0.73,no
+Cost optimization,,,,1,1,0.73,no
+GPT,,,,1,0,0.73,no
+Golden sets,,,,1,1,0.73,no
+Latency optimization,,,,1,1,0.73,no
+ML models,,,,1,1,0.73,no
+Model routing,,,,1,1,0.73,no
+Open-source models,,,,1,0,0.73,no
+Orchestration,,,,1,1,0.73,no
+Quality gates,,,,1,1,0.73,no
+Regression checks,,,,1,1,0.73,no
+Reliability,,,,1,1,0.73,no
+Semantic knowledge management,,,,1,0,0.73,no
+Semantic layers,,,,1,0,0.73,no
+Small/edge models,,,,1,0,0.73,no
+Tool/function calling,,,,1,1,0.73,no
+Access control,,,,1,0,0.73,no
+Complexity analysis,,,,1,1,0.73,no
+Ruby on Rails,,,,1,0,0.73,no
+Electronics,,,,2,0,0.73,no
+Statistical inference,,,,1,1,0.72,no
+Classical machine learning,,,,1,0,0.72,no
+Cloud-native services,,,,1,0,0.72,no
+Enterprise integration,,,,1,0,0.72,no
+Graph retrieval,,,,1,0,0.72,no
+Hybrid retrieval,,,,1,0,0.72,no
+LLMOps,,,,1,0,0.72,no
+Structured output,,,,1,0,0.72,no
+Ultralytics,,,,1,0,0.72,no
+Cross-validation,,,,1,1,0.71,no
+Precision and recall,,,,1,1,0.71,no
+Probability distributions,,,,1,1,0.71,no
+Python visualization packages,,,,1,0,0.71,no
+Regression analysis,,,,1,1,0.71,no
+Attitude determination,,,,2,0,0.71,no
+Control theory,,,,2,0,0.71,no
+Low thrust trajectory optimization,,,,2,0,0.71,no
+Orbit determination,,,,2,0,0.71,no
+Orbital mechanics,,,,2,0,0.71,no
+Radio navigation,,,,2,0,0.71,no
+Stationkeeping,,,,2,0,0.71,no
+Large-scale data,,,,1,0,0.71,no
+Causal modeling,,,,1,0,0.71,no
+Direct preference optimization (DPO),,,,1,0,0.71,no
+Generative recommendation,,,,1,0,0.71,no
+LLM4Rec,,,,1,0,0.71,no
+Retention modeling,,,,1,0,0.71,no
+Sequential user behavior modeling,,,,1,0,0.71,no
+Supervised fine-tuning (SFT),,,,1,0,0.71,no
+User lifetime value modeling,,,,1,0,0.71,no
+LLM post-training,,,,1,0,0.71,no
+Edge inference,,,,1,0,0.71,no
+Vision-language models,,,,1,0,0.71,no
+Anthropic API,,,,1,1,0.71,no
+Chroma,,,,1,1,0.71,no
+LlamaIndex,,,,1,1,0.71,no
+PEP 8,,,,1,1,0.71,no
+Pgvector,databases,Databases & SQL,tool,1,1,0.71,no
+Pinecone,,,,1,1,0.71,no
+Psycopg2,,,,1,1,0.71,no
+SQLite,,,,1,1,0.71,no
+VS Code,,,,1,1,0.71,no
+Weights & Biases,,,,1,1,0.71,no
+Applied AI,,,,1,1,0.71,no
+Financial systems,,,,1,0,0.71,no
+Full-stack product engineering,,,,1,1,0.71,no
+Research infrastructure,,,,1,1,0.71,no
+Research tooling,,,,1,0,0.71,no
+Graph databases,,,,1,0,0.71,no
+Information extraction,,,,1,0,0.71,no
+LLM fundamentals,,,,1,1,0.71,no
+Benchmarking,,,,1,0,0.70,no
+Software-defined radio,,,,1,0,0.70,no
+Accessibility standards,,,,1,0,0.70,no
+Cross-browser compatibility,,,,1,0,0.70,no
+Fragno,,,,1,0,0.70,no
+Nova,,,,1,0,0.70,no
+Policy engines,,,,1,0,0.70,no
+Rules engines,,,,1,0,0.70,no
+Experiment orchestration,,,,1,0,0.70,no
+Formal verification,,,,1,0,0.70,no
+RTL,,,,1,0,0.70,no
+Verilog,,,,1,0,0.70,no
+Application performance,,,,1,1,0.70,no
+Data mapping,,,,1,1,0.70,no
+Enterprise systems,,,,1,0,0.70,no
+Multi-tenant SaaS,,,,1,0,0.70,no
+ServiceNow,,,,1,0,0.70,no
+System testing,,,,1,1,0.70,no
+Third-party integrations,,,,1,1,0.70,no
+AI deployment,,,,1,1,0.70,no
+Async processing,,,,1,1,0.70,no
+Automated evaluation,,,,1,1,0.70,no
+Large-scale backend systems,,,,1,0,0.70,no
+Retrieval-augmented generation (RAG),,,,1,1,0.70,no
+Safety guardrails,,,,1,1,0.70,no
+Scientific instrumentation,,,,2,0,0.70,no
+TeamCity,,,,1,0,0.69,no
+Predictions,,,,1,0,0.69,no
+Recommendations,,,,1,0,0.69,no
+Prediction,,,,1,0,0.69,no
+IoT SDKs,,,,1,0,0.69,no
+embedded device SDKs,,,,1,0,0.69,no
+robotics SDKs,,,,1,0,0.69,no
+GPU kernels,,,,1,0,0.68,no
+LLM inference engines,,,,1,0,0.68,no
+Machine learning libraries,,,,1,0,0.68,no
+HDFS,,,,1,0,0.68,no
+Video enhancement,,,,1,1,0.68,no
+Video quality assessment,,,,1,1,0.68,no
+Automated scoring,,,,1,0,0.68,no
+Codebook development,,,,1,0,0.68,no
+Collaborative software development,,,,1,0,0.68,no
+Data annotation,,,,1,0,0.68,no
+Qualitative coding,,,,1,0,0.68,no
+Quantitative coding,,,,1,0,0.68,no
+Reproducible workflows,,,,1,0,0.68,no
+Stata,,,,1,0,0.68,no
+CrafterCMS,,,,1,0,0.68,no
+Database administration,,,,1,1,0.68,no
+Groovy,languages,Programming languages,tool,1,1,0.68,no
+Multimedia streaming,,,,1,1,0.68,no
+Big data techniques,,,,1,0,0.68,no
+Large-scale datasets,,,,1,0,0.68,no
+Edge computing,,,,1,0,0.67,no
+Modeling,,,,1,1,0.67,no
+Multimodal learning,,,,1,0,0.67,no
+Simulation-based AI/ML,,,,1,0,0.67,no
+Ads ranking,,,,1,0,0.67,no
+LLM fine-tuning,,,,1,0,0.67,no
+Policy optimization,,,,1,0,0.67,no
+Search relevance,,,,1,0,0.67,no
+Supervised fine-tuning,,,,1,0,0.67,no
+AI infrastructure,,,,1,0,0.67,no
+Infrastructure software,,,,1,1,0.67,no
+Intelligent automation,,,,1,1,0.67,no
+Operational analytics,,,,1,0,0.67,no
+Operational tooling,,,,1,1,0.67,no
+Supercomputing,,,,1,0,0.67,no
+ArcGIS,,,,1,1,0.67,no
+D3,,,,1,1,0.67,no
+DBOps,,,,1,0,0.67,no
+Keras,,,,1,1,0.67,no
+Solr,,,,1,0,0.67,no
+Athena,,,,1,0,0.66,no
+Iceberg,,,,1,0,0.66,no
+Internationalization,,,,1,0,0.66,no
+Typed API,,,,1,0,0.66,no
+Autonomous navigation,,,,1,0,0.66,no
+Linear programming,,,,1,0,0.66,no
+Manipulation,,,,1,0,0.66,no
+Nonlinear optimization,,,,1,0,0.66,no
+Path planning,,,,1,0,0.66,no
+AI/ML model integration,,,,1,0,0.66,no
+COTS/GOTS integration,,,,1,0,0.66,no
+Complex data queries,,,,1,0,0.66,no
+Database interfaces,,,,1,0,0.66,no
+Software reuse,,,,1,0,0.66,no
+Software testing frameworks,,,,1,1,0.66,no
+AI/ML model development,,,,1,0,0.66,no
+AI/ML model evaluation,,,,1,0,0.66,no
+Cloud architectures,,,,1,0,0.66,no
+DoD development environment,,,,1,0,0.66,no
+Message brokering,,,,1,1,0.65,no
+Build tools,,,,1,1,0.65,no
+Debugger,,,,1,1,0.65,no
+Profilers,,,,1,1,0.65,no
+ServiceNow instances,,,,1,1,0.65,no
+Unix tools,,,,1,1,0.65,no
+Programming principles,,,,1,1,0.65,no
+ML tooling,,,,1,1,0.65,no
+Microsoft Visual Studio,,,,2,1,0.65,no
+Architecture,,,,1,0,0.65,no
+Autodesk Construction Cloud,,,,1,0,0.65,no
+Construction,,,,1,0,0.65,no
+Engineering,,,,1,0,0.65,no
+Procore,,,,1,0,0.65,no
+Retrieval systems,,,,1,0,0.65,no
+Systems integration,,,,1,1,0.65,no
+Napari,,,,1,1,0.65,no
+Tk,,,,1,1,0.65,no
+X-ray coronary angiography,,,,1,0,0.65,no
+HAProxy,,,,1,0,0.64,no
+NuGet,,,,1,0,0.64,no
+Accounting,,,,1,0,0.64,no
+Cloud Run,,,,1,0,0.64,no
+Cloud SQL,,,,1,0,0.64,no
+ERP integrations,,,,1,0,0.64,no
+Finance,,,,1,0,0.64,no
+Financial analytics,,,,1,0,0.64,no
+NetSuite,,,,1,0,0.64,no
+IndexedDB,,,,1,0,0.64,no
+Service Workers,,,,1,0,0.64,no
+Deep learning algorithms,,,,1,0,0.64,no
+Domain adaptation,,,,1,0,0.64,no
+Large-scale text data processing,,,,1,0,0.64,no
+Multimodal systems,,,,1,1,0.64,no
+Semi-supervised learning,,,,1,0,0.64,no
+Sequence labeling,,,,1,0,0.64,no
+Text classification,,,,1,0,0.64,no
+Text matching,,,,1,0,0.64,no
+Text mining,,,,1,0,0.64,no
+Text representation,,,,1,0,0.64,no
+Unsupervised learning,,,,1,0,0.64,no
+Distributed systems security,,,,2,0,0.63,no
+ML runtimes,,,,1,0,0.63,no
+Machine learning frameworks,,,,1,0,0.63,no
+Operating systems internals,,,,1,0,0.63,no
+AI systems deployment,,,,1,0,0.62,no
+AI/ML frameworks,,,,1,0,0.62,no
+Structured data manipulation,,,,1,1,0.62,no
+System integration,,,,1,1,0.62,no
+Keyword spotting,,,,1,0,0.62,no
+Voice recognition,,,,1,0,0.62,no
+Optimizely,,,,1,0,0.62,no
+Python frameworks,,,,1,0,0.62,no
+Sitecore,,,,1,0,0.62,no
+Big data analytics,,,,1,0,0.62,no
+Cloud GPU batch inference,,,,1,0,0.62,no
+Coordinate systems,,,,1,1,0.62,no
+Coordinate transforms,,,,1,1,0.62,no
+DINO,,,,1,0,0.62,no
+Grounding DINO,,,,1,0,0.62,no
+Image-to-point-cloud projection,,,,1,1,0.62,no
+LiDAR,,,,1,0,0.62,no
+Model fine-tuning,,,,1,1,0.62,no
+Open3D,,,,1,0,0.62,no
+PDAL,,,,1,0,0.62,no
+PyTorch3D,,,,1,0,0.62,no
+SAM,,,,1,0,0.62,no
+Sparse convolution libraries,,,,1,0,0.62,no
+Observability tools,,,,1,0,0.62,no
+Chemical engineering,,,,1,0,0.61,no
+Machine learning product development,,,,1,0,0.61,no
+Polars,,,,1,1,0.61,no
+Probabilistic reasoning,,,,1,0,0.61,no
+Process engineering,,,,1,0,0.61,no
+Sensor-driven ML,,,,1,0,0.61,no
+Spectral data,,,,1,0,0.61,no
+Time-series modeling,,,,1,0,0.61,no
+User-centric design,,,,1,0,0.61,no
+Statically typed language,,,,1,1,0.61,no
+Battery management,,,,1,0,0.61,no
+Datasheets,,,,1,0,0.61,no
+Frontend testing,,,,1,0,0.61,no
+Humanoid whole-body control,,,,1,0,0.61,no
+Isaac,,,,1,0,0.61,no
+Motion retargeting,,,,1,0,0.61,no
+NPU,,,,1,0,0.61,no
+Object storage,,,,1,0,0.61,no
+Power,,,,1,0,0.61,no
+Reverse proxy,,,,1,0,0.61,no
+Thermal management,,,,1,0,0.61,no
+UART,embedded_hw,"Embedded, hardware & firmware",tool,1,0,0.61,no
+Vendor protocols,,,,1,1,0.61,no
+Zenoh,,,,1,1,0.61,no
+Streaming data platforms,,,,1,0,0.60,no
+AI Fluency,,,,1,1,0.60,no
+Claude 101,,,,1,1,0.60,no
+Production LLM deployments,,,,1,0,0.60,no
+Open-source contribution,,,,1,0,0.59,no
+Linux administration,,,,1,1,0.59,no
+PeopleSoft,,,,1,0,0.59,no
+Ubuntu,,,,1,1,0.59,no
+Continuous deployment,,,,1,0,0.59,no
+NVIDIA GPU stacks,,,,1,0,0.59,no
+Cloud analytics tools,,,,1,0,0.59,no
+Data manipulation,,,,1,1,0.59,no
+Ensemble tree models,,,,1,1,0.59,no
+Logistic regression,,,,1,1,0.59,no
+Software engineering practices,,,,1,1,0.59,no
+Statistical programming,,,,1,1,0.59,no
+Amazon SQS,,,,1,1,0.59,no
+Python server code,,,,1,0,0.59,no
+KVM,,,,2,0,0.59,no
+QEMU,,,,2,0,0.59,no
+vSphere,,,,2,0,0.59,no
+Python visualization,,,,1,0,0.59,no
+Workflow systems,,,,1,0,0.59,no
+Funnel.IO,,,,1,1,0.58,no
+Looker Studio,,,,1,1,0.58,no
+Supabase,,,,1,1,0.58,yes
+Planning,,,,1,0,0.58,no
+Real-time software,,,,1,0,0.58,no
+Safety-critical software,,,,1,0,0.58,no
+Sensor data,,,,1,0,0.58,no
+Simulation tools,,,,1,0,0.58,no
+Database concepts,,,,1,1,0.58,no
+CUTLASS,,,,1,0,0.58,no
+Continuous batching,,,,1,1,0.58,no
+Distributed serving,,,,1,1,0.58,no
+GPU profiling,,,,1,1,0.58,no
+KV cache,,,,1,1,0.58,no
+LLM inference,,,,1,1,0.58,no
+ONNX Runtime,,,,1,1,0.58,no
+Quantisation,,,,1,1,0.58,no
+RDMA/RoCE,,,,1,0,0.58,no
+multi-GPU serving,,,,1,1,0.58,no
+Agentic frameworks,,,,1,0,0.58,no
+Databricks Workflows,,,,1,1,0.58,no
+Databricks certification,,,,1,0,0.58,no
+Mosaic AI,,,,1,1,0.58,no
+Semantic modeling,,,,1,1,0.58,no
+Unity Catalog,,,,1,1,0.58,no
+Vector embeddings,,,,1,0,0.58,no
+Code coverage,,,,1,0,0.58,no
+Computational geometry,,,,1,0,0.58,no
+Computer graphics,,,,1,0,0.58,no
+Dynamic software analysis,,,,1,0,0.58,no
+Qt/QML,,,,1,0,0.58,no
+SDLC,,,,1,0,0.58,no
+Static software analysis,,,,1,0,0.58,no
+AI gateways,,,,1,0,0.58,no
+Secure proxy systems,,,,1,0,0.58,no
+Active Top-Secret clearance,,,,1,1,0.58,no
+Time series,,,,1,0,0.57,no
+Data-driven techniques,,,,1,0,0.57,no
+Hardware validation,,,,1,0,0.57,no
+Linux kernel internals,,,,1,0,0.57,no
+Low-level systems software,,,,1,1,0.57,no
+Pre-silicon environments,,,,1,0,0.57,no
+Silicon bring-up,,,,1,0,0.57,no
+SoC development,,,,1,0,0.57,no
+Cloud-native,,,,1,0,0.57,no
+Cloud-native concepts,,,,1,0,0.57,no
+Open-source contributions,,,,1,1,0.57,no
+LabVIEW,,,,2,0,0.57,no
+National Instruments PXI,,,,2,0,0.57,no
+National Instruments cDAQ,,,,2,0,0.57,no
+National Instruments cRIO,,,,2,0,0.57,no
+Network communication,,,,2,0,0.57,no
+Query development,,,,1,0,0.57,no
+User-interface development,,,,1,0,0.57,no
+Analytical databases,,,,1,1,0.57,no
+Business analytics,,,,1,0,0.57,no
+Database schemas,,,,1,1,0.57,no
+Stored procedures,,,,1,1,0.57,no
+AVS,,,,1,0,0.57,no
+H.264/AVC,,,,1,0,0.57,no
+H.265/HEVC,,,,1,0,0.57,no
+Heterogeneous computing,,,,1,0,0.57,no
+Multi-threaded programming,,,,1,0,0.57,no
+NEON,,,,1,0,0.57,no
+Neural network-based video coding,,,,1,0,0.57,no
+SIMD,,,,1,0,0.57,no
+VVC,,,,1,0,0.57,no
+Aerospace systems,,,,1,0,0.56,no
+Autonomy,,,,1,0,0.56,no
+Board bring-up,,,,1,0,0.56,no
+Bootloaders,,,,1,0,0.56,no
+Embassy,,,,1,0,0.56,no
+Firmware,embedded_hw,"Embedded, hardware & firmware",concept,1,0,0.56,no
+GNC,,,,1,0,0.56,no
+Unmanned vehicles,,,,1,0,0.56,no
+Async systems,,,,1,1,0.56,no
+Automated integration testing,,,,1,1,0.56,no
+Concurrent systems,,,,1,1,0.56,no
+RPC,,,,1,1,0.56,no
+Robotics simulation,,,,1,1,0.56,no
+Financial technology,,,,1,0,0.56,no
+Investment research,,,,1,0,0.56,no
+Machine learning platforms,,,,1,0,0.56,no
+Portfolio construction,,,,1,0,0.56,no
+Quantitative research,,,,1,0,0.56,no
+Signal generation,,,,1,0,0.56,no
+Trading systems,,,,1,0,0.56,no
+C++17,,,,1,1,0.56,no
+C++20,,,,1,1,0.56,no
+Debuggers,,,,1,1,0.56,no
+Lab equipment,,,,1,1,0.56,no
+Sanitizers,,,,1,0,0.56,no
+Sensor acquisition,,,,1,1,0.56,no
+Serial,,,,1,0,0.56,no
+Valgrind,,,,1,0,0.56,no
+Machine learning tools,,,,1,0,0.55,no
+AI product testing,,,,1,0,0.55,no
+AI system integration,,,,1,0,0.55,no
+Blockchain,,,,1,0,0.55,no
+Fintech,,,,1,0,0.55,no
+Forward-deployed engineering,,,,1,0,0.55,no
+NestJS,,,,1,1,0.55,no
+Payments,,,,1,0,0.55,no
+Prisma,,,,1,1,0.55,no
+SNS,,,,1,1,0.55,no
+Solutions architecture,,,,1,0,0.55,no
+Stablecoins,,,,1,0,0.55,no
+Browser tools,,,,1,1,0.55,no
+Coding,,,,1,0,0.55,no
+Web technologies,,,,1,1,0.55,no
+Cloud-native technologies,,,,1,0,0.55,no
+Web protocols,,,,1,1,0.55,no
+Audit logging,,,,1,1,0.55,no
+Distributed data processing,,,,1,1,0.55,no
+Looker,,,,1,1,0.55,no
+SparkSQL,,,,1,1,0.55,no
+ArcGIS Enterprise,,,,1,1,0.54,no
+ArcGIS Online,,,,1,1,0.54,no
+ArcGIS Pro,,,,1,1,0.54,no
+ArcPy,,,,1,1,0.54,no
+Conda,,,,1,0,0.54,no
+Coordinate reference systems,,,,1,1,0.54,no
+GDAL/OGR,,,,1,1,0.54,no
+GIS,,,,1,1,0.54,no
+GeoJSON,,,,1,1,0.54,no
+GeoPandas,,,,1,1,0.54,no
+Geodatabases,,,,1,1,0.54,no
+Map projections,,,,1,1,0.54,no
+PostGIS,,,,1,1,0.54,no
+Python packaging,,,,1,0,0.54,no
+Quality assurance,,,,1,1,0.54,no
+Quality control,,,,1,1,0.54,no
+Rasterio,,,,1,1,0.54,no
+Secure software deployment,,,,1,0,0.54,no
+Shapefile,,,,1,1,0.54,no
+Shapely,,,,1,1,0.54,no
+Spatial analysis,,,,1,1,0.54,no
+Web GIS,,,,1,0,0.54,no
+Xarray,,,,1,1,0.54,no
+Mobile development,,,,1,0,0.54,no
+Spec-Driven Development,,,,1,0,0.54,no
+Altium,,,,1,0,0.54,no
+CAD software integration,,,,1,1,0.54,no
+Xpedition,,,,1,0,0.54,no
+Data storage,,,,1,0,0.54,no
+Identity and Access Management,,,,1,0,0.54,no
+Identity security,,,,1,0,0.54,no
+Large-scale systems,,,,1,0,0.54,no
+Windows AD,,,,1,0,0.54,no
+Application performance profiling,,,,1,0,0.54,no
+Python-based visualization tools,,,,1,0,0.54,no
+Open source software,process,Process & collaboration tools,concept,1,1,0.54,no
+Software architectures,,,,1,1,0.54,no
+APM,,,,1,0,0.54,no
+Cloud telemetry,,,,1,0,0.54,no
+Developer sub-agents,,,,1,0,0.54,no
+Distributed tracing,,,,1,0,0.54,no
+Metrics platforms,,,,1,0,0.54,no
+Splunk Observability Cloud,,,,1,0,0.54,no
+Data systems,,,,1,0,0.53,no
+LLM-powered tools,,,,1,0,0.53,no
+Privacy systems,,,,1,0,0.53,no
+Security systems,,,,1,0,0.53,no
+LLM-powered tooling,,,,1,0,0.53,no
+Test plans,,,,1,1,0.53,no
+Power Platform,,,,1,0,0.53,no
+Process automation,,,,1,0,0.53,no
+Production APIs,,,,1,0,0.53,no
+Activities,,,,1,1,0.53,no
+Android USB Host API,,,,1,0,0.53,no
+Android firmware,,,,1,0,0.53,no
+Background threading,,,,1,1,0.53,no
+BroadcastReceivers,,,,1,1,0.53,no
+Custom Android ROMs,,,,1,0,0.53,no
+Embedded Linux,,,,1,0,0.53,no
+Intents,,,,1,1,0.53,no
+Processes,,,,1,1,0.53,no
+Serial/UART,,,,1,1,0.53,no
+Services,,,,1,1,0.53,no
+Third-party hardware SDKs,,,,1,0,0.53,no
+Threading,,,,1,1,0.53,no
+USB Host/OTG,,,,1,1,0.53,no
+USB intent filters,,,,1,0,0.53,no
+USB permissions,,,,1,0,0.53,no
+Information Assurance,,,,1,1,0.53,no
+Operational support,,,,1,0,0.53,no
+Security standards,,,,1,1,0.53,no
+Software build and deployment,,,,1,0,0.53,no
+Software validation,,,,1,0,0.53,no
+System troubleshooting,,,,1,1,0.53,no
+API versioning,,,,1,0,0.53,no
+Contract testing,,,,1,0,0.53,no
+Service-oriented architecture,,,,1,0,0.53,no
+Envoy,,,,1,0,0.53,no
+HTTP/HTTPS,,,,1,1,0.53,no
+TLS 1.3,,,,1,0,0.53,no
+Simulation modeling,,,,1,0,0.52,no
+Scalability,,,,1,1,0.52,no
+Lit,,,,1,0,0.52,no
+React Hooks,,,,1,1,0.52,no
+Web API,,,,1,1,0.52,no
+Microsoft 365,enterprise_platforms,Enterprise platforms,tool,1,0,0.52,no
+StackAI,,,,1,0,0.52,no
+Zapier,,,,1,0,0.52,no
+Design principles,,,,1,1,0.52,no
+GPU infrastructure,,,,1,0,0.52,no
+Intermediate to advanced programming,,,,1,0,0.52,no
+Data analysis,,,,1,0,0.51,no
+Google BigQuery,,,,1,0,0.51,no
+Search,,,,1,0,0.51,no
+Statistical techniques,,,,1,0,0.51,no
+App registrations,,,,1,0,0.51,no
+Conditional access,,,,1,0,0.51,no
+Data leakage,,,,1,0,0.51,no
+OAuth for MCP servers,,,,1,0,0.51,no
+Prompt injection,,,,1,0,0.51,no
+Build processes,,,,1,0,0.51,no
+Embedded programming,,,,1,0,0.51,no
+Algorithm implementation,,,,1,1,0.51,no
+Algorithm testing,,,,1,1,0.51,no
+Closed-loop simulation,,,,1,0,0.51,no
+Decision-making,,,,1,1,0.51,no
+Decision-making under uncertainty,,,,1,0,0.51,no
+Feedback control,,,,1,1,0.51,no
+System identification,,,,1,0,0.51,no
+Vehicle dynamics,,,,1,0,0.51,no
+Copilot,,,,1,0,0.50,no
+NYRA,,,,1,0,0.50,no
+Software legal compliance,,,,1,1,0.50,no
+Complex systems modeling,,,,1,1,0.50,no
+DODAF,,,,1,1,0.50,no
+Data pipelining,,,,1,1,0.50,no
+Model-based systems engineering,,,,1,1,0.50,no
+Problem-solving,,,,1,1,0.50,no
+Algorithmic programming,,,,1,1,0.50,no
+AKS,,,,1,0,0.49,no
+API-first design,,,,1,0,0.49,no
+Automated testing frameworks,,,,1,0,0.49,no
+Cloud-native development,,,,1,0,0.49,no
+Domain-driven design,,,,1,0,0.49,no
+Enterprise systems integration,,,,1,0,0.49,no
+Feature flags,,,,1,0,0.49,no
+Third-party services integration,,,,1,0,0.49,no
+Argo Workflows,,,,1,0,0.49,no
+Loki,,,,1,0,0.49,no
+Cloud Integration,,,,1,1,0.49,no
+Middleware,,,,1,1,0.49,no
+Makefile,,,,1,0,0.49,no
+Data preparation,,,,1,1,0.49,no
+ML workflows,,,,1,1,0.49,no
+Aerospike,,,,1,0,0.49,no
+RESTful web services,,,,1,1,0.49,no
+PMR,,,,1,0,0.49,no
+Linux kernel networking stack,,,,1,0,0.49,no
+Hardware Security Modules,,,,1,0,0.49,no
+Trusted Platform Modules,,,,1,0,0.49,no
+3GPP,networking,Networking & protocols,concept,1,0,0.49,no
+5G Core,,,,1,0,0.49,no
+AR/XR,,,,1,0,0.49,no
+CARLA,robotics,Robotics & autonomy,tool,1,0,0.49,no
+GPU acceleration,systems_perf,"Systems, performance & GPU",concept,1,0,0.49,no
+ISAC,,,,1,0,0.49,no
+Media over QUIC,,,,1,0,0.49,no
+Multi-modal sensing,,,,1,0,0.49,no
+NVIDIA Omniverse,,,,1,0,0.49,no
+Network emulation,,,,1,0,0.49,no
+Ns-3,networking,Networking & protocols,tool,1,0,0.49,no
+O-RAN,networking,Networking & protocols,concept,1,0,0.49,no
+OpenAirInterface,,,,1,0,0.49,no
+SDR,,,,1,0,0.49,no
+Sionna,,,,1,0,0.49,no
+Spatial mapping,,,,1,0,0.49,no
+Wireless systems,,,,1,1,0.49,no
+Compiler technologies,systems_perf,"Systems, performance & GPU",concept,1,1,0.49,no
+Complex data structures,,,,1,1,0.49,no
+DSLs,,,,1,1,0.49,no
+GPU compiler optimization,,,,1,0,0.49,no
+LLVM IR generation,,,,1,0,0.49,no
+LLVM backend development,,,,1,0,0.49,no
+LLVM passes,,,,1,0,0.49,no
+Language standards,,,,1,0,0.49,no
+Memory optimization,,,,1,0,0.49,no
+OpenMP,systems_perf,"Systems, performance & GPU",tool,1,0,0.49,no
+Parallel programming,,,,1,0,0.49,no
+Processor architectures,,,,1,0,0.49,no
+Production-grade compilers,,,,1,0,0.49,no
+SYCL,systems_perf,"Systems, performance & GPU",tool,1,1,0.49,no
+TileIR,,,,1,0,0.49,no
+Vectorization,,,,1,0,0.49,no
+Guidewire,,,,1,0,0.48,no
+Aerospace,,,,1,0,0.48,no
+CNC,,,,1,0,0.48,no
+Defence,,,,1,0,0.48,no
+ERP,,,,1,0,0.48,no
+MES,,,,1,0,0.48,no
+Aegis,,,,1,0,0.48,no
+Air Traffic Control,,,,1,0,0.48,no
+Combat/Fire Control Systems,,,,1,0,0.48,no
+Command and Control (C2),,,,1,0,0.48,no
+J series messages,,,,1,0,0.48,no
+Link 16 Tactical Data Link,,,,1,0,0.48,no
+Linux shells,,,,1,0,0.48,no
+Missile Systems,,,,1,0,0.48,no
+Mission Planning,,,,1,0,0.48,no
+SSDS Mk II,,,,1,0,0.48,no
+Surveillance/Radars,,,,1,0,0.48,no
+Virtual Machines,,,,1,0,0.48,no
+Windows PowerShell,,,,1,0,0.48,no
+Data integrations,,,,1,0,0.47,no
+Enterprise datasets,,,,1,0,0.47,no
+Financial data,,,,1,0,0.47,no
+Prototyping,,,,1,0,0.47,no
+Semi-structured data,,,,1,0,0.47,no
+Mathematics,,,,1,1,0.47,no
+MVC architecture,,,,1,0,0.47,no
+Backup procedures,,,,1,0,0.47,no
+Data integration,,,,1,0,0.47,no
+Data security,,,,1,0,0.47,no
+Infrastructure automation,,,,1,0,0.47,no
+Presto,,,,1,0,0.47,no
+Software configuration,,,,1,1,0.47,no
+Data streaming,,,,1,0,0.47,no
+Oracle Database,,,,1,0,0.47,no
+DAST,,,,1,0,0.47,no
+ITAR compliance,,,,1,0,0.47,no
+Operating systems security,,,,1,1,0.47,no
+Security solutions design,,,,1,1,0.47,no
+Threat modeling,,,,1,0,0.47,no
+Distributed computing systems,,,,1,0,0.47,no
+Embedded hardware,,,,1,0,0.46,no
+AWS SNS,,,,1,1,0.46,no
+GitLab CI/CD,,,,1,1,0.46,no
+Mockito,,,,1,1,0.46,no
+REST microservices,,,,1,1,0.46,no
+SonarQube,,,,1,1,0.46,no
+Spring Framework,,,,1,1,0.46,no
+RF systems,,,,1,0,0.46,no
+Automated deployment,,,,1,1,0.46,no
+Cloud data services,,,,1,1,0.46,no
+Commercial cloud platforms,,,,1,1,0.46,no
+Customer system development policies,,,,1,0,0.46,no
+EFS,,,,1,1,0.46,no
+Issue tracking,,,,1,1,0.46,no
+Katalon,,,,1,1,0.46,no
+RDS,cloud,Cloud platforms,tool,1,1,0.46,no
+Structured analysis and design methodologies,,,,1,0,0.46,no
+Azure DevOps,,,,1,1,0.45,no
+Smoke testing,,,,1,0,0.45,no
+Team Foundation Server,,,,1,0,0.45,no
+WCF,,,,1,0,0.45,no
+Microsoft Purview,,,,1,0,0.45,no
+Pull requests,,,,1,0,0.45,no
+WinForms,,,,1,0,0.45,no
+Ember,,,,1,1,0.45,no
+Express.js,,,,1,1,0.45,no
+Flux,,,,1,1,0.45,no
+OOP,,,,1,1,0.45,no
+Observer pattern,,,,1,1,0.45,no
+CPU pipeline fundamentals,,,,1,1,0.45,no
+Cache hierarchies,,,,1,1,0.45,no
+FLOP counting,,,,1,0,0.45,no
+IREE,,,,1,0,0.45,no
+Memory bandwidth,,,,1,1,0.45,no
+Operator-level profiling,,,,1,0,0.45,no
+Performance KPI frameworks,,,,1,0,0.45,no
+Quantization analysis,,,,1,0,0.45,no
+Roofline model,,,,1,0,0.45,no
+Electro-mechanical systems,,,,1,0,0.45,no
+High power electrical systems,,,,1,0,0.45,no
+Spacecraft fluid systems,,,,1,0,0.45,no
+NXP microcontrollers,,,,1,0,0.45,no
+Verification methodologies,,,,1,0,0.45,no
+Actuation,,,,1,1,0.45,no
+Audio sensing,,,,1,0,0.45,no
+Autonomous mobile robots,,,,1,0,0.45,no
+Autonomous robotics,,,,1,1,0.45,no
+Collaborative robots,,,,1,0,0.45,no
+Computer engineering,,,,1,1,0.45,no
+Depth sensing,,,,1,0,0.45,no
+Electrical engineering,,,,1,1,0.45,no
+Electronic hardware,,,,1,1,0.45,no
+Electronic hardware design,,,,1,0,0.45,no
+Force/torque sensing,,,,1,0,0.45,no
+Hardware testing,,,,1,0,0.45,no
+Hardware troubleshooting,,,,1,0,0.45,no
+Humanoid robots,,,,1,0,0.45,no
+Industrial robots,,,,1,0,0.45,no
+Logic analyzers,,,,1,1,0.45,no
+Mechatronics,,,,1,1,0.45,no
+Motion control,,,,1,1,0.45,no
+NVIDIA Jetson Nano,,,,1,0,0.45,no
+NVIDIA Orin AGX,,,,1,0,0.45,no
+NVIDIA Orin NX,,,,1,0,0.45,no
+Open-source robotics,,,,1,0,0.45,no
+RoboDK,,,,1,1,0.45,no
+Robotic manipulation,,,,1,0,0.45,no
+Robotic sensing,,,,1,1,0.45,no
+Robotics competitions,,,,1,0,0.45,no
+VSLAM,,,,1,0,0.45,no
+Angular Material,,,,1,1,0.45,no
+Axios,,,,1,1,0.45,no
+Content Security Policy,,,,1,0,0.45,no
+Fetch,,,,1,1,0.45,no
+Material UI,,,,1,1,0.45,no
+Pinia,,,,1,1,0.45,no
+Redux Toolkit,,,,1,1,0.45,no
+SCSS,,,,1,1,0.45,no
+Section 508,,,,1,0,0.45,no
+Vuetify,,,,1,1,0.45,no
+WCAG,web_frontend,Web frontend,concept,1,0,0.45,no
+AWS EMR,,,,1,0,0.44,no
+AWS Solutions Architect,,,,1,0,0.44,no
+Amazon Redshift,,,,1,0,0.44,no
+Amazon SageMaker,cloud,Cloud platforms,tool,1,0,0.44,no
+Atlassian tools,,,,1,1,0.44,no
+Batch analytics pipelines,,,,1,0,0.44,no
+CISSP,,,,1,0,0.44,no
+DoD information systems,,,,1,0,0.44,no
+NVIDIA CUDA,,,,1,0,0.44,no
+Pipeline development,,,,1,1,0.44,no
+SQL Data Warehouse,,,,1,0,0.44,no
+Security+,,,,1,0,0.44,no
+Stream analytics pipelines,,,,1,0,0.44,no
+Antennas,,,,1,1,0.44,no
+Communication systems,,,,1,1,0.44,no
+Environmental test equipment,,,,1,0,0.44,no
+Load pull,,,,1,0,0.44,no
+Vector signal analyzer,,,,1,1,0.44,no
+Vector signal generator,,,,1,1,0.44,no
+active and passive RF device testing,,,,1,0,0.44,no
+Boost,,,,1,0,0.44,no
+VTK,,,,1,0,0.44,no
+Email software,,,,1,1,0.43,no
+Spreadsheets,,,,1,1,0.43,no
+Word processing,,,,1,1,0.43,no
+ACLR,,,,1,0,0.43,no
+Antenna design,,,,1,1,0.43,no
+EVM,,,,1,0,0.43,no
+Environmental testing,,,,1,0,0.43,no
+P1dB,,,,1,0,0.43,no
+PAE,,,,1,0,0.43,no
+RF amplifier testing,,,,1,0,0.43,no
+RF filter testing,,,,1,0,0.43,no
+Network troubleshooting,,,,1,0,0.43,no
+State machines,,,,1,0,0.43,no
+Multi-tiered systems,,,,1,0,0.43,no
+Azure SQL,,,,1,1,0.42,no
+Dataverse,,,,1,1,0.42,no
+Microsoft Copilot Studio,,,,1,1,0.42,no
+Microsoft Fabric,,,,1,1,0.42,no
+Microsoft Power Platform,enterprise_platforms,Enterprise platforms,tool,1,1,0.42,no
+Power Apps,,,,1,1,0.42,no
+SSRS,,,,1,1,0.42,no
+XSL,,,,1,1,0.42,no
+AJAX,,,,1,0,0.42,no
+DOM,,,,1,0,0.42,no
+Salesforce APEX,,,,1,1,0.42,no
+T-SQL,,,,1,1,0.42,no
+VSTS,,,,1,0,0.42,no
+Electronic trading systems,,,,1,0,0.41,no
+Exchange connectivity,,,,1,0,0.41,no
+FIX protocol,,,,1,0,0.41,no
+Financial markets,,,,1,0,0.41,no
+Networking infrastructure,,,,1,0,0.41,no
+Software development best practices,,,,1,1,0.41,no
+AWS Cloud Certifications,,,,1,0,0.41,no
+AWS cloud services,,,,1,1,0.41,no
+Full-stack software development,,,,1,1,0.41,no
+Analytical skills,,,,1,0,0.41,no
+Critical thinking,,,,1,0,0.41,no
+Design artifacts,,,,1,1,0.41,no
+Technical documentation,,,,1,1,0.41,no
+Verbal communication,,,,1,0,0.41,no
+Written communication,,,,1,0,0.41,no
+Apex,,,,1,1,0.41,no
+Assignment Rules,,,,1,1,0.41,no
+Cloud and on-premises integrations,,,,1,1,0.41,no
+Lightning Web Components,,,,1,1,0.41,no
+Salesforce Flows,,,,1,1,0.41,no
+RKE2,,,,1,0,0.40,no
+Red Hat,,,,1,0,0.40,no
+Stream processing,,,,1,0,0.40,no
+MariaDB,,,,1,1,0.40,no
+Microsoft scripting,,,,1,0,0.40,no
+Sockets,,,,1,0,0.40,no
+Web development frameworks,,,,1,0,0.40,no
+PaaS,,,,1,0,0.40,no
+Query planning,,,,1,0,0.40,no
+Robot motion,,,,1,0,0.40,no
+Graph theoretic approaches,,,,1,0,0.40,no
+Information technology,,,,1,1,0.40,no
+GitOps,,,,1,0,0.40,no
+Collision probability methods,,,,1,0,0.40,no
+Satellite systems,,,,1,0,0.40,no
+Edge networking,,,,1,0,0.39,no
+Traffic management,,,,1,0,0.39,no
+OSI layer 2,,,,1,0,0.39,no
+OSI layer 3,,,,1,0,0.39,no
+Kernel debugging,,,,1,0,0.39,no
+Network debugging,,,,1,0,0.39,no
+Userspace debugging,,,,1,0,0.39,no
+Visual Basic,,,,1,0,0.39,no
+Mission operations,,,,1,0,0.38,no
+NASA quality systems,,,,1,0,0.38,no
+Security practices,,,,1,1,0.38,no
+Software troubleshooting,,,,1,1,0.38,no
+Software verification,,,,1,1,0.38,no
+Spaceflight payload development,,,,1,0,0.38,no
+agentic AI tools,,,,1,0,0.38,no
+AWS API Gateway,,,,1,1,0.38,no
+AWS CloudFront,,,,1,1,0.38,no
+AWS Secrets Manager,,,,1,1,0.38,no
+AWS certification,,,,1,0,0.38,no
+CloudFormation,,,,1,1,0.38,no
+Event-driven design,,,,1,0,0.38,no
+Java certification,,,,1,0,0.38,no
+Python certification,,,,1,0,0.38,no
+Serverless architecture,,,,1,0,0.38,no
+Linux hardening,,,,1,0,0.38,no
+Windows hardening,,,,1,0,0.38,no
+Communications theory,,,,1,0,0.38,no
+Network analyzers,,,,1,0,0.38,no
+Phased array antenna systems,,,,1,0,0.38,no
+RF fundamentals,,,,1,0,0.38,no
+Signal generators,,,,1,0,0.38,no
+AWK,,,,1,1,0.38,no
+Ab Initio,,,,1,1,0.38,no
+DBMS,,,,1,1,0.38,no
+DataStage,,,,1,1,0.38,no
+Linux/Unix commands,,,,1,1,0.38,no
+Linux/Unix file management,,,,1,1,0.38,no
+PL/SQL,,,,1,1,0.38,no
+SED,,,,1,1,0.38,no
+Bare-metal embedded programming,,,,1,0,0.38,no
+Android OS,,,,1,1,0.38,no
+Android SDK,,,,1,1,0.38,no
+Android Studio,,,,1,1,0.38,no
+Android UI frameworks,,,,1,1,0.38,no
+BLE,,,,1,0,0.38,no
+Bluetooth,,,,1,0,0.38,no
+Kanban,,,,1,1,0.38,no
+NFC,,,,1,0,0.38,no
+RTP,,,,1,0,0.38,no
+SIP,,,,1,0,0.38,no
+Wi-Fi,,,,1,0,0.38,no
+Software development internship experience,,,,1,0,0.37,no
+Software development project experience,,,,1,0,0.37,no
+Client/server applications,,,,1,1,0.37,no
+HubSpot CMS,,,,1,0,0.37,no
+ArduPilot,,,,1,0,0.37,no
+Classes,,,,1,1,0.37,no
+Expo,,,,1,0,0.37,no
+Interfaces,,,,1,1,0.37,no
+MAVLink,,,,1,0,0.37,no
+Multicast,,,,1,0,0.37,no
+PX4,,,,1,0,0.37,no
+React Reanimated,,,,1,0,0.37,no
+Serial communication,,,,1,0,0.37,no
+API development,backend_apis,Backend & APIs,concept,1,1,0.37,no
+Application logs,,,,1,1,0.37,no
+Application program development,,,,1,1,0.37,no
+Application servers,,,,1,0,0.37,no
+Programming logic,,,,1,1,0.37,no
+Secure file-transfer protocols,,,,1,0,0.37,no
+Structured troubleshooting,,,,1,1,0.37,no
+Database management,,,,1,1,0.37,no
+Demonstration data collection,,,,1,1,0.37,no
+Open-source development,,,,1,1,0.37,no
+Robotic hardware,,,,1,1,0.37,no
+Robotics foundation models,robotics,Robotics & autonomy,concept,1,1,0.37,no
+Teleoperation hardware,,,,1,1,0.37,no
+Vendor SDKs,,,,1,1,0.37,no
+Geospatial applications,,,,1,0,0.37,no
+QA,,,,1,1,0.37,no
+Shaders,,,,1,0,0.37,no
+Systems,,,,1,1,0.37,no
+Video streaming protocols,,,,1,0,0.37,no
+Control systems,,,,1,0,0.37,no
+Deployment infrastructure,,,,1,0,0.37,no
+GCS,,,,1,1,0.37,no
+IPC,,,,1,1,0.37,no
+Learned control models,,,,1,0,0.37,no
+Learned perception models,,,,1,0,0.37,no
+Low-latency data transport,,,,1,0,0.37,no
+OTA software updates,,,,1,0,0.37,no
+Perception pipelines,,,,1,0,0.37,no
+Streaming systems,,,,1,0,0.37,no
+Linux networking,,,,1,0,0.37,no
+CAD software administration,,,,1,0,0.37,no
+Cadence Virtuoso,,,,1,0,0.37,no
+DRC verification,,,,1,0,0.37,no
+Place and route,,,,1,0,0.37,no
+Siemens Calibre,,,,1,0,0.37,no
+Synopsys ICV,,,,1,0,0.37,no
+COBOL,,,,1,0,0.37,no
+DB2,,,,1,0,0.37,no
+JCL,,,,1,0,0.37,no
+SAS,analytics_bi,"Analytics, statistics & BI",tool,1,0,0.37,no
+TSO,,,,1,0,0.37,no
+Breakpoints,,,,1,1,0.36,no
+Browser developer tools,,,,1,1,0.36,no
+IDEs,,,,1,1,0.36,no
+Web application security,,,,1,1,0.36,no
+XSLT,,,,1,1,0.36,no
+LAMP,,,,1,0,0.35,no
+Laravel,,,,1,0,0.35,no
+Symfony,,,,1,0,0.35,no
+ESP32,,,,1,0,0.35,no
+STM32,,,,1,0,0.35,no
+nRF52,,,,1,0,0.35,no
+nRF53,,,,1,0,0.35,no
+AWS Cloud Practitioner,,,,1,0,0.35,no
+Avro,,,,1,1,0.35,no
+Azure Fundamentals,,,,1,0,0.35,no
+Data architecture,,,,1,1,0.35,no
+Data classification,,,,1,1,0.35,no
+Data testing,,,,1,1,0.35,no
+Databricks Lakehouse Fundamentals,,,,1,0,0.35,no
+Google Cloud Digital Leader,,,,1,0,0.35,no
+PII handling,,,,1,1,0.35,no
+CAD software,,,,1,0,0.35,no
+Automated labeling,,,,1,0,0.35,no
+Autonomous vehicles,,,,1,1,0.35,no
+Cloud object storage,,,,1,0,0.35,no
+Data migrations,,,,1,0,0.35,no
+Data versioning,,,,1,0,0.35,no
+ML training datasets,,,,1,0,0.35,no
+Map generation,,,,1,0,0.35,no
+Multimodal sensor logs,,,,1,0,0.35,no
+Schema design,databases,Databases & SQL,concept,1,0,0.35,no
+Sensor-based systems,,,,1,1,0.35,no
+Software engineering fundamentals,,,,1,1,0.35,no
+Video,,,,1,0,0.35,no
+Workflow orchestration,,,,1,0,0.35,no
+Multi-body dynamics,,,,1,0,0.35,no
+Numerical simulation,,,,1,1,0.35,no
+Conan,,,,1,0,0.35,no
+ELK Stack,,,,1,0,0.35,no
+Software development principles,,,,1,1,0.35,no
+CuData,,,,1,0,0.34,no
+CuGraph,,,,1,0,0.34,no
+CuML,,,,1,0,0.34,no
+Dask,,,,1,0,0.34,no
+GPU architectures,,,,1,0,0.34,no
+Linux device drivers,,,,1,0,0.34,no
+Linux kernel configuration,,,,1,0,0.34,no
+Linux system programming,,,,1,1,0.34,no
+Multiprocessing,,,,1,1,0.34,no
+Network infrastructure,,,,1,0,0.34,no
+Networking stacks,,,,1,0,0.34,no
+Project management tools,,,,1,0,0.34,no
+Secure Shell,,,,1,1,0.34,no
+Shell,,,,1,1,0.34,no
+Unity,enterprise_platforms,Enterprise platforms,tool,1,0,0.34,no
+Prefect,,,,1,0,0.34,no
+DMMs,,,,1,0,0.34,no
+Data acquisition,,,,1,0,0.34,no
+Electronic loads,,,,1,0,0.34,no
+Electronics test equipment,,,,1,0,0.34,no
+Instrumentation,,,,1,0,0.34,no
+Power supplies,,,,1,0,0.34,no
+RF communications,,,,1,0,0.34,no
+Source measure units,,,,1,0,0.34,no
+CAD/EDA tools,,,,1,0,0.33,no
+CMOS implementation,,,,1,0,0.33,no
+IC design,,,,1,0,0.33,no
+Physical layout,,,,1,0,0.33,no
+SKILL,,,,1,0,0.33,no
+Schematic capture,,,,1,0,0.33,no
+Semiconductor design methodologies,,,,1,0,0.33,no
+VLSI,,,,1,0,0.33,no
+Verification,,,,1,0,0.33,no
+AutoCAD,,,,1,0,0.33,no
+Autodesk Inventor,,,,1,0,0.33,no
+Database interaction,,,,1,1,0.33,no
+ERP integration,,,,1,0,0.33,no
+Database architecture,,,,1,1,0.32,no
+Banking,,,,1,0,0.32,no
+DAX,,,,1,1,0.32,no
+Dimensional modeling,,,,1,1,0.32,no
+Microsoft Outlook,,,,1,1,0.32,no
+Microsoft Power Tools,,,,1,1,0.32,no
+Microsoft Word,,,,1,1,0.32,no
+Revision control,,,,1,1,0.32,no
+generative AI tools,llm_genai,LLMs & generative AI,concept,1,1,0.32,no
+RF,,,,1,0,0.32,no
+Probability of collision methods,,,,1,0,0.32,no
+spacecraft GNC,,,,1,0,0.32,no
+Algorithm accuracy characterization,,,,1,1,0.31,no
+Algorithm repeatability characterization,,,,1,1,0.31,no
+Camera calibration,cv_imaging,Computer vision & imaging,concept,1,1,0.31,no
+Classical computer vision,,,,1,1,0.31,no
+Experiment design,,,,1,1,0.31,no
+Feature detection,,,,1,1,0.31,no
+Frequency-domain image processing,,,,1,1,0.31,no
+Geometric transformations,,,,1,1,0.31,no
+Illumination,,,,1,1,0.31,no
+Image filtering,,,,1,1,0.31,no
+Image registration,cv_imaging,Computer vision & imaging,concept,1,1,0.31,no
+Image sensors,,,,1,1,0.31,no
+Industrial automation,,,,1,0,0.31,no
+Industrial cameras,,,,1,0,0.31,no
+MTF,,,,1,0,0.31,no
+Manufacturing inspection,,,,1,0,0.31,no
+Metrology,,,,1,0,0.31,no
+Microscopy,,,,1,0,0.31,no
+Motion systems,,,,1,0,0.31,no
+Optical aberrations,,,,1,0,0.31,no
+Optics,,,,1,1,0.31,no
+PSF,,,,1,0,0.31,no
+Precision alignment,,,,1,0,0.31,no
+Scientific cameras,,,,1,0,0.31,no
+Semiconductor equipment,,,,1,0,0.31,no
+Spatial-domain image processing,,,,1,1,0.31,no
+Artifact repositories,,,,1,0,0.30,no
+Automated build,,,,1,0,0.30,no
+Code review tools,,,,1,0,0.30,no
+Requirements tracking,,,,1,0,0.30,no
+Spiral,,,,1,0,0.30,no
+Static analysis,,,,1,0,0.30,no
+3D math,,,,1,1,0.30,no
+Browser graphics,,,,1,1,0.30,no
+Cesium,,,,1,0,0.30,no
+GLSL,,,,1,0,0.30,no
+Large-coordinate rendering,,,,1,0,0.30,no
+Mapping,,,,1,0,0.30,no
+Planes,,,,1,1,0.30,no
+Projections,,,,1,1,0.30,no
+Real-time graphics,,,,1,0,0.30,no
+Spatial algorithms,,,,1,0,0.30,no
+Spatial reasoning,,,,1,1,0.30,no
+Transforms,,,,1,1,0.30,no
+Visualization,,,,1,0,0.30,no
+Cameo,,,,1,0,0.30,no
+Radio frequency,,,,1,0,0.29,no
+Hardware,,,,1,0,0.26,no
+IT,,,,1,0,0.26,no
+Server administration,,,,1,0,0.26,no
+Software,,,,1,0,0.26,no
+AMQP,,,,1,1,0.26,no

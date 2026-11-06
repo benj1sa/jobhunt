@@ -12,11 +12,11 @@ from jobhunt.models.enums import Ats, Decision, JobStatus, LeadStatus, RunStatus
 from jobhunt.models.pipeline import Job, JobExtraction, JobSkill, JobSnapshot, Lead
 from jobhunt.schemas.config import BoardConfig
 from jobhunt.schemas.extraction import JobRequirements
-from jobhunt.services.extraction import extract_jobs
+from jobhunt.services.extraction import extract_jobs, latest_snapshots_needing_extraction
 from jobhunt.services.fit import LlmFitProvider
 from jobhunt.services.http import HttpClient
 from jobhunt.services.jobs import attach_url, hydrate_jobs, ingest, resolve_leads, upsert_leads
-from jobhunt.services.llm import LlmConfigError, OpenRouterClient
+from jobhunt.services.llm import OpenRouterClient
 from jobhunt.services.queue import build_queue, record_review, skill_report, source_health
 from jobhunt.services.scoring import score_jobs
 from jobhunt.sources.base import RawLead, Source
@@ -253,8 +253,9 @@ async def test_openrouter_404_stops_extraction_with_its_message(db_session, alia
     )
     async with HttpClient() as client:
         llm = OpenRouterClient(client, SecretStr("k"), "https://openrouter.test")
-        with pytest.raises(LlmConfigError, match="No endpoints found"):
-            await extract_jobs(db_session, llm, "anthropic/claude-haiku-5.5", aliases, max_chars=1000)
+        stats = await extract_jobs(db_session, llm, "anthropic/claude-haiku-5.5", aliases, max_chars=1000)
+    assert stats.stopped is not None and "No endpoints found" in stats.stopped
+    assert (stats.extracted, stats.failed, stats.not_started) == (0, 0, 3)  # nothing counted as a failure
     assert route.call_count == 1  # stopped at the first job instead of failing all of them
     body = route.calls[0].request.content
     assert b"temperature" not in body
@@ -354,3 +355,77 @@ async def test_concurrent_extraction_isolates_failures(db_session, requirements:
         stats = await extract_jobs(db_session, llm, "m", aliases, max_chars=1000, concurrency=3)
     assert (stats.extracted, stats.failed) == (3, 1)
     assert "Acme2" in stats.errors[0]
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_plan_limit_mid_run_keeps_finished_work_and_leaves_the_rest(
+    db_session, requirements: JobRequirements, aliases
+):
+    for n in (1, 2, 3, 4):
+        await upsert_leads(
+            db_session,
+            [lead(f"https://job-boards.greenhouse.io/acme/jobs/{n}", company="Acme", description_text="ML role.")],
+        )
+    await db_session.commit()
+    await resolve_leads(db_session, [], client=None)
+    route = respx.post("https://openrouter.test/chat/completions").mock(
+        side_effect=[
+            httpx.Response(200, json=openrouter_reply(requirements.model_dump_json())),
+            httpx.Response(402, json={"error": {"message": "Insufficient credits"}}),
+        ]
+    )
+    seen: list[tuple[bool, str | None]] = []
+
+    class Recorder:
+        def start(self, total: int) -> None:
+            seen.append((True, f"start {total}"))
+
+        def advance(self, n: int = 1, *, ok: bool = True, item: str | None = None) -> None:
+            seen.append((ok, item))
+
+        def note(self, text: str) -> None:
+            seen.append((True, text))
+
+    async with HttpClient() as client:
+        llm = OpenRouterClient(client, SecretStr("k"), "https://openrouter.test")
+        stats = await extract_jobs(db_session, llm, "m", aliases, max_chars=1000, concurrency=1, progress=Recorder())
+    assert (stats.extracted, stats.failed, stats.not_started) == (1, 0, 3)
+    assert stats.stopped is not None and "Insufficient credits" in stats.stopped
+    assert route.call_count == 2
+    assert seen[0] == (True, "start 4") and any(text and text.startswith("stopping") for _, text in seen)
+    again = await latest_snapshots_needing_extraction(db_session, "m", None)
+    assert len(again) == 3  # picked up by the next run
+
+
+@pytest.mark.asyncio
+async def test_screened_out_lists_rejects_and_keep_puts_one_back(db_session):
+    from jobhunt.models.enums import ScreenOutcome
+    from jobhunt.models.pipeline import JobScreen, JobSnapshot
+    from jobhunt.questions import SCREEN_VERSION
+    from jobhunt.services.queue import keep_screened_job, screened_out_jobs
+
+    await upsert_leads(
+        db_session,
+        [
+            lead(
+                "https://job-boards.greenhouse.io/adobe/jobs/1", company="Adobe", description_text="PhD or MS required."
+            )
+        ],
+    )
+    await db_session.commit()
+    await resolve_leads(db_session, [], client=None)
+    snapshot = (await db_session.execute(select(JobSnapshot))).scalar_one()
+    db_session.add(
+        JobScreen(job_id=snapshot.job_id, snapshot_id=snapshot.id, version=SCREEN_VERSION, model="jev",
+                  outcome=ScreenOutcome.REJECT, reason="requires a master's or PhD", signals={}, answers={})
+    )  # fmt: skip
+    await db_session.commit()
+
+    assert [job.company for job, _ in await screened_out_jobs(db_session, "master")] == ["Adobe"]
+    assert await screened_out_jobs(db_session, "internship") == []
+    assert await latest_snapshots_needing_extraction(db_session, "m", None) == []
+
+    assert await keep_screened_job(db_session, snapshot.job_id) == 1
+    assert await screened_out_jobs(db_session) == []
+    assert len(await latest_snapshots_needing_extraction(db_session, "m", None)) == 1

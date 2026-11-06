@@ -100,6 +100,24 @@ wording or thresholds that were tuned to specific cases.
 For the first week, compare `job_screen` rejects with what extraction would have said, then pin `JEV_MODEL`
 (e.g. `jev-1.14.0`) so answers don't shift between releases.
 
+## Using your ChatGPT plan
+
+`LLM_PROVIDER=chatgpt` routes extraction, LLM fit and `skills-classify` through OpenAI's "Sign in with ChatGPT"
+instead of OpenRouter (`services/chatgpt_auth.py`, `services/chatgpt.py`).
+
+- `jobhunt chatgpt login` runs OpenAI's open-source OAuth flow: PKCE, `client_id=dynamic_agent_client` on the
+  first sign-in (OpenAI issues a per-install client id in the callback), a one-shot listener on `127.0.0.1`, and
+  the `resource.invoke chatgpt.tokens.use.direct` scopes for `https://api.openai.com/v1`.
+- Tokens live in `CHATGPT_CREDENTIALS_PATH` (default `~/.config/jobhunt/chatgpt.json`, mode 0600), never in the
+  repo. Access tokens last about an hour and refresh automatically; the refresh token rotates on every refresh, so
+  the new one is saved first and a file lock stops two jobhunt processes from refreshing at once.
+- Calls go to the Responses API, streamed with `store: false` and `text.format: json_schema`. Admitted requests are
+  never retried (only a 401 gets one retry with a fresh token), so a flaky connection can't spend allowance twice.
+- No fallback: an expired sign-in or a 429 (plan limit) stops the step with an instruction, like an OpenRouter
+  config error. Usage is recorded as provider `chatgpt` at $0, and models are stored as `chatgpt/<model>`.
+- Why not in GitHub Actions: the rotating refresh token would have to be written back to the repository secret on
+  every run. Keep the scheduled run on OpenRouter.
+
 ## Reading `jobhunt health`
 
 | Column      | Meaning                                                                            |
@@ -127,8 +145,13 @@ duplicate.
 
 - Prefilters (title and location) run before any LLM call. Tune them in `services/filtering.py`.
 - Each snapshot is extracted once per `EXTRACTION_MODEL` and schema version.
-- `jobhunt score --no-llm` skips the fit model. Interest and learning then count as neutral (0.5).
+- `jobhunt score --fit none` skips the fit model. Interest and learning then count as neutral (0.5).
 - Use `--limit` on `extract` to try a new model on a few jobs first.
+- Every model call is metered. AI steps print `AI usage (stage): model: calls, tokens in/out, $cost` and save a
+  row to `llm_usage` (OpenRouter reports actual cost per response; Jev cost is estimated from list price in
+  `services/usage.py`). `jobhunt pull` merges the scheduled run's rows, so costs from GitHub Actions show up too.
+- `jobhunt status` multiplies what is waiting at each step by the per-job average of the last 20 usage rows for
+  that step (or typical defaults until there is history), and shows spend over the last 7 and 30 days.
 
 ## Troubleshooting
 

@@ -546,3 +546,298 @@ name = "Health data standards"
 "DICOM" = { group = "health_data", kind = "tool" }
 "FHIR" = { group = "health_data", kind = "tool" }
 "HL7" = { group = "health_data", kind = "tool" }
+
+# Additional groupings
+"Make" = { group = "infra_devops", kind = "tool" }
+"Npm" = { group = "infra_devops", kind = "tool" }
+"Pip" = { group = "infra_devops", kind = "tool" }
+"Gradle" = { group = "infra_devops", kind = "tool" }
+"Apache Kafka" = { group = "data_engineering", kind = "tool", same_as = "Kafka" }
+"Puppet" = { group = "infra_devops", kind = "tool" }
+"Buck" = { group = "infra_devops", kind = "tool" }
+"Pants" = { group = "infra_devops", kind = "tool" }
+"C#.NET" = { group = "languages", kind = "tool", same_as = "C#" }
+"Continuous delivery" = { group = "ci_cd_vcs", kind = "concept", same_as = "CI/CD" }
+"ActiveMQ" = { group = "backend_apis", kind = "tool" }
+"RabbitMQ" = { group = "backend_apis", kind = "tool" }
+"Single page web applications" = { group = "web_frontend", kind = "concept" }
+"Performance profiling" = { group = "systems_perf", kind = "concept", same_as = "Performance analysis" }
+"UDP" = { group = "networking", kind = "tool", same_as = "TCP/UDP" }
+"Agentic systems" = { group = "agents", kind = "concept", same_as = "AI agents" }
+"Network security" = { group = "security_identity", kind = "concept", same_as = "Security" }
+"Performance optimization" = { group = "systems_perf", kind = "concept", same_as = "Optimization" }
+"Operating system security" = { group = "security_identity", kind = "concept", same_as = "Security" }
+"A/B testing" = { group = "analytics_bi", kind = "concept" }
+"Software system design" = { group = "cs_fundamentals", kind = "concept", same_as = "Software engineering" }
+"Multi-agent orchestration" = { group = "agents", kind = "concept", same_as = "Multi-agent systems" }
+"Distributed databases" = { group = "databases", kind = "concept", same_as = "Distributed systems" }
+"Linux boot process" = { group = "systems_perf", kind = "concept", same_as = "Linux" }
+"Applied cryptography" = { group = "security_identity", kind = "concept" }
+"CockroachDB" = { group = "databases", kind = "tool" }
+"Prompt design" = { group = "llm_genai", kind = "concept", same_as = "Prompt engineering" }
+"Tool use" = { group = "agents", kind = "concept", same_as = "AI agents" }
+"Makefiles" = { group = "infra_devops", kind = "tool" }
+"Software design" = { group = "cs_fundamentals", kind = "concept", same_as = "Software engineering" }
+"Build systems" = { group = "infra_devops", kind = "concept" }
+"Vulnerability research" = { group = "security_identity", kind = "concept", same_as = "Security" }
+"OCI containers" = { group = "infra_devops", kind = "tool", same_as = "Container technologies" }
+"Incident response" = { group = "security_identity", kind = "concept", same_as = "Security" }
+"Agent systems" = { group = "agents", kind = "concept", same_as = "AI agents" }
+"Structured outputs" = { group = "llm_genai", kind = "concept" }
+"HSM" = { group = "security_identity", kind = "tool" }
+"TPM" = { group = "security_identity", kind = "tool" }
+"Grafana" = { group = "infra_devops", kind = "tool", same_as = "Monitoring" }
+"Physics simulation" = { group = "robotics", kind = "concept", same_as = "Simulation" }
+"Profiling" = { group = "systems_perf", kind = "concept", same_as = "Performance analysis" }
+"NVIDIA GPU deployment stacks" = { group = "mlops_serving", kind = "concept", same_as = "Machine learning model deployment" }
+"AI" = { group = "ml_core", kind = "concept", same_as = "AI/ML" }
+"Retrieval architecture" = { group = "llm_genai", kind = "concept", same_as = "Retrieval" }
+"Convex optimization" = { group = "analytics_bi", kind = "concept", same_as = "Optimization" }
+"Signal processing" = { group = "analytics_bi", kind = "concept" }
+"Real-time rendering" = { group = "systems_perf", kind = "concept" }
+"Pulumi" = { group = "infra_devops", kind = "tool", same_as = "Infrastructure as code" }
+"Configuration management" = { group = "infra_devops", kind = "concept", same_as = "DevOps" }
+"Red-teaming" = { group = "security_identity", kind = "concept", same_as = "Security" }
+"Graph theory" = { group = "cs_fundamentals", kind = "concept", same_as = "Graph algorithms" }
+"Numerical optimization" = { group = "analytics_bi", kind = "concept", same_as = "Optimization" }
+"Agile development" = { group = "process", kind = "concept", same_as = "Agile software development" }
+"RLAIF" = { group = "llm_genai", kind = "concept", same_as = "RLHF" }
+"Game engine development" = { group = "cs_fundamentals", kind = "concept", same_as = "Software engineering" }
+"Intelligent marketing" = { group = "recsys_ads", kind = "concept", same_as = "Advertising" }
+"Multi-scenario modeling optimization" = { group = "analytics_bi", kind = "concept", same_as = "Optimization" }
+"User growth" = { group = "recsys_ads", kind = "concept", same_as = "Advertising" }
+"Mixture of Experts" = { group = "ml_core", kind = "concept", same_as = "Machine Learning" }
+"Software architecture" = { group = "cs_fundamentals", kind = "concept", same_as = "Software engineering" }
+"LLM applications" = { group = "llm_genai", kind = "concept" }
+"Evaluation frameworks" = { group = "mlops_serving", kind = "concept", same_as = "Evals" }
+"Hive" = { group = "data_engineering", kind = "tool", same_as = "Hive SQL" }
+"Network topology" = { group = "networking", kind = "concept", same_as = "Networking" }
+"Delta Lake" = { group = "data_engineering", kind = "tool" }
+"Numerical analysis" = { group = "analytics_bi", kind = "concept" }
+"Computer networks" = { group = "networking", kind = "concept", same_as = "Networking" }
+"Networking protocols" = { group = "networking", kind = "concept", same_as = "Networking" }
+"System design" = { group = "cs_fundamentals", kind = "concept", same_as = "Distributed systems" }
+"Cache coherency" = { group = "systems_perf", kind = "concept", same_as = "Computer architecture" }
+"NCCL" = { group = "systems_perf", kind = "tool" }
+"RoCE" = { group = "networking", kind = "tool" }
+"CAN bus" = { group = "embedded_hw", kind = "tool", same_as = "CAN" }
+"Modbus" = { group = "embedded_hw", kind = "tool" }
+"VISA" = { group = "embedded_hw", kind = "tool" }
+"Real-time systems" = { group = "systems_perf", kind = "concept", same_as = "Real-time operating systems" }
+"Metabase" = { group = "analytics_bi", kind = "tool" }
+"Real-time embedded systems" = { group = "embedded_hw", kind = "concept", same_as = "Embedded systems" }
+"Geospatial data" = { group = "geospatial", kind = "concept", same_as = "Geospatial analysis" }
+"Agent harnesses" = { group = "agents", kind = "concept", same_as = "Agent frameworks" }
+"Context engineering" = { group = "llm_genai", kind = "concept", same_as = "Prompt engineering" }
+"Evolutionary program search" = { group = "ml_core", kind = "concept" }
+"KV caching" = { group = "llm_genai", kind = "concept" }
+"Non-inferiority testing" = { group = "testing", kind = "concept", same_as = "Statistical analysis" }
+"Off-policy evaluation" = { group = "ml_core", kind = "concept", same_as = "Reinforcement learning" }
+"Pass^k" = { group = "llm_genai", kind = "concept", same_as = "Evals" }
+"Prompt caching" = { group = "llm_genai", kind = "concept" }
+"Prompt optimization" = { group = "llm_genai", kind = "concept", same_as = "Prompt engineering" }
+"RLVR" = { group = "ml_core", kind = "concept", same_as = "Reinforcement learning" }
+"Reward modeling" = { group = "ml_core", kind = "concept", same_as = "Machine Learning" }
+"High-performance computing" = { group = "systems_perf", kind = "concept", same_as = "HPC" }
+"Kubernetes cluster management" = { group = "infra_devops", kind = "tool", same_as = "Kubernetes" }
+"Monte Carlo testing" = { group = "testing", kind = "concept", same_as = "Monte Carlo simulation" }
+"Control feedback loop design" = { group = "robotics", kind = "concept", same_as = "Robotics" }
+"GPIB" = { group = "embedded_hw", kind = "tool" }
+"VLAN" = { group = "networking", kind = "tool" }
+"Flink" = { group = "data_engineering", kind = "tool", same_as = "Spark" }
+"Analog-to-digital conversion" = { group = "embedded_hw", kind = "concept" }
+"Evaluation harnesses" = { group = "mlops_serving", kind = "concept", same_as = "Evals" }
+"Forecasting" = { group = "analytics_bi", kind = "concept", same_as = "Time-series analysis" }
+"Guardrails" = { group = "llm_genai", kind = "concept" }
+"Function calling" = { group = "agents", kind = "concept", same_as = "AI agents" }
+"Agentic workflows" = { group = "agents", kind = "concept", same_as = "AI agents" }
+"Cloud-init" = { group = "infra_devops", kind = "tool" }
+"InfiniBand" = { group = "networking", kind = "tool" }
+"PXE boot" = { group = "infra_devops", kind = "concept", same_as = "Linux" }
+"Squashfs" = { group = "systems_perf", kind = "tool", same_as = "Linux" }
+"AI coding agents" = { group = "ai_dev_tools", kind = "concept", same_as = "AI coding tools" }
+"Evaluation methods" = { group = "mlops_serving", kind = "concept", same_as = "Model evaluation" }
+"DNS" = { group = "networking", kind = "tool" }
+"Autonomous systems" = { group = "robotics", kind = "concept", same_as = "Robotics" }
+"Automation" = { group = "process", kind = "concept", same_as = "Workflow automation" }
+"Linux networking stack" = { group = "networking", kind = "concept", same_as = "Linux" }
+"ClickHouse" = { group = "databases", kind = "tool" }
+"Probability" = { group = "analytics_bi", kind = "concept", same_as = "Statistics" }
+"Cloud virtualization" = { group = "cloud", kind = "concept", same_as = "Cloud computing" }
+"ChatGPT" = { group = "llm_genai", kind = "tool" }
+"Web applications" = { group = "web_frontend", kind = "concept", same_as = "Full-stack development" }
+"Controls" = { group = "robotics", kind = "concept", same_as = "Robotics" }
+"Credit assignment" = { group = "ml_core", kind = "concept" }
+"Judge calibration" = { group = "llm_genai", kind = "concept" }
+"Sub-agents" = { group = "agents", kind = "concept", same_as = "AI agents" }
+"Predictive analytics" = { group = "analytics_bi", kind = "concept" }
+"Journalctl" = { group = "infra_devops", kind = "tool" }
+"Jq" = { group = "languages", kind = "tool" }
+"Evaluations" = { group = "ml_core", kind = "concept", same_as = "Model evaluation" }
+"Accessibility" = { group = "web_frontend", kind = "concept" }
+"LLM tooling" = { group = "llm_genai", kind = "concept", same_as = "LLM APIs" }
+"Anomaly detection" = { group = "ml_core", kind = "concept" }
+"Argo CD" = { group = "ci_cd_vcs", kind = "tool" }
+"OS hardening" = { group = "security_identity", kind = "concept", same_as = "Security" }
+"Product security" = { group = "security_identity", kind = "concept", same_as = "Security" }
+"Confidence intervals" = { group = "analytics_bi", kind = "concept", same_as = "Statistical analysis" }
+"Multi-objective optimization" = { group = "ml_core", kind = "concept", same_as = "Optimization" }
+"Transformer models" = { group = "ml_core", kind = "concept", same_as = "Deep Learning" }
+"Regression testing" = { group = "testing", kind = "concept", same_as = "Automated testing" }
+"Dbt" = { group = "data_engineering", kind = "tool" }
+"Agentic coding tools" = { group = "ai_dev_tools", kind = "concept", same_as = "AI coding tools" }
+"Neo4j" = { group = "databases", kind = "tool" }
+"AI orchestration" = { group = "agents", kind = "concept", same_as = "Agent frameworks" }
+"Containerized deployment" = { group = "infra_devops", kind = "concept", same_as = "Container technologies" }
+"Cryptography" = { group = "security_identity", kind = "concept" }
+"FFmpeg" = { group = "cv_imaging", kind = "tool" }
+"Multi-agent workflows" = { group = "agents", kind = "concept", same_as = "Multi-agent systems" }
+"ARM" = { group = "embedded_hw", kind = "tool" }
+"Vision foundation models" = { group = "cv_imaging", kind = "concept", same_as = "Computer Vision" }
+"Microcontrollers" = { group = "embedded_hw", kind = "concept", same_as = "Embedded systems" }
+"Hypothesis testing" = { group = "analytics_bi", kind = "concept", same_as = "Statistics" }
+"Ontologies" = { group = "cs_fundamentals", kind = "concept" }
+"Graphics-intensive web applications" = { group = "web_frontend", kind = "concept", same_as = "WebGL" }
+"SSH" = { group = "security_identity", kind = "tool" }
+"Human evaluation" = { group = "llm_genai", kind = "concept", same_as = "LLM evaluation" }
+"Bandits" = { group = "ml_core", kind = "concept", same_as = "Reinforcement learning" }
+"Constrained optimization" = { group = "ml_core", kind = "concept", same_as = "Optimization" }
+"GNSS" = { group = "geospatial", kind = "tool" }
+"Evaluation" = { group = "ml_core", kind = "concept", same_as = "Model evaluation" }
+"Oscilloscope" = { group = "embedded_hw", kind = "tool" }
+"Application security" = { group = "security_identity", kind = "concept", same_as = "Security" }
+"LLM integration" = { group = "llm_genai", kind = "concept", same_as = "LLM APIs" }
+"Real-time data" = { group = "data_engineering", kind = "concept", same_as = "Real-time data processing" }
+"Foundation models" = { group = "ml_core", kind = "concept", same_as = "Deep Learning" }
+"CDN" = { group = "networking", kind = "concept" }
+"Caching" = { group = "cs_fundamentals", kind = "concept" }
+"Load balancing" = { group = "networking", kind = "concept", same_as = "Networking" }
+"SSL/TLS" = { group = "security_identity", kind = "tool", same_as = "TLS" }
+"Machine learning infrastructure" = { group = "mlops_serving", kind = "concept", same_as = "MLOps" }
+"Vue" = { group = "web_frontend", kind = "tool", same_as = "Vue.js" }
+"Programming languages" = { group = "languages", kind = "concept" }
+"Model training" = { group = "mlops_serving", kind = "concept", same_as = "MLOps" }
+"Agent evaluation" = { group = "agents", kind = "concept", same_as = "Evals" }
+"Apollo" = { group = "backend_apis", kind = "tool" }
+"CRM data quality" = { group = "enterprise_platforms", kind = "concept" }
+"Grok" = { group = "llm_genai", kind = "tool" }
+"HubSpot" = { group = "enterprise_platforms", kind = "tool" }
+"Webhooks" = { group = "backend_apis", kind = "concept", same_as = "API integrations" }
+"Data governance" = { group = "data_engineering", kind = "concept" }
+"Bayesian modeling" = { group = "analytics_bi", kind = "concept" }
+"Machine learning algorithms" = { group = "ml_core", kind = "concept", same_as = "Machine Learning" }
+"Digital twins" = { group = "robotics", kind = "concept" }
+"backend APIs" = { group = "backend_apis", kind = "concept", same_as = "APIs" }
+"Cloud security" = { group = "security_identity", kind = "concept", same_as = "Security" }
+"Jupyter notebooks" = { group = "analytics_bi", kind = "tool", same_as = "Jupyter" }
+"Performance testing" = { group = "testing", kind = "concept" }
+"Production application development" = { group = "backend_apis", kind = "concept", same_as = "Backend development" }
+"J2EE" = { group = "backend_apis", kind = "tool" }
+"Video processing" = { group = "cv_imaging", kind = "concept", same_as = "Image processing" }
+"State estimation" = { group = "robotics", kind = "concept" }
+"SGLang" = { group = "mlops_serving", kind = "tool" }
+"Speculative decoding" = { group = "llm_genai", kind = "concept" }
+"Triton" = { group = "systems_perf", kind = "tool" }
+"OpenGL" = { group = "systems_perf", kind = "tool" }
+"Vulkan" = { group = "systems_perf", kind = "tool" }
+"Storage systems" = { group = "systems_perf", kind = "concept" }
+"FPGA" = { group = "embedded_hw", kind = "tool" }
+"Unreal Engine" = { group = "web_frontend", kind = "tool" }
+"Version control systems" = { group = "ci_cd_vcs", kind = "concept", same_as = "Source control" }
+"AI tools" = { group = "ai_dev_tools", kind = "concept", same_as = "AI coding tools" }
+"A2A" = { group = "agents", kind = "tool" }
+"Protobuf" = { group = "backend_apis", kind = "tool", same_as = "Protocol Buffers" }
+"Agent APIs" = { group = "agents", kind = "concept", same_as = "APIs" }
+"Systemd" = { group = "infra_devops", kind = "tool" }
+"Three.js" = { group = "web_frontend", kind = "tool" }
+"Database systems" = { group = "databases", kind = "concept", same_as = "Databases" }
+"Internal developer platforms" = { group = "infra_devops", kind = "concept" }
+"NET Core" = { group = "backend_apis", kind = "tool" }
+"Non-relational databases" = { group = "databases", kind = "concept", same_as = "NoSQL" }
+"Pose estimation" = { group = "cv_imaging", kind = "concept" }
+"Large-scale data processing" = { group = "data_engineering", kind = "concept", same_as = "Big data" }
+"Containerd" = { group = "infra_devops", kind = "tool", same_as = "Container technologies" }
+"LXC" = { group = "infra_devops", kind = "tool", same_as = "Container technologies" }
+"Predictive modeling" = { group = "analytics_bi", kind = "concept", same_as = "Statistical modeling" }
+"Data transformation" = { group = "data_engineering", kind = "concept", same_as = "ETL" }
+"Large datasets" = { group = "data_engineering", kind = "concept", same_as = "Big data" }
+"Modular programming" = { group = "cs_fundamentals", kind = "concept", same_as = "Modular design" }
+"PySpark" = { group = "data_engineering", kind = "tool", same_as = "Spark" }
+"Hardware interfaces" = { group = "embedded_hw", kind = "concept" }
+"Data infrastructure" = { group = "data_engineering", kind = "concept", same_as = "Data engineering" }
+"Spectrum analyzers" = { group = "embedded_hw", kind = "tool" }
+"Command-line interfaces" = { group = "cs_fundamentals", kind = "concept" }
+"Grep" = { group = "infra_devops", kind = "tool" }
+"Python logging" = { group = "languages", kind = "concept", same_as = "Python" }
+"Tail" = { group = "infra_devops", kind = "tool" }
+"Systems engineering" = { group = "cs_fundamentals", kind = "concept", same_as = "Software engineering" }
+"Game engines" = { group = "cs_fundamentals", kind = "concept" }
+"Computer science fundamentals" = { group = "cs_fundamentals", kind = "concept", same_as = "Data Structures and Algorithms" }
+"Web development" = { group = "web_frontend", kind = "concept", same_as = "Front-end development" }
+"Open source software" = { group = "process", kind = "concept" }
+"Entra ID" = { group = "security_identity", kind = "tool", same_as = "Microsoft Entra ID" }
+"HBase" = { group = "data_engineering", kind = "tool" }
+"SystemVerilog" = { group = "embedded_hw", kind = "tool" }
+"Software systems design" = { group = "cs_fundamentals", kind = "concept", same_as = "Software engineering" }
+"Testing scripts" = { group = "testing", kind = "concept", same_as = "Automated testing" }
+"Apache Flink" = { group = "data_engineering", kind = "tool" }
+"Entity Framework" = { group = "backend_apis", kind = "tool" }
+"AngularJS" = { group = "web_frontend", kind = "tool", same_as = "Angular" }
+"Networks" = { group = "networking", kind = "concept", same_as = "Networking" }
+"NVIDIA drivers" = { group = "systems_perf", kind = "tool" }
+"Azure AD" = { group = "security_identity", kind = "tool", same_as = "Microsoft Entra ID" }
+"Certificates" = { group = "security_identity", kind = "concept" }
+"Firewalls" = { group = "security_identity", kind = "concept", same_as = "Security" }
+"Microsoft Entra" = { group = "security_identity", kind = "tool", same_as = "Microsoft Entra ID" }
+"Linear algebra" = { group = "cs_fundamentals", kind = "concept" }
+"Bamboo" = { group = "ci_cd_vcs", kind = "tool" }
+"HTTP/2" = { group = "networking", kind = "tool", same_as = "HTTP" }
+"HTTP/3" = { group = "networking", kind = "tool", same_as = "HTTP" }
+"Continuous monitoring" = { group = "security_identity", kind = "concept", same_as = "Monitoring" }
+"WordPress" = { group = "web_frontend", kind = "tool" }
+"Hardware bring-up" = { group = "embedded_hw", kind = "concept", same_as = "Embedded systems" }
+"Concurrent programming" = { group = "cs_fundamentals", kind = "concept", same_as = "Concurrency" }
+"C/C++" = { group = "languages", kind = "tool", same_as = "C++" }
+"System hardening" = { group = "security_identity", kind = "concept", same_as = "Security" }
+"Security architecture" = { group = "security_identity", kind = "concept", same_as = "Security" }
+"Atlassian Suite" = { group = "process", kind = "tool" }
+"Machine learning-assisted technologies" = { group = "ml_core", kind = "concept", same_as = "Machine Learning" }
+"Scrum@Scale" = { group = "process", kind = "concept", same_as = "Scrum" }
+"standardized APIs" = { group = "backend_apis", kind = "concept", same_as = "APIs" }
+"Logic analyzer" = { group = "embedded_hw", kind = "tool" }
+"AI coding assistants" = { group = "ai_dev_tools", kind = "concept", same_as = "AI coding tools" }
+"Integrated development environments (IDEs)" = { group = "process", kind = "concept" }
+"Web UI" = { group = "web_frontend", kind = "concept", same_as = "Front-end development" }
+"Numerical methods" = { group = "analytics_bi", kind = "concept", same_as = "Optimization" }
+"Package management" = { group = "infra_devops", kind = "concept" }
+"Hibernate" = { group = "backend_apis", kind = "tool" }
+"Microsoft Power Platform" = { group = "enterprise_platforms", kind = "tool" }
+"CPU scheduling" = { group = "systems_perf", kind = "concept", same_as = "Operating systems" }
+"Air-gapped deployment" = { group = "infra_devops", kind = "concept", same_as = "DevOps" }
+"Bare metal provisioning" = { group = "infra_devops", kind = "concept", same_as = "Infrastructure as code" }
+"Container image management" = { group = "infra_devops", kind = "concept", same_as = "Container technologies" }
+"Test automation" = { group = "testing", kind = "concept", same_as = "Automated testing" }
+"Embedded hardware development" = { group = "embedded_hw", kind = "concept", same_as = "Embedded systems" }
+"DDoS protection" = { group = "security_identity", kind = "concept", same_as = "Security" }
+"Compiled language" = { group = "languages", kind = "concept" }
+"AOSP" = { group = "mobile", kind = "tool", same_as = "Android" }
+"Networking stack" = { group = "networking", kind = "concept", same_as = "Networking" }
+"Hardware Security Modules (HSM)" = { group = "security_identity", kind = "tool" }
+"Trusted Platform Modules (TPM)" = { group = "security_identity", kind = "tool" }
+"Experimentation" = { group = "analytics_bi", kind = "concept", same_as = "Design of Experiments" }
+"Risk stratification" = { group = "health_data", kind = "concept" }
+"Electromagnetic simulation" = { group = "embedded_hw", kind = "concept", same_as = "Simulation" }
+"RF test equipment" = { group = "embedded_hw", kind = "tool" }
+"S-parameters" = { group = "embedded_hw", kind = "concept" }
+"Spectrum analyzer" = { group = "embedded_hw", kind = "tool" }
+"Vector network analyzer" = { group = "embedded_hw", kind = "tool" }
+"Transformers" = { group = "ml_frameworks", kind = "concept", same_as = "Deep Learning" }
+"SOAP" = { group = "backend_apis", kind = "tool", same_as = "Web services" }
+"AWS S3" = { group = "cloud", kind = "tool", same_as = "S3" }
+"FAISS" = { group = "ml_frameworks", kind = "tool", same_as = "Vector search" }
+"Strands Agents" = { group = "agents", kind = "tool", same_as = "AI agents" }
+"WebSocket" = { group = "networking", kind = "tool", same_as = "WebSockets" }
+"async Python" = { group = "languages", kind = "concept", same_as = "Python" }
+"Data manipulation languages" = { group = "databases", kind = "concept", same_as = "SQL" }
+"Network protocols" = { group = "networking", kind = "concept", same_as = "Networking" }
+"Prometheus" = { group = "infra_devops", kind = "tool", same_as = "Monitoring" }

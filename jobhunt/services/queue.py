@@ -116,7 +116,9 @@ async def build_queue(
         review = reviews.get(job.id)
         if extraction is not None and not extraction.is_relevant:
             continue
-        if extraction is None and job.id in screened_out:
+        # The current screen is the gate: a reject also hides jobs extracted before a new screen question existed
+        # (e.g. degree requirements). `jobhunt screened-out` lists them in case Jev got one wrong.
+        if job.id in screened_out:
             continue
         if score is None and not include_unscored:
             continue
@@ -158,6 +160,98 @@ async def record_review(session: AsyncSession, job_id: UUID, decision: Decision,
     session.add(review)
     await session.commit()
     return review
+
+
+async def find_job(session: AsyncSession, ref: str) -> Job:
+    """A job by full id or a unique prefix of it (dashes optional), e.g. 'd58dfee2'."""
+    needle = ref.strip().lower().replace("-", "")
+    if len(needle) < 4 or any(ch not in "0123456789abcdef" for ch in needle):
+        raise LookupError(f"{ref!r} doesn't look like a job id (use at least the first 4 characters).")
+    ids = [job_id for job_id in (await session.execute(select(Job.id))).scalars() if job_id.hex.startswith(needle)]
+    if not ids:
+        raise LookupError(f"No job id starts with {ref!r}.")
+    if len(ids) > 1:
+        raise LookupError(f"{len(ids)} jobs start with {ref!r}; give more characters.")
+    job = await session.get(Job, ids[0])
+    assert job is not None
+    return job
+
+
+@dataclass
+class JobDetail:
+    job: Job
+    sources: list[str]
+    screen: JobScreen | None
+    extraction: JobExtraction | None
+    score: JobScore | None
+    review: Review | None
+    description: str | None
+
+
+async def job_detail(session: AsyncSession, job: Job, profile_hash: str) -> JobDetail:
+    async def newest(model: Any, *where: Any) -> Any:
+        stmt = select(model).where(model.job_id == job.id, *where).order_by(desc(model.created_at)).limit(1)
+        return (await session.execute(stmt)).scalar_one_or_none()
+
+    sources = sorted(set((await session.execute(select(Lead.source).where(Lead.job_id == job.id))).scalars()))
+    return JobDetail(
+        job=job,
+        sources=sources,
+        screen=await newest(JobScreen, JobScreen.version == SCREEN_VERSION),
+        extraction=await newest(JobExtraction),
+        score=await newest(JobScore, JobScore.profile_hash == profile_hash),
+        review=await newest(Review),
+        description=await load_description(session, job.id),
+    )
+
+
+async def screened_out_jobs(session: AsyncSession, reason: str | None = None) -> list[tuple[Job, JobScreen]]:
+    """Open jobs the current screen rejected (newest first), optionally only those whose reason contains `reason`."""
+    stmt = (
+        select(Job, JobScreen)
+        .join(JobScreen, JobScreen.job_id == Job.id)
+        .where(
+            and_(
+                Job.status == JobStatus.OPEN,
+                JobScreen.version == SCREEN_VERSION,
+                JobScreen.outcome == ScreenOutcome.REJECT,
+            )
+        )
+        .order_by(desc(JobScreen.created_at))
+    )
+    rows = [(row[0], row[1]) for row in (await session.execute(stmt)).all()]
+    seen: set[UUID] = set()
+    result = []
+    for job, screen in rows:
+        if job.id in seen or (reason and reason.lower() not in screen.reason.lower()):
+            continue
+        seen.add(job.id)
+        result.append((job, screen))
+    return result
+
+
+async def keep_screened_job(session: AsyncSession, job_id: UUID) -> int:
+    """Override the screen for one job (Jev got it wrong): its rejects become passes, so it is extracted and queued."""
+    screens = (
+        (
+            await session.execute(
+                select(JobScreen).where(
+                    and_(
+                        JobScreen.job_id == job_id,
+                        JobScreen.version == SCREEN_VERSION,
+                        JobScreen.outcome == ScreenOutcome.REJECT,
+                    )
+                )
+            )
+        )
+        .scalars()
+        .all()
+    )
+    for screen in screens:
+        screen.outcome = ScreenOutcome.PASS
+        screen.reason = f"kept by hand (screen said: {screen.reason})"[:2000]
+    await session.commit()
+    return len(screens)
 
 
 async def unresolved_leads(session: AsyncSession) -> Sequence[Lead]:

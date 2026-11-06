@@ -270,3 +270,18 @@ async def test_jev_fit_scores_and_caches_by_topics(db_session, requirements, jev
     assert score is not None
     assert score.components["value"]["interest"]["note"].startswith("applied ML 0.90")
     assert score.components["fit"]["detail"]["provider"] == "jev"
+
+
+def test_degree_question_only_for_bachelors_profiles_and_rejects_grad_only_postings():
+    assert "bachelors_accepted" in screen_questions("bachelors")
+    assert "bachelors_accepted" not in screen_questions("masters")
+
+    decision = decide_screen(screen(levels=[0.9, 0.08, 0.01, 0.01], new_grads=0.98, bachelors=0.04))
+    assert decision.outcome == ScreenOutcome.REJECT and "master's or PhD" in decision.reason
+
+    unsure = decide_screen(screen(levels=[0.9, 0.08, 0.01, 0.01], new_grads=0.98, bachelors=0.5))
+    assert unsure.outcome == ScreenOutcome.UNSETTLED and "bachelors_accepted" in unsure.reason
+
+    # A graduate-degree profile isn't asked, so a missing answer never blocks a pass.
+    clear = decide_screen(screen(levels=[0.9, 0.08, 0.01, 0.01], new_grads=0.98, bachelors=None))
+    assert clear.outcome == ScreenOutcome.PASS

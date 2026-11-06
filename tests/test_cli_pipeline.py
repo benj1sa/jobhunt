@@ -88,6 +88,7 @@ def test_jev_probe_writes_separate_payloads_without_sending(tmp_path: Path):
         "internship",
         "us_location",
         "open_to_new_grads",
+        "bachelors_accepted",
         "experience_level",
     }
     assert "mentorship" in fit["questions"]
@@ -119,3 +120,65 @@ def test_boards_commands():
     summary = runner.invoke(app, ["boards"])
     assert summary.exit_code == 0 and "Watched boards" in summary.output
     assert runner.invoke(app, ["health", "--boards"]).exit_code == 0
+
+
+def test_status_and_help_explain_the_steps():
+    result = runner.invoke(app, ["status"])
+    assert result.exit_code == 0, result.output
+    assert "Next:" in result.output and "extract" in result.output
+    help_text = runner.invoke(app, ["--help"]).output
+    assert help_text.index("Start here") < help_text.index("Pipeline steps") < help_text.index("Maintenance")
+
+
+def test_chatgpt_provider_without_sign_in_says_how_to_fix(monkeypatch, tmp_path: Path):
+    from jobhunt.settings import settings
+
+    monkeypatch.setattr(settings, "llm_provider", "chatgpt")
+    monkeypatch.setattr(settings, "chatgpt_credentials_path", tmp_path / "none.json")
+    result = runner.invoke(app, ["extract"])
+    assert result.exit_code == 1 and "jobhunt chatgpt login" in " ".join(result.output.split())
+    status = runner.invoke(app, ["chatgpt", "status"])
+    assert status.exit_code == 0 and "Not signed in" in status.output
+
+
+def test_show_finds_a_job_by_id_prefix(tmp_path: Path):
+    import asyncio
+
+    from sqlalchemy import select
+
+    from jobhunt.models.pipeline import Job
+    from jobhunt.services.db import get_session
+    from jobhunt.services.jobs import resolve_leads, upsert_leads
+    from jobhunt.sources.base import RawLead
+
+    async def make() -> str:
+        async with get_session() as session:
+            await upsert_leads(
+                session,
+                [RawLead(source="simplify", company="ShowCo", title="ML Engineer",
+                         url="https://job-boards.greenhouse.io/showco/jobs/42",
+                         description_text="PhD or MS in Computer Science required.")],
+            )  # fmt: skip
+            await session.commit()
+            await resolve_leads(session, [], client=None)
+            job = (await session.execute(select(Job).where(Job.company == "ShowCo"))).scalar_one()
+            return job.id.hex
+
+    job_id = asyncio.run(make())
+    result = runner.invoke(app, ["show", job_id[:8]])
+    assert result.exit_code == 0, result.output
+    assert "ShowCo" in result.output and "PhD or MS" in result.output and "not screened yet" in result.output
+    assert runner.invoke(app, ["show", "zzzz"]).exit_code == 1
+
+
+def test_skills_and_capabilities_export_csv():
+    for args in (["skills", "--csv"], ["capabilities", "--csv"], ["capabilities", "--phrases", "--csv"]):
+        result = runner.invoke(app, args)
+        assert result.exit_code == 0, (args, result.output)
+
+
+def test_echo_csv_writes_a_header_and_rounds_floats(capsys):
+    from jobhunt.cli import _echo_csv
+
+    _echo_csv([{"skill": "PyTorch", "weighted": 3.14159, "jobs": 37}])
+    assert capsys.readouterr().out.splitlines() == ["skill,weighted,jobs", "PyTorch,3.14,37"]

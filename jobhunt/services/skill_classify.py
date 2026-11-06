@@ -4,6 +4,7 @@ Proposals go to `skill_groups.suggested.toml`, never into the hand-edited file. 
 (hand-edited entries win), and you can move, fix or delete them like any other config line.
 """
 
+import asyncio
 import json
 from dataclasses import dataclass, field
 from datetime import date
@@ -15,7 +16,8 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from ..schemas.config import SkillTaxonomy, suggested_path
 from ..schemas.extraction import strict_json_schema
-from .llm import LlmConfigError, LlmError, OpenRouterClient
+from .llm import LlmClient, LlmConfigError, LlmError
+from .progress import NULL_PROGRESS, Progress
 
 logger = getLogger(__name__)
 
@@ -53,6 +55,8 @@ class ClassifyStats:
     skipped: int = 0
     failed_batches: int = 0
     errors: list[str] = field(default_factory=list)
+    stopped: str | None = None  # provider refused further calls; suggestions made so far are still written
+    not_started: int = 0  # skills not sent because of `stopped`
 
 
 def _schema(group_ids: list[str]) -> dict[str, Any]:
@@ -66,45 +70,83 @@ def _toml_string(value: str) -> str:
 
 
 async def classify_skills(
-    llm: OpenRouterClient,
+    llm: LlmClient,
     model: str,
     taxonomy: SkillTaxonomy,
     skills: list[str],
     groups_path: Path,
+    progress: Progress = NULL_PROGRESS,
+    concurrency: int = 1,
 ) -> ClassifyStats:
-    """Ask the LLM to place `skills`, then append valid proposals to the suggested file."""
+    """Ask the LLM to place `skills` (batches run concurrently), then append valid proposals to the suggested file.
+
+    A provider refusal (plan limit, expired sign-in) stops new batches; whatever finished is still written.
+    """
     stats = ClassifyStats()
     group_ids = list(taxonomy.groups)
     known = sorted({cls.name for cls in taxonomy.by_key.values()})
     known_keys = {name.lower(): name for name in known}
     group_list = "\n".join(f"- {gid}: {name}" for gid, name in taxonomy.groups.items())
     lines: list[str] = []
-    for start in range(0, len(skills), BATCH_SIZE):
-        batch = skills[start : start + BATCH_SIZE]
+    batches = [skills[start : start + BATCH_SIZE] for start in range(0, len(skills), BATCH_SIZE)]
+    progress.start(len(skills))
+    gate = asyncio.Semaphore(max(1, concurrency))
+    stop: list[LlmConfigError] = []
+
+    async def ask(batch: list[str]) -> tuple[list[str], SkillSuggestions | Exception | None]:
         user = (
             f"Allowed groups:\n{group_list}\n\nKnown skills (for same_as):\n{', '.join(known)}\n\n"
             "Skills to sort (return one item per skill, same spelling):\n" + "\n".join(f"- {s}" for s in batch)
         )
-        try:
-            result = await llm.structured(
-                model=model, system=CLASSIFY_SYSTEM, user=user, schema=SkillSuggestions, json_schema=_schema(group_ids)
-            )
-        except LlmConfigError:
-            raise
-        except LlmError as exc:
-            stats.failed_batches += 1
-            stats.errors.append(str(exc)[:300])
-            continue
-        wanted = {s.lower(): s for s in batch}
-        for item in result.items:
-            original = wanted.pop(item.skill.lower(), None)  # pop: a repeated item would be a duplicate TOML key
-            if original is None or item.group not in taxonomy.groups:
-                stats.skipped += 1
+        async with gate:
+            if stop:
+                return batch, None
+            try:
+                result = await llm.structured(
+                    model=model,
+                    system=CLASSIFY_SYSTEM,
+                    user=user,
+                    schema=SkillSuggestions,
+                    json_schema=_schema(group_ids),
+                )
+            except LlmConfigError as exc:
+                stop.append(exc)
+                return batch, exc
+            except LlmError as exc:
+                return batch, exc
+            return batch, result
+
+    tasks = [asyncio.create_task(ask(batch)) for batch in batches]
+    try:
+        for finished in asyncio.as_completed(tasks):
+            batch, result = await finished
+            label = f"{batch[0]} … {batch[-1]}" if len(batch) > 1 else batch[0]
+            if result is None or isinstance(result, LlmConfigError):
+                stats.not_started += len(batch)
+                if result is not None:
+                    progress.note(f"stopping: {str(result)[:80]}")
                 continue
-            same_as = known_keys.get(item.same_as.lower()) if item.same_as else None
-            extra = f", same_as = {_toml_string(same_as)}" if same_as else ""
-            lines.append(f'{_toml_string(original)} = {{ group = "{item.group}", kind = "{item.kind}"{extra} }}')
-            stats.suggested += 1
+            if isinstance(result, Exception):
+                stats.failed_batches += 1
+                stats.errors.append(str(result)[:300])
+                progress.advance(len(batch), ok=False, item=label)
+                continue
+            wanted = {s.lower(): s for s in batch}
+            for item in result.items:
+                original = wanted.pop(item.skill.lower(), None)  # pop: a repeated item would be a duplicate TOML key
+                if original is None or item.group not in taxonomy.groups:
+                    stats.skipped += 1
+                    continue
+                same_as = known_keys.get(item.same_as.lower()) if item.same_as else None
+                extra = f", same_as = {_toml_string(same_as)}" if same_as else ""
+                lines.append(f'{_toml_string(original)} = {{ group = "{item.group}", kind = "{item.kind}"{extra} }}')
+                stats.suggested += 1
+            progress.advance(len(batch), item=label)
+    finally:
+        for task in tasks:
+            task.cancel()
+    if stop:
+        stats.stopped = str(stop[0])
 
     if lines:
         target = suggested_path(groups_path)

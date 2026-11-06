@@ -4,6 +4,7 @@ import asyncio
 import re
 from dataclasses import dataclass, field
 from logging import getLogger
+from typing import Any
 from uuid import UUID
 
 import httpx
@@ -17,7 +18,8 @@ from ..schemas.config import Capability
 from ..schemas.extraction import EXTRACTION_SCHEMA_VERSION, JobRequirements, extraction_json_schema
 from .filtering import judge_relevance
 from .http import NotFoundError
-from .llm import LlmConfigError, LlmError, OpenRouterClient
+from .llm import LlmClient, LlmConfigError, LlmError
+from .progress import NULL_PROGRESS, Progress
 from .skills import normalize_skills
 
 logger = getLogger(__name__)
@@ -57,6 +59,10 @@ class ExtractStats:
     relevant: int = 0
     failed: int = 0
     errors: list[str] = field(default_factory=list)
+    # Set when the provider refused all further work (plan limit, expired sign-in, bad key). The jobs not sent
+    # (`not_started`) stay unextracted and are picked up by the next run.
+    stopped: str | None = None
+    not_started: int = 0
 
 
 def build_prompt(job: Job, snapshot: JobSnapshot, max_chars: int) -> str:
@@ -178,7 +184,7 @@ async def store_extraction(
 
 async def extract_jobs(
     session: AsyncSession,
-    llm: OpenRouterClient,
+    llm: LlmClient,
     model: str,
     aliases: dict[str, str],
     max_chars: int,
@@ -186,11 +192,13 @@ async def extract_jobs(
     capabilities: list[Capability] | None = None,
     rerun: bool = False,
     concurrency: int = 1,
+    progress: Progress = NULL_PROGRESS,
 ) -> ExtractStats:
     """Extract requirements for every open job's newest unextracted snapshot. Commits per job.
 
     Prompts are built before any LLM call, and nothing reads ORM attributes after a rollback (which expires them).
-    An `LlmConfigError` stops the run: every remaining job would fail the same way.
+    An `LlmConfigError` (plan limit, expired sign-in, bad key) stops sending new calls: every remaining job would
+    fail the same way. Calls already in flight are still stored, and the reason is returned in `stats.stopped`.
     """
     stats = ExtractStats()
     capabilities = capabilities or []
@@ -214,18 +222,43 @@ async def extract_jobs(
             model=model, system=system, user=prompt, schema=JobRequirements, json_schema=json_schema
         )
 
-    for start in range(0, len(pending), max(1, concurrency)):
-        chunk = pending[start : start + max(1, concurrency)]
-        answers = await asyncio.gather(*(ask(item[4]) for item in chunk), return_exceptions=True)
-        for (job_id, snapshot_id, label, url, _prompt, source_text), answer in zip(chunk, answers, strict=True):
+    progress.start(len(pending))
+    gate = asyncio.Semaphore(max(1, concurrency))
+    stop: list[LlmConfigError] = []
+
+    async def run_one(item: tuple[Any, ...]) -> tuple[tuple[Any, ...], JobRequirements | Exception | None]:
+        async with gate:
+            if stop:
+                return item, None  # provider refused earlier work: don't spend another call
+            try:
+                return item, await ask(item[4])
+            except LlmConfigError as exc:
+                stop.append(exc)  # before releasing the gate, so no queued call starts after a refusal
+                return item, exc
+            except Exception as exc:  # noqa: BLE001 - sorted out below, in the single writer loop
+                return item, exc
+
+    # Results are stored as each call finishes (one writer, so database writes stay serial), which keeps the
+    # progress bar moving and means an interruption loses at most the calls in flight.
+    tasks = [asyncio.create_task(run_one(item)) for item in pending]
+    try:
+        for finished in asyncio.as_completed(tasks):
+            (job_id, snapshot_id, label, url, _prompt, source_text), answer = await finished
+            if answer is None:
+                stats.not_started += 1
+                continue
             if isinstance(answer, LlmConfigError):
-                raise answer
+                if answer is stop[0]:
+                    progress.note(f"stopping: {str(answer)[:80]}")
+                stats.not_started += 1  # refused, so not extracted and not counted as a failure
+                continue
             if isinstance(answer, (LlmError, httpx.HTTPError, NotFoundError)):
-                logger.warning("Extraction failed for %s (%s): %s", label, url, answer)
+                logger.debug("Extraction failed for %s (%s): %s", label, url, answer)
                 stats.failed += 1
                 stats.errors.append(f"{label}: {type(answer).__name__}: {answer}"[:500])
+                progress.advance(ok=False, item=label)
                 continue
-            if isinstance(answer, BaseException):
+            if isinstance(answer, Exception):
                 raise answer
             try:
                 extraction = await store_extraction(
@@ -233,11 +266,18 @@ async def extract_jobs(
                 )
                 await session.commit()
             except Exception as exc:
-                logger.exception("Could not store extraction for %s", label)
+                logger.debug("Could not store extraction for %s", label, exc_info=True)
                 await session.rollback()
                 stats.failed += 1
                 stats.errors.append(f"{label}: {type(exc).__name__}: {exc}"[:500])
+                progress.advance(ok=False, item=label)
                 continue
             stats.extracted += 1
             stats.relevant += int(extraction.is_relevant)
+            progress.advance(item=label + ("" if extraction.is_relevant else " (not relevant)"))
+    finally:
+        for task in tasks:
+            task.cancel()
+    if stop:
+        stats.stopped = str(stop[0])
     return stats

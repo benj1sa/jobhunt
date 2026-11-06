@@ -25,6 +25,7 @@ from ..models.pipeline import (
     JobSkill,
     JobSnapshot,
     Lead,
+    LlmUsage,
     WatchedBoard,
 )
 
@@ -43,6 +44,7 @@ class MergeStats:
     screens_new: int = 0
     runs_new: int = 0
     boards_new: int = 0
+    usage_new: int = 0
 
 
 def _copy(model: type[M], row: Base, **overrides: Any) -> M:
@@ -205,6 +207,12 @@ async def merge_database(local: AsyncSession, remote_path: Path) -> MergeStats:
                 if await local.get(IngestRun, rrun.id) is None:
                     local.add(_copy(IngestRun, rrun))
                     stats.runs_new += 1
+
+            # Model usage from scheduled runs, so `jobhunt status` costs include what GitHub Actions spent.
+            for rusage in (await remote.execute(select(LlmUsage))).scalars().all():
+                if await local.get(LlmUsage, rusage.id) is None:
+                    local.add(_copy(LlmUsage, rusage))
+                    stats.usage_new += 1
 
             await local.commit()
     finally:

@@ -1,0 +1,28 @@
+capability,name,jobs,weighted,phrases,example
+collaboration,Collaboration and teamwork,477,256.59,1209,Team player.
+end_to_end_delivery,End-to-end delivery,464,251.16,1063,scoping deployments
+problem_framing,Turning requirements into plans,401,215.42,689,scoping deployments
+system_design,System and API design,400,210.86,797,Designing secure systems
+ownership,Ownership and autonomy,384,208.49,908,you own an epic
+testing,Testing and quality assurance,344,179.96,641,Watch them break it.
+code_quality,"Clean, maintainable code",326,171.90,488,Write maintainable code
+production_ops,Running production systems,318,168.89,577,Support launch operations
+communication,Communicating technical ideas,308,166.64,472,Proven influencing skills
+learning_agility,Learning quickly and taking feedback,302,165.94,529,Fast to learn.
+debugging,Debugging and troubleshooting,290,146.88,463,solving technical problems
+performance,Performance and scalability,266,144.86,406,scaling distributed training
+research_prototyping,"Research, prototyping and experiments",216,121.70,312,"Prototype fast, ship carefully."
+customer_iteration,Customer-facing iteration,193,109.84,296,Earn Customer Love
+code_review,Code review and feedback,208,108.59,230,Participate in code reviews
+automation,Automating workflows,191,99.69,311,Build and maintain automation solutions
+documentation,Documentation,157,84.94,237,Write the runbook.
+model_building,Building and shipping models,125,83.58,229,developing predictive models
+product_ux,Product sense and user experience,140,83.17,198,informing what we build next
+security_compliance,"Security, privacy and compliance",139,80.13,246,Designing secure systems
+data_analysis,Analyzing data and reporting insights,135,76.46,199,build custom dashboards
+data_pipelines,Building data pipelines,102,60.28,163,Data storage and analysis
+ai_evaluation,Evaluating AI and ML systems,79,54.04,160,shipping agents and evals
+mentorship_leadership,Leading and mentoring,98,52.49,116,contributing to team strategy
+ai_assisted_dev,Working with AI coding tools,78,46.31,119,Heavy use of AI coding tools
+agile_process,Agile and team process,85,41.95,102,"work in small, agile teams"
+other,Other (unmatched),63,30.42,67,Send us your best work.

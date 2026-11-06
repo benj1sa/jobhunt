@@ -21,6 +21,7 @@ from ..schemas.extraction import Degree, JobRequirements, Seniority, WorkMode
 from ..schemas.profile import Profile
 from .fit import FitProvider
 from .llm import LlmConfigError
+from .progress import NULL_PROGRESS, Progress
 from .queue import load_description
 from .skills import normalize_skills
 
@@ -233,6 +234,7 @@ async def score_jobs(
     aliases: dict[str, str],
     fit_provider: FitProvider | None,
     rescore: bool = False,
+    progress: Progress = NULL_PROGRESS,
 ) -> ScoreStats:
     """Score every relevant open job that has no score for the current profile hash (or all with `rescore`).
 
@@ -241,13 +243,17 @@ async def score_jobs(
     profile_hash = profile.content_hash
     cache_key = fit_provider.cache_key(profile) if fit_provider else None
     stats = ScoreStats()
-    for job, extraction in await latest_relevant_extractions(session):
+    candidates = await latest_relevant_extractions(session)
+    progress.start(len(candidates))
+    for job, extraction in candidates:
+        label = f"{job.company} - {job.title}"
         existing = (
             await session.execute(
                 select(JobScore).where(and_(JobScore.job_id == job.id, JobScore.profile_hash == profile_hash))
             )
         ).scalar_one_or_none()
         if existing is not None and not rescore:
+            progress.advance(item=label)
             continue
         try:
             requirements = JobRequirements.model_validate(extraction.data)
@@ -260,9 +266,10 @@ async def score_jobs(
         except LlmConfigError:
             raise
         except Exception as exc:
-            logger.exception("Scoring failed for job %s", job.id)
+            logger.debug("Scoring failed for job %s", job.id, exc_info=True)
             stats.failed += 1
             stats.errors.append(f"{job.company} - {job.title}: {type(exc).__name__}: {exc}"[:500])
+            progress.advance(ok=False, item=label)
             continue
         components = result.components_json() | {"fit_key": cache_key if fit else None}
         if existing is not None:
@@ -281,4 +288,5 @@ async def score_jobs(
             )
         await session.commit()
         stats.scored += 1
+        progress.advance(item=label)
     return stats

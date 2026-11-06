@@ -23,11 +23,15 @@ from ..sources.boards import BoardSource
 from ..sources.hn import HackerNewsSource
 from ..sources.simplify import SimplifySource
 from .boards import watched_sources
+from .chatgpt import PREFIX as CHATGPT_PREFIX
+from .chatgpt import ChatGPTClient
+from .chatgpt_auth import ChatGPTAuth
 from .db import get_session
 from .fit import FitProvider, JevFitProvider, LlmFitProvider
 from .http import HttpClient
-from .llm import OpenRouterClient
+from .llm import LlmClient, OpenRouterClient
 from .typesafe import TypeSafeClient
+from .usage import UsageMeter
 
 logger = getLogger(__name__)
 
@@ -38,10 +42,31 @@ SOURCE_GROUPS = ("simplify", "hn", "boards")
 class AppContext:
     session: AsyncSession
     http: HttpClient
-    llm: OpenRouterClient | None
+    llm: LlmClient | None
     jev: TypeSafeClient | None
+    meter: UsageMeter
     boards: list[BoardConfig]
     aliases: dict[str, str]
+
+    @property
+    def extraction_model(self) -> str:
+        """Model id stored with each extraction ("chatgpt/<model>" on the plan)."""
+        if settings.llm_provider == "chatgpt":
+            return CHATGPT_PREFIX + settings.chatgpt_model
+        return settings.extraction_model
+
+    @property
+    def fit_model(self) -> str:
+        if settings.llm_provider == "chatgpt":
+            return CHATGPT_PREFIX + settings.chatgpt_fit_model
+        return settings.fit_model
+
+    @property
+    def llm_missing(self) -> str:
+        """Why `llm` is None, as an instruction."""
+        if settings.llm_provider == "chatgpt":
+            return "Not signed in to ChatGPT (LLM_PROVIDER=chatgpt). Run `jobhunt chatgpt login`."
+        return "OPENROUTER_API_KEY is not set (or set LLM_PROVIDER=chatgpt and run `jobhunt chatgpt login`)."
 
     def taxonomy(self) -> SkillTaxonomy:
         return load_skill_taxonomy(settings.skill_groups_path)
@@ -61,10 +86,10 @@ class AppContext:
             if self.jev is None:
                 raise ValueError("fit provider 'jev' needs TYPESAFE_API_KEY")
             return JevFitProvider(self.jev, settings.screen_max_description_chars)
-        if choice == "openrouter" or (choice == "auto" and self.llm is not None):
+        if choice in ("llm", "openrouter", "chatgpt") or (choice == "auto" and self.llm is not None):
             if self.llm is None:
-                raise ValueError("fit provider 'openrouter' needs OPENROUTER_API_KEY")
-            return LlmFitProvider(self.llm, settings.fit_model)
+                raise ValueError(f"fit provider {choice!r} needs an LLM: {self.llm_missing}")
+            return LlmFitProvider(self.llm, self.fit_model)
         return None
 
     async def all_sources(self, groups: list[str] | None = None) -> list[Source]:
@@ -92,13 +117,16 @@ class AppContext:
 @asynccontextmanager
 async def app_context() -> AsyncGenerator[AppContext, None]:
     async with get_session() as session, HttpClient() as http:
-        llm = (
-            OpenRouterClient(http, settings.openrouter_api_key, settings.openrouter_base_url)
-            if settings.openrouter_api_key
-            else None
-        )
+        meter = UsageMeter()
+        llm: LlmClient | None = None
+        if settings.llm_provider == "chatgpt":
+            auth = ChatGPTAuth(settings.chatgpt_credentials_path)
+            if auth.load().signed_in:
+                llm = ChatGPTClient(http.client, auth, meter, settings.chatgpt_reasoning_effort)
+        elif settings.openrouter_api_key:
+            llm = OpenRouterClient(http, settings.openrouter_api_key, settings.openrouter_base_url, meter)
         jev = (
-            TypeSafeClient(http, settings.typesafe_api_key, settings.typesafe_base_url, settings.jev_model)
+            TypeSafeClient(http, settings.typesafe_api_key, settings.typesafe_base_url, settings.jev_model, meter)
             if settings.typesafe_api_key
             else None
         )
@@ -107,6 +135,7 @@ async def app_context() -> AsyncGenerator[AppContext, None]:
             http=http,
             llm=llm,
             jev=jev,
+            meter=meter,
             boards=load_boards(settings.boards_path),
             aliases=load_skill_aliases(settings.skills_aliases_path),
         )

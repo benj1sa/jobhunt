@@ -1,13 +1,14 @@
 name: Job Pipeline
 
-# Daily discovery run. Produces jobhunt.db on the `data` branch; review happens locally after `make pull-data`.
+# Manual discovery run (Actions tab -> Job Pipeline -> Run workflow). Produces jobhunt.db on the `data` branch;
+# review happens locally after `make pull-data`. The nightly schedule is off: jobhunt runs on the laptop instead.
+# To turn it back on, add under `on:`
+#   schedule:
+#     - cron: "17 11 * * *"   # 6:17 AM Eastern
 # Secrets: OPENROUTER_API_KEY for extraction (without it the run stops after hydration);
 # optional TYPESAFE_API_KEY to screen descriptions with Jev before extraction.
 
 on:
-  schedule:
-    # 11:17 UTC = 6:17 AM Eastern (standard time). Off the hour to avoid GitHub's scheduler congestion.
-    - cron: "17 11 * * *"
   workflow_dispatch:
     inputs:
       refresh:

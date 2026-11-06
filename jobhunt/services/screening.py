@@ -6,6 +6,7 @@ goes on to extraction: a failure is never read as a "no".
 """
 
 import asyncio
+from collections import Counter
 from dataclasses import dataclass, field
 from logging import getLogger
 
@@ -18,6 +19,7 @@ from ..models.pipeline import Job, JobScreen, JobSnapshot
 from ..questions import SCREEN_VERSION, decide_screen, screen_questions, screen_state
 from ..schemas.typesafe import SystemOneResponse
 from .http import NotFoundError
+from .progress import NULL_PROGRESS, Progress
 from .typesafe import TypeSafeClient, TypeSafeError
 
 logger = getLogger(__name__)
@@ -33,6 +35,7 @@ class ScreenStats:
     failed: int = 0
     input_tokens: int = 0
     errors: list[str] = field(default_factory=list)
+    reject_reasons: Counter[str] = field(default_factory=Counter)
 
 
 async def snapshots_needing_screen(session: AsyncSession, limit: int | None) -> list[tuple[Job, JobSnapshot]]:
@@ -54,28 +57,45 @@ async def snapshots_needing_screen(session: AsyncSession, limit: int | None) -> 
     return [(row[0], row[1]) for row in (await session.execute(stmt)).all()]
 
 
-async def _ask(client: TypeSafeClient, job: Job, snapshot: JobSnapshot, max_chars: int) -> SystemOneResponse:
+async def _ask(
+    client: TypeSafeClient, job: Job, snapshot: JobSnapshot, max_chars: int, degree: str
+) -> SystemOneResponse:
     request = client.build_request(
         state=screen_state(job.title, job.company, job.location, snapshot.description_text[:max_chars]),
-        questions=screen_questions(),
+        questions=screen_questions(degree),
     )
     return await client.system_one(request)
 
 
 async def screen_jobs(
-    session: AsyncSession, client: TypeSafeClient, max_chars: int, limit: int | None = None
+    session: AsyncSession,
+    client: TypeSafeClient,
+    max_chars: int,
+    limit: int | None = None,
+    progress: Progress = NULL_PROGRESS,
+    degree: str = "bachelors",
 ) -> ScreenStats:
     """Screen each open job's newest unscreened snapshot. Requests run concurrently in batches; writes are serial."""
     stats = ScreenStats()
     pending = await snapshots_needing_screen(session, limit)
+    progress.start(len(pending))
+
+    async def ask(job: Job, snapshot: JobSnapshot) -> SystemOneResponse:
+        label = f"{job.company} - {job.title}"
+        try:
+            response = await _ask(client, job, snapshot, max_chars, degree)
+        except Exception:
+            progress.advance(ok=False, item=label)
+            raise
+        progress.advance(item=label)
+        return response
+
     for start in range(0, len(pending), BATCH_SIZE):
         batch = pending[start : start + BATCH_SIZE]
-        outcomes = await asyncio.gather(
-            *(_ask(client, job, snapshot, max_chars) for job, snapshot in batch), return_exceptions=True
-        )
+        outcomes = await asyncio.gather(*(ask(job, snapshot) for job, snapshot in batch), return_exceptions=True)
         for (job, snapshot), outcome in zip(batch, outcomes, strict=True):
             if isinstance(outcome, (TypeSafeError, httpx.HTTPError, NotFoundError, KeyError, TypeError)):
-                logger.warning("Screen failed for %s (%s): %r", job.id, job.posting_url, outcome)
+                logger.debug("Screen failed for %s (%s): %r", job.id, job.posting_url, outcome)
                 stats.failed += 1
                 stats.errors.append(f"{job.company} - {job.title}: {type(outcome).__name__}: {outcome}"[:500])
                 continue
@@ -84,7 +104,7 @@ async def screen_jobs(
             try:
                 decision = decide_screen(outcome)
             except (KeyError, TypeError) as exc:
-                logger.warning("Screen answers unusable for %s: %r", job.id, exc)
+                logger.debug("Screen answers unusable for %s: %r", job.id, exc)
                 stats.failed += 1
                 stats.errors.append(f"{job.company} - {job.title}: {exc}"[:500])
                 continue
@@ -104,5 +124,7 @@ async def screen_jobs(
             stats.passed += int(decision.outcome == ScreenOutcome.PASS)
             stats.unsettled += int(decision.outcome == ScreenOutcome.UNSETTLED)
             stats.rejected += int(decision.outcome == ScreenOutcome.REJECT)
+            if decision.outcome == ScreenOutcome.REJECT:
+                stats.reject_reasons.update(decision.reason.split("; "))
         await session.commit()
     return stats

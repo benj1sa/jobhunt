@@ -792,6 +792,20 @@ erDiagram
     VARCHAR(2048) url_normalized
   }
 
+  llm_usage {
+    CHAR(32) id PK
+    INTEGER calls
+    BOOLEAN cost_estimated
+    FLOAT cost_usd
+    DATETIME created_at
+    INTEGER input_tokens
+    INTEGER items
+    VARCHAR(128) model
+    INTEGER output_tokens
+    VARCHAR(32) provider
+    VARCHAR(32) stage "indexed"
+  }
+
   review {
     CHAR(32) id PK
     CHAR(32) job_id FK "indexed"

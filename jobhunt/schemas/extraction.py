@@ -124,14 +124,23 @@ def strict_json_schema(model: type[BaseModel]) -> dict[str, Any]:
     """Return a JSON Schema for `model` that satisfies OpenAI/OpenRouter `strict: true` rules.
 
     Strict mode requires `additionalProperties: false` and every property listed in `required` on every object,
-    and rejects `title`/`default` keywords on some providers.
+    rejects `title`/`default` keywords on some providers, and (OpenAI) allows no other keyword beside `$ref`.
     """
     schema: dict[str, Any] = copy.deepcopy(model.model_json_schema())
+    defs: dict[str, Any] = schema.get("$defs", {})
 
     def walk(node: Any) -> None:
         if isinstance(node, dict):
             node.pop("title", None)
             node.pop("default", None)
+            if "$ref" in node and len(node) > 1:
+                # OpenAI strict mode rejects keywords next to $ref ("$ref cannot have keywords {'description'}").
+                # Keep the field's description by moving it onto the referenced definition when that has none.
+                target = defs.get(str(node["$ref"]).rsplit("/", 1)[-1])
+                if isinstance(target, dict) and "description" in node:
+                    target.setdefault("description", node["description"])
+                for key in [key for key in node if key != "$ref"]:
+                    del node[key]
             if node.get("type") == "object" and "properties" in node:
                 node["additionalProperties"] = False
                 node["required"] = list(node["properties"].keys())

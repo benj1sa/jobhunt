@@ -12,6 +12,7 @@ from pydantic import SecretStr, ValidationError
 
 from ..schemas.typesafe import Question, SystemOneRequest, SystemOneResponse
 from .http import HttpClient
+from .usage import UsageMeter
 
 logger = getLogger(__name__)
 
@@ -21,11 +22,14 @@ class TypeSafeError(Exception):
 
 
 class TypeSafeClient:
-    def __init__(self, http: HttpClient, api_key: SecretStr, base_url: str, model: str) -> None:
+    def __init__(
+        self, http: HttpClient, api_key: SecretStr, base_url: str, model: str, meter: UsageMeter | None = None
+    ) -> None:
         self._http = http
         self._api_key = api_key
         self._base_url = base_url.rstrip("/")
         self.model = model
+        self._meter = meter
 
     def build_request(self, state: dict[str, Any], questions: dict[str, Question]) -> SystemOneRequest:
         return SystemOneRequest(model=self.model, state=state, questions=questions)
@@ -44,6 +48,9 @@ class TypeSafeClient:
             parsed = SystemOneResponse.model_validate(response.json())
         except (ValidationError, ValueError) as exc:
             raise TypeSafeError(f"Unexpected System One response: {response.text[:500]}") from exc
+        if self._meter is not None:
+            # TypeSafe doesn't report cost; usage.py prices Jev from its list price.
+            self._meter.record("typesafe", parsed.model, parsed.usage.input_tokens, parsed.usage.output_tokens)
         missing = set(request.questions) - set(parsed.answers)
         if missing:
             raise TypeSafeError(f"System One response is missing answers for: {', '.join(sorted(missing))}")
