@@ -1,7 +1,6 @@
 # LLM-proposed entries for skill_groups.toml (`jobhunt skills-classify`). Hand-edited entries
 # in skill_groups.toml win. Fix or delete lines freely; move good ones into the main file.
 [skills]
-
 # 2026-11-06 via chatgpt/gpt-6-luna
 "Make" = { group = "infra_devops", kind = "tool" }
 "Npm" = { group = "infra_devops", kind = "tool" }
