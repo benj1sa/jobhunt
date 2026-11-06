@@ -685,6 +685,7 @@ erDiagram
     CHAR(32) id PK
     TEXT error "nullable"
     DATETIME finished_at "nullable"
+    INTEGER items_fetched "nullable"
     INTEGER leads_new
     INTEGER leads_seen
     VARCHAR(64) source "indexed"
@@ -710,6 +711,15 @@ erDiagram
     VARCHAR(2048) posting_url
     ENUM status
     VARCHAR(512) title
+  }
+
+  job_capability {
+    CHAR(32) id PK
+    CHAR(32) extraction_id FK "indexed"
+    CHAR(32) job_id FK "indexed"
+    VARCHAR(64) capability "indexed"
+    TEXT phrase
+    BOOLEAN verbatim
   }
 
   job_extraction {
@@ -790,6 +800,25 @@ erDiagram
     TEXT reason "nullable"
   }
 
+  watched_board {
+    CHAR(32) id PK
+    DATETIME added_at
+    VARCHAR(16) ats
+    VARCHAR(256) company
+    INTEGER consecutive_failures
+    INTEGER items_last "nullable"
+    DATETIME last_lead_at "nullable"
+    DATETIME last_ok_at "nullable"
+    DATETIME last_polled_at "nullable"
+    ENUM origin
+    VARCHAR(512) origin_detail "nullable"
+    ENUM status
+    TEXT status_reason "nullable"
+    VARCHAR(256) token
+  }
+
+  job ||--o{ job_capability : job_id
+  job_extraction ||--o{ job_capability : extraction_id
   job ||--o{ job_extraction : job_id
   job_snapshot ||--o{ job_extraction : snapshot_id
   job ||--o{ job_score : job_id

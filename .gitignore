@@ -167,3 +167,6 @@ jobhunt/_version.py
 jobhunt.db*
 .remote-jobhunt.db
 migrate.db
+
+# jobhunt jev-probe output (request/response payloads containing job text)
+jev-probe/
