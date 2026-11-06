@@ -35,6 +35,43 @@ uv run jobhunt review
 The workflow runs daily at 11:17 UTC. On Sundays it also re-fetches every open job, which is how closed postings
 leave the queue. It fails (after publishing the database) when `jobhunt health --strict` finds a broken source.
 
+## The board watchlist
+
+Greenhouse, Lever and Ashby have no search across companies, so coverage depends on knowing board names. Besides
+`config/boards.toml` (always polled), `jobhunt` keeps a watchlist of boards it polls in full on every ingest:
+
+- **Discovered**: every time a lead from any source resolves to a Greenhouse, Lever or Ashby posting, that
+  company's whole board is watched.
+- **Seeded**: `jobhunt boards seed` imports the lists in `config/board_seeds.toml`. The defaults read every
+  company that has ever posted a new-grad or internship role on SimplifyJobs (about 1,850 boards). The scheduled
+  workflow re-seeds on Sundays, and re-seeding only adds boards you don't have.
+- **By hand**: `jobhunt boards add greenhouse:stripe` (or paste a board link).
+
+Boards retire themselves: two "not found" polls in a row mark one `dead`, and `BOARD_IDLE_DAYS` (default 60)
+without a single job passing the title and location filters pauses it. A new lead from a paused board reactivates
+it; a board you paused with `jobhunt boards pause` stays paused. `jobhunt boards` shows the counts and the boards
+that produced jobs most recently. `jobhunt health` shows the watchlist as one summary row (`--boards` lists them
+all); only a failure across more than half of the boards counts against `--strict`.
+
+Greenhouse boards are listed without descriptions; only jobs that pass the filters are fetched in full. The first
+run after seeding finds many new leads, so expect it to take longer and to spend more on screening and extraction
+(Jev screens before the LLM, and extraction runs `LLM_CONCURRENCY` calls at a time).
+
+## Skills and capabilities
+
+Two config files turn raw extraction output into something you can plan projects from:
+
+- `config/skill_groups.toml` puts each skill in a group (e.g. "Cloud platforms") and marks it `concept` (a broad
+  area like "Machine Learning") or `tool` (something specific like "Amazon SageMaker"). `same_as` merges spellings.
+  `jobhunt skills` shows groups with their most-asked tools; "Broad only" counts jobs that named the area but no
+  specific tool. `jobhunt skills-classify` proposes groups for new skills into `skill_groups.suggested.toml`,
+  which loads automatically and never overrides the main file.
+- `config/capabilities.toml` lists what postings expect you to do (customer iteration, testing, ...). Extraction
+  copies each responsibility phrase verbatim and tags it. `jobhunt capabilities <id>` lists every phrase, with
+  `(paraphrased)` when the model's text wasn't found word for word in the posting. Phrases tagged `other` are
+  candidates for new capabilities: `jobhunt capabilities --other`. After editing ids or descriptions, run
+  `jobhunt extract --rerun` to re-tag (about $0.001 per job with Haiku).
+
 ## Using Jev (TypeSafe)
 
 Jev is optional. With `TYPESAFE_API_KEY` set:

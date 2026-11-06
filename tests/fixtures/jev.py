@@ -23,13 +23,18 @@ def response(answers: dict[str, dict[str, Any]], model: str = "jev-1.14.0") -> d
 
 
 def screen_response(
-    role: float = 0.95, internship: float = 0.05, us: float = 0.9, levels: list[float] | None = None
+    role: float = 0.95,
+    internship: float = 0.05,
+    us: float = 0.9,
+    levels: list[float] | None = None,
+    new_grads: float = 0.5,
 ) -> dict[str, Any]:
     return response(
         {
             "software_ai_ml_role": noul(role),
             "internship": noul(internship),
             "us_location": noul(us),
+            "open_to_new_grads": noul(new_grads),
             "experience_level": score(levels or [0.7, 0.2, 0.08, 0.02]),
         }
     )

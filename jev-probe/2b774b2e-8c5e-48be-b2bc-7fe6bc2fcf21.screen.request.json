@@ -1,0 +1,55 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "posting": {
+      "title": "ML Engineer",
+      "company": "ProbeCo",
+      "listed_location": "not listed",
+      "description": "New grads build ML systems."
+    }
+  },
+  "questions": {
+    "software_ai_ml_role": {
+      "type": "noul",
+      "instructions": "Is the job in `posting` an engineering role that builds software, AI systems or ML systems?",
+      "criteria": {
+        "true": "The person mainly writes software, builds or deploys AI or machine learning models, or runs ML infrastructure, as a software, AI, ML or MLOps engineer would.",
+        "false": "The job is mainly something else, such as sales or solutions engineering, hardware or electrical design, IT support, data analysis without engineering, recruiting or management."
+      }
+    },
+    "internship": {
+      "type": "noul",
+      "instructions": "Is the job in `posting` an internship or co-op?",
+      "criteria": {
+        "true": "The posting describes a temporary internship or co-op position for current students.",
+        "false": "The posting describes a regular full-time or part-time position, including a full-time program or rotation for new college graduates."
+      }
+    },
+    "us_location": {
+      "type": "noul",
+      "instructions": "Can the job in `posting` be done from within the United States?",
+      "criteria": {
+        "true": "The posting lists a location in the United States, or is remote with the United States allowed.",
+        "false": "Every location in the posting is outside the United States, such as 'London, UK' or 'Remote - Canada'."
+      }
+    },
+    "open_to_new_grads": {
+      "type": "noul",
+      "instructions": "Does `posting` say that new or recent graduates can apply for this job?",
+      "criteria": {
+        "true": "The posting invites new or recent graduates, for example 'new grad', 'early career', 'recent graduates welcome' or 'up to 2 years out of school'.",
+        "false": "The posting asks for several years of professional experience and does not mention graduates."
+      }
+    },
+    "experience_level": {
+      "type": "score",
+      "instructions": "How much professional experience does the job in `posting` ask for?",
+      "criteria": [
+        "The posting is for new or recent graduates, or says no professional experience is needed.",
+        "The posting asks for about one to two years of professional experience, or calls the role junior or entry level.",
+        "The posting asks for about three to five years of professional experience, or calls the role mid-level.",
+        "The posting asks for six or more years of experience, or calls the role senior, staff, principal or lead."
+      ]
+    }
+  }
+}

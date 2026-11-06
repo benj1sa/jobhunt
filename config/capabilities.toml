@@ -1,0 +1,243 @@
+# Capabilities: what postings expect you to DO, as opposed to which tools you know.
+#
+# Extraction copies each responsibility / expectation phrase from a posting word for word and tags it with
+# one to three capability ids from this file (or "other"). `jobhunt capabilities` counts them across jobs and
+# `jobhunt capabilities show <id>` lists every phrase behind one capability.
+#
+# Seeded from 6,169 bullet lines in 364 relevant jobs (2026-11-05). The examples are real phrases from those
+# postings and are shown to the model, so keep them short and typical. After editing ids or descriptions, run
+# `jobhunt extract --rerun` to re-tag existing jobs.
+
+[[capability]]
+id = "customer_iteration"
+name = "Customer-facing iteration"
+description = "Talking to customers or users, understanding their problems, and turning feedback into product changes."
+examples = [
+  "Iterate rapidly to improve Chalk's platform in response to customer needs",
+  "Turn customer feedback into small, meaningful improvements",
+  "You talk to users, get feedback, and iterate fast.",
+]
+
+[[capability]]
+id = "problem_framing"
+name = "Turning requirements into plans"
+description = "Translating vague business problems or requirements into clear technical plans, user stories or analytical questions."
+examples = [
+  "Work with product management and your team to break complex requirements into clear user stories",
+  "Translate a question into a clear analytical problem, success criteria and testable approach.",
+]
+
+[[capability]]
+id = "code_quality"
+name = "Clean, maintainable code"
+description = "Writing readable, modular, maintainable code and following coding standards."
+examples = [
+  "Write clean, maintainable code and build reusable application components and APIs.",
+  "Demonstrated ability to write clean, readable, and maintainable code.",
+]
+
+[[capability]]
+id = "code_review"
+name = "Code review and feedback"
+description = "Giving and receiving code review and technical feedback."
+examples = [
+  "Experience with Git-based version control and collaborative code review.",
+  "Contribute thoughtful feedback and review.",
+]
+
+[[capability]]
+id = "testing"
+name = "Testing and quality assurance"
+description = "Writing unit, integration or end-to-end tests, test-driven development, validation and QA."
+examples = [
+  "Contribute to automated testing efforts, including unit, integration, and regression testing.",
+  "Write tests and validation checks for your pipelines",
+]
+
+[[capability]]
+id = "debugging"
+name = "Debugging and troubleshooting"
+description = "Finding root causes, troubleshooting failures, and fixing defects."
+examples = [
+  "Analyze existing code, troubleshoot problems, identify errors, and improve applications.",
+  "You dig into logs, trace errors, and don't stop until you find the root cause.",
+]
+
+[[capability]]
+id = "production_ops"
+name = "Running production systems"
+description = "Operating and maintaining live systems: monitoring, reliability, on-call, incident response, observability."
+examples = [
+  "Provide ongoing maintenance, support, and enhancements to existing systems, including operational support for components your team owns (on-call availability as needed)",
+  "Implement application monitoring, logging, and troubleshooting techniques to improve reliability and performance.",
+]
+
+[[capability]]
+id = "performance"
+name = "Performance and scalability"
+description = "Profiling and optimizing latency, throughput, memory or cost, and making systems scale."
+examples = [
+  "Enhance system performance and scalability",
+  "Performance-sensitive work: profiling, frame budgets, memory pressure, running on constrained hardware",
+]
+
+[[capability]]
+id = "system_design"
+name = "System and API design"
+description = "Designing architectures, services, data models or APIs before building them."
+examples = [
+  "Design and implement high-performance data storage and management systems",
+  "Ability to design systems that are documented, maintainable, and scalable",
+]
+
+[[capability]]
+id = "end_to_end_delivery"
+name = "End-to-end delivery"
+description = "Taking features or projects from idea through design, build, test and deployment to production."
+examples = [
+  "Own delivery end-to-end, in production. From technical discovery through go-live",
+  "Work on real projects from start to finish across the full software development lifecycle",
+]
+
+[[capability]]
+id = "ownership"
+name = "Ownership and autonomy"
+description = "Self-direction, accountability, following through on commitments, and working through ambiguity without a spec."
+examples = [
+  "Ability to take ownership of assigned work, follow through on commitments, and deliver quality results.",
+  "Comfort with ambiguity - from a hackathon, a research project, or an internship where nobody handed you a spec.",
+]
+
+[[capability]]
+id = "learning_agility"
+name = "Learning quickly and taking feedback"
+description = "Picking up unfamiliar technologies fast, curiosity, and incorporating feedback."
+examples = [
+  "Eagerness to learn, ask questions, and incorporate feedback",
+  "you pick up new frameworks and papers quickly and can explain what you learned to teammates.",
+]
+
+[[capability]]
+id = "collaboration"
+name = "Collaboration and teamwork"
+description = "Working with teammates and cross-functional partners (product, design, data, hardware); being low-ego and team-oriented."
+examples = [
+  "Partner closely with Product, Design, Data, Security, and Operations",
+  "Able to collaborate with teammates, be truth-seeking and low-ego",
+]
+
+[[capability]]
+id = "communication"
+name = "Communicating technical ideas"
+description = "Explaining technical work clearly in writing and speech, including to non-technical audiences."
+examples = [
+  "Can explain something technical to a non-technical room and read whether it's landing",
+  "Communicate technical ideas clearly.",
+]
+
+[[capability]]
+id = "documentation"
+name = "Documentation"
+description = "Writing docs, design summaries, runbooks, handoff notes and decision records."
+examples = [
+  "Maintain documentation, handoff notes, and decision records for everything built.",
+  "Document your work so that others on the team can build on it",
+]
+
+[[capability]]
+id = "ai_assisted_dev"
+name = "Working with AI coding tools"
+description = "Using coding agents and AI assistants productively while staying accountable for and verifying the output."
+examples = [
+  "Use coding agents and other AI-assisted development tools to move faster from idea to shipped code.",
+  "You use AI coding tools and you've formed opinions about them - including where they mislead you and how you catch it",
+]
+
+[[capability]]
+id = "ai_evaluation"
+name = "Evaluating AI and ML systems"
+description = "Building evals, test sets and harnesses, measuring model quality, catching regressions, validating AI outputs."
+examples = [
+  "Build and maintain evaluation datasets and harnesses, including cases that capture known failure modes.",
+  "Helping build and run evaluations that measure model quality and catch regressions",
+]
+
+[[capability]]
+id = "model_building"
+name = "Building and shipping models"
+description = "Training, fine-tuning and deploying ML models or LLM-powered features into products."
+examples = [
+  "Want to train and ship the models that make agents genuinely useful",
+  "Trained ML models in the past and deployed them in production systems",
+]
+
+[[capability]]
+id = "data_analysis"
+name = "Analyzing data and reporting insights"
+description = "Exploring data, finding patterns, visualizing, and presenting findings to stakeholders."
+examples = [
+  "Visualize, interpret, and clearly report data findings",
+  "Analyze complex data to identify relationships, patterns, anomalies, and potential predictors",
+]
+
+[[capability]]
+id = "data_pipelines"
+name = "Building data pipelines"
+description = "Collecting, cleaning, transforming and moving data reliably; data quality as part of shipping."
+examples = [
+  "Collect, clean, and transform raw data into meaningful, actionable information.",
+  "Build and maintain pipelines that ingest, validate, and organize vehicle sensor recordings in our data lake.",
+]
+
+[[capability]]
+id = "research_prototyping"
+name = "Research, prototyping and experiments"
+description = "Prototyping quickly, running experiments, reading papers, and applying state-of-the-art methods."
+examples = [
+  "Prototype fast, ship carefully.",
+  "Perform concept and feasibility studies, algorithm validation, and benchmarking on large datasets",
+]
+
+[[capability]]
+id = "automation"
+name = "Automating workflows"
+description = "Building automations, scripts or agents that remove manual work for a team or business process."
+examples = [
+  "Design, implement, and maintain automated workflows that improve operational efficiency",
+  "Put agentic workflows into operational use: reporting, supplier follow-ups and order status.",
+]
+
+[[capability]]
+id = "security_compliance"
+name = "Security, privacy and compliance"
+description = "Secure coding, data governance, privacy, regulatory and responsible-AI requirements."
+examples = [
+  "Follow secure coding practices, adhering to software legal compliance guidelines.",
+  "Protect confidential information and follow cybersecurity, data governance, intellectual property and Responsible AI requirements.",
+]
+
+[[capability]]
+id = "agile_process"
+name = "Agile and team process"
+description = "Working in sprints, stand-ups, planning, estimation and a defined development process."
+examples = [
+  "Participate in Agile ceremonies, including sprint planning, daily stand-ups, backlog refinement, and retrospectives.",
+]
+
+[[capability]]
+id = "product_ux"
+name = "Product sense and user experience"
+description = "Caring about the end-user experience, usability, accessibility and business value of what is built."
+examples = [
+  "Passion for and experience with creating an intuitive, user-friendly experience",
+  "Every result you deliver should tie to time saved, cost reduced, or work won",
+]
+
+[[capability]]
+id = "mentorship_leadership"
+name = "Leading and mentoring"
+description = "Leading tasks or projects, mentoring others, and shaping technical direction."
+examples = [
+  "Be a mentor for junior engineers",
+  "Ability to lead tasks and work on multiple tasks concurrently.",
+]

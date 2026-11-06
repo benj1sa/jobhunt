@@ -79,8 +79,11 @@ def _greenhouse_posting(token: str, data: dict[str, Any]) -> AtsPosting:
     )
 
 
-async def greenhouse_list(client: HttpClient, token: str) -> list[AtsPosting]:
-    payload = await client.get_json(f"{GREENHOUSE_API}/{token}/jobs", params={"content": "true"})
+async def greenhouse_list(client: HttpClient, token: str, content: bool = False) -> list[AtsPosting]:
+    """List a board. Without `content`, postings carry no description (hydration fetches it for matches only),
+    which keeps polling thousands of boards cheap."""
+    params = {"content": "true"} if content else None
+    payload = await client.get_json(f"{GREENHOUSE_API}/{token}/jobs", params=params)
     return [_greenhouse_posting(token, job) for job in payload.get("jobs", [])]
 
 

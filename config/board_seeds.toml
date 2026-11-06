@@ -1,0 +1,21 @@
+# Seed lists for the board watchlist (`jobhunt boards seed`). Each company board found in a list is polled in
+# full on every ingest, so you see all of that company's openings, not only the ones a list happened to post.
+#
+# Boards that 404 twice are marked dead; boards with no matching job for BOARD_IDLE_DAYS are paused.
+# Re-running a seed only adds boards you don't have yet; it never revives boards you paused by hand.
+#
+# Formats: "simplify" (a SimplifyJobs listings.json), "links" (any text containing ATS links, e.g. a README),
+# "lines" (one `ats:token` per line).
+
+# Every company that has posted a new-grad role on SimplifyJobs (closed postings included). ~1,300 boards.
+[[seed]]
+name = "simplify-new-grad"
+url = "https://raw.githubusercontent.com/SimplifyJobs/New-Grad-Positions/dev/.github/scripts/listings.json"
+format = "simplify"
+
+# Every company that has posted a Summer 2026 internship there: companies that hire interns usually hire
+# new grads too. Adds ~650 boards not in the new-grad list.
+[[seed]]
+name = "simplify-internships-2026"
+url = "https://raw.githubusercontent.com/SimplifyJobs/Summer2026-Internships/dev/.github/scripts/listings.json"
+format = "simplify"

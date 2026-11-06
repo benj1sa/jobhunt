@@ -1,0 +1,548 @@
+# Skill groups: turns ~1,000 raw skill names into a two-level view.
+#
+#   [groups.<id>]   a family of related skills, e.g. "Cloud platforms"
+#   [skills]        "<skill as extracted>" = { group = "<id>", kind = "concept" | "tool", same_as = "<skill>" }
+#
+# kind = "concept" for broad areas or practices ("Machine Learning", "Security", "Distributed systems")
+# kind = "tool" for anything you could install, call or name on a resume ("PyTorch", "SageMaker", "gRPC")
+# same_as merges spellings of one thing ("Apache Spark" -> "Spark"). Matching ignores case and punctuation.
+#
+# Unmapped skills show up in `jobhunt skills --unsorted`. `jobhunt skills classify` asks the LLM to
+# propose entries for them and appends the proposals at the end of this file for you to review.
+
+[groups.languages]
+name = "Programming languages"
+
+[groups.web_frontend]
+name = "Web frontend"
+
+[groups.backend_apis]
+name = "Backend & APIs"
+
+[groups.databases]
+name = "Databases & SQL"
+
+[groups.data_engineering]
+name = "Data engineering & big data"
+
+[groups.analytics_bi]
+name = "Analytics, statistics & BI"
+
+[groups.cloud]
+name = "Cloud platforms"
+
+[groups.infra_devops]
+name = "Containers, infrastructure & DevOps"
+
+[groups.ci_cd_vcs]
+name = "CI/CD & version control"
+
+[groups.testing]
+name = "Testing"
+
+[groups.ml_core]
+name = "Machine learning (core)"
+
+[groups.ml_frameworks]
+name = "ML frameworks & libraries"
+
+[groups.mlops_serving]
+name = "MLOps, training & serving"
+
+[groups.llm_genai]
+name = "LLMs & generative AI"
+
+[groups.agents]
+name = "AI agents & tool protocols"
+
+[groups.ai_dev_tools]
+name = "AI coding tools"
+
+[groups.cv_imaging]
+name = "Computer vision & imaging"
+
+[groups.nlp_speech]
+name = "NLP & speech"
+
+[groups.robotics]
+name = "Robotics & autonomy"
+
+[groups.embedded_hw]
+name = "Embedded, hardware & firmware"
+
+[groups.systems_perf]
+name = "Systems, performance & GPU"
+
+[groups.networking]
+name = "Networking & protocols"
+
+[groups.security_identity]
+name = "Security & identity"
+
+[groups.cs_fundamentals]
+name = "CS fundamentals & software design"
+
+[groups.process]
+name = "Process & collaboration tools"
+
+[groups.enterprise_platforms]
+name = "Enterprise platforms"
+
+[groups.mobile]
+name = "Mobile"
+
+[groups.geospatial]
+name = "Geospatial"
+
+[groups.recsys_ads]
+name = "Recommendation, ads & growth modeling"
+
+[groups.health_data]
+name = "Health data standards"
+
+[skills]
+# Programming languages
+"Python" = { group = "languages", kind = "tool" }
+"C++" = { group = "languages", kind = "tool" }
+"Java" = { group = "languages", kind = "tool" }
+"JavaScript" = { group = "languages", kind = "tool" }
+"TypeScript" = { group = "languages", kind = "tool" }
+"C" = { group = "languages", kind = "tool" }
+"C#" = { group = "languages", kind = "tool" }
+"Go" = { group = "languages", kind = "tool" }
+"Rust" = { group = "languages", kind = "tool" }
+"R" = { group = "languages", kind = "tool" }
+"Kotlin" = { group = "languages", kind = "tool" }
+"Perl" = { group = "languages", kind = "tool" }
+"PHP" = { group = "languages", kind = "tool" }
+"Scala" = { group = "languages", kind = "tool" }
+"Assembly" = { group = "languages", kind = "tool" }
+"VB .NET" = { group = "languages", kind = "tool" }
+"Ruby" = { group = "languages", kind = "tool" }
+"Swift" = { group = "languages", kind = "tool" }
+"Fortran" = { group = "languages", kind = "tool" }
+"MATLAB" = { group = "languages", kind = "tool" }
+"Bash" = { group = "languages", kind = "tool" }
+"Shell scripting" = { group = "languages", kind = "tool" }
+"PowerShell" = { group = "languages", kind = "tool" }
+"Groovy" = { group = "languages", kind = "tool" }
+"F#" = { group = "languages", kind = "tool" }
+"Scripting" = { group = "languages", kind = "tool" }
+"NET" = { group = "languages", kind = "tool" }
+"ASP.NET" = { group = "languages", kind = "tool" }
+# Web frontend
+"Front-end development" = { group = "web_frontend", kind = "concept" }
+"Frontend frameworks" = { group = "web_frontend", kind = "concept" }
+"Full-stack development" = { group = "web_frontend", kind = "concept" }
+"Full-stack web development" = { group = "web_frontend", kind = "concept", same_as = "Full-stack development" }
+"Responsive design" = { group = "web_frontend", kind = "concept" }
+"WCAG" = { group = "web_frontend", kind = "concept" }
+"React" = { group = "web_frontend", kind = "tool" }
+"Angular" = { group = "web_frontend", kind = "tool" }
+"HTML" = { group = "web_frontend", kind = "tool" }
+"CSS" = { group = "web_frontend", kind = "tool" }
+"Next.js" = { group = "web_frontend", kind = "tool" }
+"Redux" = { group = "web_frontend", kind = "tool" }
+"Vue.js" = { group = "web_frontend", kind = "tool" }
+"Vue 3" = { group = "web_frontend", kind = "tool", same_as = "Vue.js" }
+"Svelte" = { group = "web_frontend", kind = "tool" }
+"D3.js" = { group = "web_frontend", kind = "tool" }
+"WebGL" = { group = "web_frontend", kind = "tool" }
+"HTML5" = { group = "web_frontend", kind = "tool", same_as = "HTML" }
+"CSS3" = { group = "web_frontend", kind = "tool", same_as = "CSS" }
+"Blazor" = { group = "web_frontend", kind = "tool" }
+"Express" = { group = "web_frontend", kind = "tool" }
+"Node.js" = { group = "web_frontend", kind = "tool" }
+# Backend & APIs
+"REST APIs" = { group = "backend_apis", kind = "concept" }
+"APIs" = { group = "backend_apis", kind = "concept" }
+"Backend systems" = { group = "backend_apis", kind = "concept" }
+"Backend development" = { group = "backend_apis", kind = "concept" }
+"Backend services" = { group = "backend_apis", kind = "concept" }
+"API design" = { group = "backend_apis", kind = "concept" }
+"Event-driven architecture" = { group = "backend_apis", kind = "concept" }
+"Microservices" = { group = "backend_apis", kind = "concept" }
+"API integrations" = { group = "backend_apis", kind = "concept" }
+"Web services" = { group = "backend_apis", kind = "concept" }
+"API development" = { group = "backend_apis", kind = "concept" }
+"Distributed systems" = { group = "backend_apis", kind = "concept" }
+"Distributed computing" = { group = "backend_apis", kind = "concept", same_as = "Distributed systems" }
+"GraphQL" = { group = "backend_apis", kind = "tool" }
+"FastAPI" = { group = "backend_apis", kind = "tool" }
+"gRPC" = { group = "backend_apis", kind = "tool" }
+"Spring Boot" = { group = "backend_apis", kind = "tool" }
+"Spring" = { group = "backend_apis", kind = "tool" }
+"Django" = { group = "backend_apis", kind = "tool" }
+"Flask" = { group = "backend_apis", kind = "tool" }
+"JSP" = { group = "backend_apis", kind = "tool" }
+"JSON" = { group = "backend_apis", kind = "tool" }
+"XML" = { group = "backend_apis", kind = "tool" }
+"YAML" = { group = "backend_apis", kind = "tool" }
+"CSV" = { group = "backend_apis", kind = "tool" }
+"HTTP" = { group = "backend_apis", kind = "tool" }
+"Protocol Buffers" = { group = "backend_apis", kind = "tool" }
+"WebSockets" = { group = "backend_apis", kind = "tool" }
+"SQLAlchemy" = { group = "backend_apis", kind = "tool" }
+"Nginx" = { group = "backend_apis", kind = "tool" }
+"Kafka" = { group = "backend_apis", kind = "tool" }
+"Redis" = { group = "backend_apis", kind = "tool" }
+"MQTT" = { group = "backend_apis", kind = "tool" }
+# Databases & SQL
+"Relational databases" = { group = "databases", kind = "concept" }
+"Databases" = { group = "databases", kind = "concept" }
+"NoSQL" = { group = "databases", kind = "concept" }
+"Data modeling" = { group = "databases", kind = "concept" }
+"Relational database design" = { group = "databases", kind = "concept" }
+"Database design" = { group = "databases", kind = "concept" }
+"Schema design" = { group = "databases", kind = "concept" }
+"SQL" = { group = "databases", kind = "tool" }
+"PostgreSQL" = { group = "databases", kind = "tool" }
+"MySQL" = { group = "databases", kind = "tool" }
+"SQL Server" = { group = "databases", kind = "tool" }
+"Microsoft SQL Server" = { group = "databases", kind = "tool", same_as = "SQL Server" }
+"DynamoDB" = { group = "databases", kind = "tool" }
+"MongoDB" = { group = "databases", kind = "tool" }
+"Oracle" = { group = "databases", kind = "tool" }
+"Elasticsearch" = { group = "databases", kind = "tool" }
+"Hive SQL" = { group = "databases", kind = "tool" }
+"Pgvector" = { group = "databases", kind = "tool" }
+# Data engineering & big data
+"Data pipelines" = { group = "data_engineering", kind = "concept" }
+"ETL" = { group = "data_engineering", kind = "concept" }
+"Big data" = { group = "data_engineering", kind = "concept" }
+"Data warehousing" = { group = "data_engineering", kind = "concept" }
+"Data lakes" = { group = "data_engineering", kind = "concept" }
+"Data engineering" = { group = "data_engineering", kind = "concept" }
+"Real-time data processing" = { group = "data_engineering", kind = "concept" }
+"Spark" = { group = "data_engineering", kind = "tool" }
+"Apache Spark" = { group = "data_engineering", kind = "tool", same_as = "Spark" }
+"Databricks" = { group = "data_engineering", kind = "tool" }
+"Hadoop" = { group = "data_engineering", kind = "tool" }
+"MapReduce" = { group = "data_engineering", kind = "tool" }
+"Airflow" = { group = "data_engineering", kind = "tool" }
+"Apache Airflow" = { group = "data_engineering", kind = "tool", same_as = "Airflow" }
+"BigQuery" = { group = "data_engineering", kind = "tool" }
+"Snowflake" = { group = "data_engineering", kind = "tool" }
+"Parquet" = { group = "data_engineering", kind = "tool" }
+"Apache Iceberg" = { group = "data_engineering", kind = "tool" }
+"SSIS" = { group = "data_engineering", kind = "tool" }
+"Ray" = { group = "data_engineering", kind = "tool" }
+# Analytics, statistics & BI
+"Statistics" = { group = "analytics_bi", kind = "concept" }
+"Statistical analysis" = { group = "analytics_bi", kind = "concept" }
+"Statistical modeling" = { group = "analytics_bi", kind = "concept" }
+"Data mining" = { group = "analytics_bi", kind = "concept" }
+"Data analytics" = { group = "analytics_bi", kind = "concept" }
+"Data science" = { group = "analytics_bi", kind = "concept" }
+"Data visualization" = { group = "analytics_bi", kind = "concept" }
+"Causal inference" = { group = "analytics_bi", kind = "concept" }
+"Design of Experiments" = { group = "analytics_bi", kind = "concept" }
+"Monte Carlo simulation" = { group = "analytics_bi", kind = "concept" }
+"Operations research" = { group = "analytics_bi", kind = "concept" }
+"Optimization" = { group = "analytics_bi", kind = "concept" }
+"Time-series analysis" = { group = "analytics_bi", kind = "concept" }
+"Pandas" = { group = "analytics_bi", kind = "tool" }
+"NumPy" = { group = "analytics_bi", kind = "tool" }
+"SciPy" = { group = "analytics_bi", kind = "tool" }
+"Matplotlib" = { group = "analytics_bi", kind = "tool" }
+"Plotly" = { group = "analytics_bi", kind = "tool" }
+"Seaborn" = { group = "analytics_bi", kind = "tool" }
+"Power BI" = { group = "analytics_bi", kind = "tool" }
+"Tableau" = { group = "analytics_bi", kind = "tool" }
+"Qlik" = { group = "analytics_bi", kind = "tool" }
+"Jupyter" = { group = "analytics_bi", kind = "tool" }
+"Microsoft Excel" = { group = "analytics_bi", kind = "tool" }
+"SAS" = { group = "analytics_bi", kind = "tool" }
+# Cloud platforms
+"Cloud computing" = { group = "cloud", kind = "concept" }
+"Cloud platforms" = { group = "cloud", kind = "concept", same_as = "Cloud computing" }
+"Cloud infrastructure" = { group = "cloud", kind = "concept" }
+"Cloud services" = { group = "cloud", kind = "concept", same_as = "Cloud computing" }
+"Cloud" = { group = "cloud", kind = "concept", same_as = "Cloud computing" }
+"Cloud data platforms" = { group = "cloud", kind = "concept" }
+"Amazon Web Services" = { group = "cloud", kind = "tool" }
+"Microsoft Azure" = { group = "cloud", kind = "tool" }
+"Google Cloud" = { group = "cloud", kind = "tool" }
+"Lambda" = { group = "cloud", kind = "tool" }
+"AWS Lambda" = { group = "cloud", kind = "tool", same_as = "Lambda" }
+"ECS" = { group = "cloud", kind = "tool" }
+"SQS" = { group = "cloud", kind = "tool" }
+"AWS SQS" = { group = "cloud", kind = "tool", same_as = "SQS" }
+"S3" = { group = "cloud", kind = "tool" }
+"Step Functions" = { group = "cloud", kind = "tool" }
+"AWS CDK" = { group = "cloud", kind = "tool" }
+"AWS CloudFormation" = { group = "cloud", kind = "tool" }
+"EC2" = { group = "cloud", kind = "tool" }
+"RDS" = { group = "cloud", kind = "tool" }
+"IAM" = { group = "cloud", kind = "tool" }
+"Amazon SageMaker" = { group = "cloud", kind = "tool" }
+"AWS Bedrock" = { group = "cloud", kind = "tool" }
+# Containers, infrastructure & DevOps
+"DevOps" = { group = "infra_devops", kind = "concept" }
+"Infrastructure as code" = { group = "infra_devops", kind = "concept" }
+"Observability" = { group = "infra_devops", kind = "concept" }
+"Monitoring" = { group = "infra_devops", kind = "concept" }
+"Container technologies" = { group = "infra_devops", kind = "concept" }
+"Virtualization" = { group = "infra_devops", kind = "concept" }
+"DevSecOps" = { group = "infra_devops", kind = "concept" }
+"Telemetry" = { group = "infra_devops", kind = "concept" }
+"Docker" = { group = "infra_devops", kind = "tool" }
+"Kubernetes" = { group = "infra_devops", kind = "tool" }
+"Terraform" = { group = "infra_devops", kind = "tool" }
+"Helm" = { group = "infra_devops", kind = "tool" }
+"Podman" = { group = "infra_devops", kind = "tool" }
+"Ansible" = { group = "infra_devops", kind = "tool" }
+"OpenTelemetry" = { group = "infra_devops", kind = "tool" }
+"Linux" = { group = "infra_devops", kind = "tool" }
+"Windows" = { group = "infra_devops", kind = "tool" }
+"Unix" = { group = "infra_devops", kind = "tool" }
+"Red Hat Enterprise Linux" = { group = "infra_devops", kind = "tool" }
+# CI/CD & version control
+"CI/CD" = { group = "ci_cd_vcs", kind = "concept" }
+"Source control" = { group = "ci_cd_vcs", kind = "concept" }
+"Git" = { group = "ci_cd_vcs", kind = "tool" }
+"GitHub Actions" = { group = "ci_cd_vcs", kind = "tool" }
+"GitLab CI" = { group = "ci_cd_vcs", kind = "tool" }
+"GitLab" = { group = "ci_cd_vcs", kind = "tool" }
+"Jenkins" = { group = "ci_cd_vcs", kind = "tool" }
+"Buildkite" = { group = "ci_cd_vcs", kind = "tool" }
+"Bitbucket" = { group = "ci_cd_vcs", kind = "tool" }
+"Artifactory" = { group = "ci_cd_vcs", kind = "tool" }
+"CMake" = { group = "ci_cd_vcs", kind = "tool" }
+"Bazel" = { group = "ci_cd_vcs", kind = "tool" }
+"SVN" = { group = "ci_cd_vcs", kind = "tool" }
+# Testing
+"Unit testing" = { group = "testing", kind = "concept" }
+"Automated testing" = { group = "testing", kind = "concept" }
+"Software testing" = { group = "testing", kind = "concept" }
+"Test-driven development" = { group = "testing", kind = "concept" }
+"Testing" = { group = "testing", kind = "concept", same_as = "Software testing" }
+"Integration testing" = { group = "testing", kind = "concept" }
+"Hardware-in-the-loop testing" = { group = "testing", kind = "concept" }
+"Software-in-the-loop testing" = { group = "testing", kind = "concept" }
+"Pytest" = { group = "testing", kind = "tool" }
+"JUnit" = { group = "testing", kind = "tool" }
+"Jest" = { group = "testing", kind = "tool" }
+"GoogleTest" = { group = "testing", kind = "tool" }
+"Robot Framework" = { group = "testing", kind = "tool" }
+"Unittest" = { group = "testing", kind = "tool" }
+"Cypress" = { group = "testing", kind = "tool" }
+"Vitest" = { group = "testing", kind = "tool" }
+"Playwright" = { group = "testing", kind = "tool" }
+# Machine learning (core)
+"Machine Learning" = { group = "ml_core", kind = "concept" }
+"Deep Learning" = { group = "ml_core", kind = "concept" }
+"Reinforcement learning" = { group = "ml_core", kind = "concept" }
+"Sequence modeling" = { group = "ml_core", kind = "concept" }
+"AI/ML" = { group = "ml_core", kind = "concept" }
+"Artificial Intelligence" = { group = "ml_core", kind = "concept", same_as = "AI/ML" }
+"Model evaluation" = { group = "ml_core", kind = "concept" }
+"Distillation" = { group = "ml_core", kind = "concept" }
+"Embeddings" = { group = "ml_core", kind = "concept" }
+"Fine-tuning" = { group = "ml_core", kind = "concept" }
+"Quantization" = { group = "ml_core", kind = "concept" }
+"Imitation learning" = { group = "ml_core", kind = "concept" }
+# ML frameworks & libraries
+"PyTorch" = { group = "ml_frameworks", kind = "tool" }
+"TensorFlow" = { group = "ml_frameworks", kind = "tool" }
+"Scikit-learn" = { group = "ml_frameworks", kind = "tool" }
+"JAX" = { group = "ml_frameworks", kind = "tool" }
+"Hugging Face" = { group = "ml_frameworks", kind = "tool" }
+"ONNX" = { group = "ml_frameworks", kind = "tool" }
+"OpenCV" = { group = "ml_frameworks", kind = "tool" }
+# MLOps, training & serving
+"MLOps" = { group = "mlops_serving", kind = "concept" }
+"Distributed training" = { group = "mlops_serving", kind = "concept" }
+"Machine learning model deployment" = { group = "mlops_serving", kind = "concept" }
+"ML lifecycle tools" = { group = "mlops_serving", kind = "concept" }
+"MLflow" = { group = "mlops_serving", kind = "tool" }
+"TensorRT" = { group = "mlops_serving", kind = "tool" }
+"TensorRT-LLM" = { group = "mlops_serving", kind = "tool" }
+"vLLM" = { group = "mlops_serving", kind = "tool" }
+"TVM" = { group = "mlops_serving", kind = "tool" }
+"MLIR" = { group = "mlops_serving", kind = "tool" }
+# LLMs & generative AI
+"Large Language Models" = { group = "llm_genai", kind = "concept" }
+"Retrieval-Augmented Generation" = { group = "llm_genai", kind = "concept" }
+"Prompt engineering" = { group = "llm_genai", kind = "concept" }
+"LLM APIs" = { group = "llm_genai", kind = "concept" }
+"generative AI tools" = { group = "llm_genai", kind = "concept" }
+"Post-training" = { group = "llm_genai", kind = "concept" }
+"LLM-as-judge" = { group = "llm_genai", kind = "concept" }
+"LLM evaluation" = { group = "llm_genai", kind = "concept" }
+"Evals" = { group = "llm_genai", kind = "concept" }
+"Multimodal large language models" = { group = "llm_genai", kind = "concept" }
+"Vector databases" = { group = "llm_genai", kind = "concept" }
+"Vector search" = { group = "llm_genai", kind = "concept" }
+"Retrieval" = { group = "llm_genai", kind = "concept" }
+"DPO" = { group = "llm_genai", kind = "tool" }
+"SFT" = { group = "llm_genai", kind = "tool" }
+"RLHF" = { group = "llm_genai", kind = "tool" }
+"GRPO" = { group = "llm_genai", kind = "tool" }
+"Azure OpenAI" = { group = "llm_genai", kind = "tool" }
+"Claude" = { group = "llm_genai", kind = "tool" }
+"Gemini" = { group = "llm_genai", kind = "tool" }
+"LangChain" = { group = "llm_genai", kind = "tool" }
+"LangGraph" = { group = "llm_genai", kind = "tool" }
+"Semantic Kernel" = { group = "llm_genai", kind = "tool" }
+# AI agents & tool protocols
+"AI agents" = { group = "agents", kind = "concept" }
+"agentic AI" = { group = "agents", kind = "concept", same_as = "AI agents" }
+"LLM agents" = { group = "agents", kind = "concept", same_as = "AI agents" }
+"Agents" = { group = "agents", kind = "concept", same_as = "AI agents" }
+"Agent frameworks" = { group = "agents", kind = "concept" }
+"Multi-agent systems" = { group = "agents", kind = "concept" }
+"MCP" = { group = "agents", kind = "tool" }
+"Model Context Protocol" = { group = "agents", kind = "tool", same_as = "MCP" }
+# AI coding tools
+"AI coding tools" = { group = "ai_dev_tools", kind = "concept" }
+"AI-assisted development tools" = { group = "ai_dev_tools", kind = "concept", same_as = "AI coding tools" }
+"AI productivity tools" = { group = "ai_dev_tools", kind = "concept" }
+"AI development tools" = { group = "ai_dev_tools", kind = "concept", same_as = "AI coding tools" }
+"Claude Code" = { group = "ai_dev_tools", kind = "tool" }
+"GitHub Copilot" = { group = "ai_dev_tools", kind = "tool" }
+"Cursor" = { group = "ai_dev_tools", kind = "tool" }
+"Codex" = { group = "ai_dev_tools", kind = "tool" }
+# Computer vision & imaging
+"Computer Vision" = { group = "cv_imaging", kind = "concept" }
+"Image processing" = { group = "cv_imaging", kind = "concept" }
+"Video compression" = { group = "cv_imaging", kind = "concept" }
+"3D geometry" = { group = "cv_imaging", kind = "concept" }
+"Point clouds" = { group = "cv_imaging", kind = "concept" }
+"Camera calibration" = { group = "cv_imaging", kind = "concept" }
+"Image registration" = { group = "cv_imaging", kind = "concept" }
+"AV1" = { group = "cv_imaging", kind = "tool" }
+# NLP & speech
+"Natural Language Processing" = { group = "nlp_speech", kind = "concept" }
+"multilingual NLP" = { group = "nlp_speech", kind = "concept" }
+# Robotics & autonomy
+"Robotics" = { group = "robotics", kind = "concept" }
+"Sensor fusion" = { group = "robotics", kind = "concept" }
+"Simulation" = { group = "robotics", kind = "concept" }
+"Motion planning" = { group = "robotics", kind = "concept" }
+"Teleoperation" = { group = "robotics", kind = "concept" }
+"Robotics foundation models" = { group = "robotics", kind = "concept" }
+"ROS" = { group = "robotics", kind = "tool" }
+"ROS 2" = { group = "robotics", kind = "tool" }
+"Rosbag" = { group = "robotics", kind = "tool" }
+"Gazebo" = { group = "robotics", kind = "tool" }
+"Isaac Sim" = { group = "robotics", kind = "tool" }
+"MuJoCo" = { group = "robotics", kind = "tool" }
+"CARLA" = { group = "robotics", kind = "tool" }
+"Omniverse" = { group = "robotics", kind = "tool" }
+# Embedded, hardware & firmware
+"Embedded systems" = { group = "embedded_hw", kind = "concept" }
+"Real-time operating systems" = { group = "embedded_hw", kind = "concept" }
+"Device drivers" = { group = "embedded_hw", kind = "concept" }
+"Firmware" = { group = "embedded_hw", kind = "concept" }
+"EDA tools" = { group = "embedded_hw", kind = "concept" }
+"Computer architecture" = { group = "embedded_hw", kind = "concept" }
+"Secure boot" = { group = "embedded_hw", kind = "concept" }
+"I2C" = { group = "embedded_hw", kind = "tool" }
+"SPI" = { group = "embedded_hw", kind = "tool" }
+"UART" = { group = "embedded_hw", kind = "tool" }
+"USB" = { group = "embedded_hw", kind = "tool" }
+"CAN" = { group = "embedded_hw", kind = "tool" }
+"PCIe" = { group = "embedded_hw", kind = "tool" }
+"DMA" = { group = "embedded_hw", kind = "tool" }
+"JTAG" = { group = "embedded_hw", kind = "tool" }
+"VxWorks" = { group = "embedded_hw", kind = "tool" }
+"Green Hills INTEGRITY" = { group = "embedded_hw", kind = "tool" }
+"RISC-V" = { group = "embedded_hw", kind = "tool" }
+"Qt" = { group = "embedded_hw", kind = "tool" }
+# Systems, performance & GPU
+"Operating systems" = { group = "systems_perf", kind = "concept" }
+"Concurrency" = { group = "systems_perf", kind = "concept" }
+"Multithreading" = { group = "systems_perf", kind = "concept", same_as = "Concurrency" }
+"Memory management" = { group = "systems_perf", kind = "concept" }
+"Performance analysis" = { group = "systems_perf", kind = "concept" }
+"Systems programming" = { group = "systems_perf", kind = "concept" }
+"Compilers" = { group = "systems_perf", kind = "concept" }
+"GPU computing" = { group = "systems_perf", kind = "concept" }
+"GPU architecture" = { group = "systems_perf", kind = "concept" }
+"HPC" = { group = "systems_perf", kind = "concept" }
+"Linux kernel" = { group = "systems_perf", kind = "concept" }
+"Compiler technologies" = { group = "systems_perf", kind = "concept" }
+"GPU acceleration" = { group = "systems_perf", kind = "concept" }
+"CUDA" = { group = "systems_perf", kind = "tool" }
+"LLVM" = { group = "systems_perf", kind = "tool" }
+"Gdb" = { group = "systems_perf", kind = "tool" }
+"Perf" = { group = "systems_perf", kind = "tool" }
+"Ftrace" = { group = "systems_perf", kind = "tool" }
+"eBPF" = { group = "systems_perf", kind = "tool" }
+"OpenMP" = { group = "systems_perf", kind = "tool" }
+"SYCL" = { group = "systems_perf", kind = "tool" }
+"Clang" = { group = "systems_perf", kind = "tool" }
+# Networking & protocols
+"Networking" = { group = "networking", kind = "concept" }
+"TCP/IP" = { group = "networking", kind = "concept" }
+"TCP/UDP" = { group = "networking", kind = "concept" }
+"Ethernet" = { group = "networking", kind = "concept" }
+"QUIC" = { group = "networking", kind = "concept" }
+"Core network" = { group = "networking", kind = "concept" }
+"3GPP" = { group = "networking", kind = "concept" }
+"O-RAN" = { group = "networking", kind = "concept" }
+"Wireshark" = { group = "networking", kind = "tool" }
+"Tcpdump" = { group = "networking", kind = "tool" }
+"DDS" = { group = "networking", kind = "tool" }
+"Ns-3" = { group = "networking", kind = "tool" }
+# Security & identity
+"Security" = { group = "security_identity", kind = "concept" }
+"SSO" = { group = "security_identity", kind = "concept" }
+"TLS" = { group = "security_identity", kind = "concept" }
+"JWT" = { group = "security_identity", kind = "tool" }
+"OAuth 2.0" = { group = "security_identity", kind = "tool" }
+"OAuth" = { group = "security_identity", kind = "tool", same_as = "OAuth 2.0" }
+"OpenID Connect" = { group = "security_identity", kind = "tool" }
+"OIDC" = { group = "security_identity", kind = "tool", same_as = "OpenID Connect" }
+"Microsoft Entra ID" = { group = "security_identity", kind = "tool" }
+"CompTIA Security+" = { group = "security_identity", kind = "tool" }
+# CS fundamentals & software design
+"Data Structures and Algorithms" = { group = "cs_fundamentals", kind = "concept" }
+"Object-oriented programming" = { group = "cs_fundamentals", kind = "concept" }
+"Object-oriented design" = { group = "cs_fundamentals", kind = "concept" }
+"Software engineering" = { group = "cs_fundamentals", kind = "concept" }
+"Design patterns" = { group = "cs_fundamentals", kind = "concept" }
+"Debugging" = { group = "cs_fundamentals", kind = "concept" }
+"Software debugging" = { group = "cs_fundamentals", kind = "concept", same_as = "Debugging" }
+"Graph algorithms" = { group = "cs_fundamentals", kind = "concept" }
+"Modular design" = { group = "cs_fundamentals", kind = "concept" }
+"Software development lifecycle" = { group = "cs_fundamentals", kind = "concept" }
+"Open systems architecture" = { group = "cs_fundamentals", kind = "concept" }
+"Software integration" = { group = "cs_fundamentals", kind = "concept" }
+# Process & collaboration tools
+"Agile" = { group = "process", kind = "concept" }
+"Scrum" = { group = "process", kind = "concept" }
+"Waterfall" = { group = "process", kind = "concept" }
+"SAFe" = { group = "process", kind = "concept" }
+"Agile software development" = { group = "process", kind = "concept" }
+"Code review" = { group = "process", kind = "concept" }
+"Jira" = { group = "process", kind = "tool" }
+# Enterprise platforms
+"Workflow automation" = { group = "enterprise_platforms", kind = "concept" }
+"Power Automate" = { group = "enterprise_platforms", kind = "tool" }
+"SharePoint" = { group = "enterprise_platforms", kind = "tool" }
+"Microsoft 365" = { group = "enterprise_platforms", kind = "tool" }
+"Copilot Studio" = { group = "enterprise_platforms", kind = "tool" }
+"Salesforce" = { group = "enterprise_platforms", kind = "tool" }
+"Microsoft Graph" = { group = "enterprise_platforms", kind = "tool" }
+"WPF" = { group = "enterprise_platforms", kind = "tool" }
+"Visual Studio" = { group = "enterprise_platforms", kind = "tool" }
+"Unity" = { group = "enterprise_platforms", kind = "tool" }
+# Mobile
+"Android" = { group = "mobile", kind = "tool" }
+"iOS" = { group = "mobile", kind = "tool" }
+"React Native" = { group = "mobile", kind = "tool" }
+# Geospatial
+"Geospatial analysis" = { group = "geospatial", kind = "concept" }
+# Recommendation, ads & growth modeling
+"Recommendation systems" = { group = "recsys_ads", kind = "concept" }
+"Recommender systems" = { group = "recsys_ads", kind = "concept", same_as = "Recommendation systems" }
+"Uplift modeling" = { group = "recsys_ads", kind = "concept" }
+"LTV estimation" = { group = "recsys_ads", kind = "concept" }
+"Advertising" = { group = "recsys_ads", kind = "concept" }
+"Knowledge graphs" = { group = "recsys_ads", kind = "concept" }
+# Health data standards
+"DICOM" = { group = "health_data", kind = "tool" }
+"FHIR" = { group = "health_data", kind = "tool" }
+"HL7" = { group = "health_data", kind = "tool" }

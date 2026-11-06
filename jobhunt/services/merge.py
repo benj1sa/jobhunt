@@ -16,7 +16,17 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 from ..models.base import Base
 from ..models.enums import LeadStatus
-from ..models.pipeline import IngestRun, Job, JobExtraction, JobScreen, JobSkill, JobSnapshot, Lead
+from ..models.pipeline import (
+    IngestRun,
+    Job,
+    JobCapability,
+    JobExtraction,
+    JobScreen,
+    JobSkill,
+    JobSnapshot,
+    Lead,
+    WatchedBoard,
+)
 
 logger = getLogger(__name__)
 
@@ -32,6 +42,7 @@ class MergeStats:
     extractions_new: int = 0
     screens_new: int = 0
     runs_new: int = 0
+    boards_new: int = 0
 
 
 def _copy(model: type[M], row: Base, **overrides: Any) -> M:
@@ -157,6 +168,38 @@ async def merge_database(local: AsyncSession, remote_path: Path) -> MergeStats:
                             extraction_id=extraction_map[rskill.extraction_id],
                         )
                     )
+
+            for rcap in (await remote.execute(select(JobCapability))).scalars().all():
+                if rcap.extraction_id in extraction_map:
+                    local.add(
+                        _copy(
+                            JobCapability,
+                            rcap,
+                            id=uuid4(),
+                            job_id=job_map[rcap.job_id],
+                            extraction_id=extraction_map[rcap.extraction_id],
+                        )
+                    )
+
+            # Watched boards: newest poll wins, except that a status you set by hand locally is kept.
+            for rboard in (await remote.execute(select(WatchedBoard))).scalars().all():
+                lboard = (
+                    await local.execute(
+                        select(WatchedBoard).where(
+                            and_(WatchedBoard.ats == rboard.ats, WatchedBoard.token == rboard.token)
+                        )
+                    )
+                ).scalar_one_or_none()
+                if lboard is None:
+                    local.add(_copy(WatchedBoard, rboard, id=uuid4()))
+                    stats.boards_new += 1
+                    continue
+                remote_polled, local_polled = rboard.last_polled_at, lboard.last_polled_at
+                if remote_polled is not None and (local_polled is None or remote_polled > local_polled):
+                    for attr in ("last_polled_at", "last_ok_at", "last_lead_at", "consecutive_failures", "items_last"):
+                        setattr(lboard, attr, getattr(rboard, attr))
+                    if "by hand" not in (lboard.status_reason or ""):
+                        lboard.status, lboard.status_reason = rboard.status, rboard.status_reason
 
             for rrun in (await remote.execute(select(IngestRun))).scalars().all():
                 if await local.get(IngestRun, rrun.id) is None:

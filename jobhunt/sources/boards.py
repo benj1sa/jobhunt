@@ -20,6 +20,7 @@ class BoardSource(Source):
 
     async def fetch(self, client: HttpClient) -> list[RawLead]:
         postings = await list_board(client, self.board.ats, self.board.token)
+        self.items_fetched = len(postings)
         leads: list[RawLead] = []
         for posting in postings:
             if not (title_passes(posting.title) and location_passes(posting.location)):

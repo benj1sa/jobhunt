@@ -92,6 +92,7 @@ async def test_board_source_filters_titles_and_locations():
         leads = await source.fetch(client)
     assert [lead.title for lead in leads] == ["AI Engineer"]
     assert leads[0].ats_ref is not None and leads[0].description_text
+    assert source.items_fetched == 3
 
 
 @pytest.mark.asyncio

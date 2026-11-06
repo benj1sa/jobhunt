@@ -83,10 +83,39 @@ def test_jev_probe_writes_separate_payloads_without_sending(tmp_path: Path):
     assert result.exit_code == 0, result.output
     screen = json.loads((out / f"{job_id}.screen.request.json").read_text())
     fit = json.loads((out / f"{job_id}.fit.request.json").read_text())
-    assert set(screen["questions"]) == {"software_ai_ml_role", "internship", "us_location", "experience_level"}
+    assert set(screen["questions"]) == {
+        "software_ai_ml_role",
+        "internship",
+        "us_location",
+        "open_to_new_grads",
+        "experience_level",
+    }
     assert "mentorship" in fit["questions"]
     assert not list(out.glob("*.response.json"))
 
 
 def test_jev_probe_send_requires_key():
     assert runner.invoke(app, ["jev-probe", "--send"]).exit_code == 1
+
+
+def test_capability_and_grouped_skill_commands_run_on_empty_data():
+    assert runner.invoke(app, ["skills"]).exit_code == 0
+    assert runner.invoke(app, ["skills", "--unsorted", "--json"]).exit_code == 0
+    assert runner.invoke(app, ["skills", "--group", "nope"]).exit_code == 1
+    result = runner.invoke(app, ["capabilities"])
+    assert result.exit_code == 0 and "No capability evidence yet" in result.output
+    assert runner.invoke(app, ["capabilities", "customer_iteration", "--json"]).exit_code == 0
+    assert runner.invoke(app, ["capabilities", "not_a_capability"]).exit_code == 1
+    assert runner.invoke(app, ["skills-classify"]).exit_code == 1  # no API key in tests
+
+
+def test_boards_commands():
+    assert runner.invoke(app, ["boards", "add", "greenhouse:clitestco"]).exit_code == 0
+    assert "already watched" in runner.invoke(app, ["boards", "add", "greenhouse:clitestco"]).output
+    assert runner.invoke(app, ["boards", "pause", "greenhouse:clitestco"]).exit_code == 0
+    assert runner.invoke(app, ["boards", "resume", "https://job-boards.greenhouse.io/clitestco/jobs/1"]).exit_code == 0
+    assert runner.invoke(app, ["boards", "pause", "greenhouse:not-watched"]).exit_code == 1
+    assert runner.invoke(app, ["boards", "add", "workday:umd"]).exit_code == 1
+    summary = runner.invoke(app, ["boards"])
+    assert summary.exit_code == 0 and "Watched boards" in summary.output
+    assert runner.invoke(app, ["health", "--boards"]).exit_code == 0

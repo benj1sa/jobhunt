@@ -16,7 +16,7 @@ from jobhunt.services.extraction import extract_jobs
 from jobhunt.services.fit import LlmFitProvider
 from jobhunt.services.http import HttpClient
 from jobhunt.services.jobs import attach_url, hydrate_jobs, ingest, resolve_leads, upsert_leads
-from jobhunt.services.llm import OpenRouterClient
+from jobhunt.services.llm import LlmConfigError, OpenRouterClient
 from jobhunt.services.queue import build_queue, record_review, skill_report, source_health
 from jobhunt.services.scoring import score_jobs
 from jobhunt.sources.base import RawLead, Source
@@ -236,3 +236,121 @@ async def test_queue_hides_irrelevant_jobs(db_session, requirements, profile):
     )
     await db_session.commit()
     assert await build_queue(db_session, profile.content_hash, include_reviewed=True, include_unscored=True) == []
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_openrouter_404_stops_extraction_with_its_message(db_session, aliases):
+    for n in (1, 2, 3):
+        await upsert_leads(
+            db_session,
+            [lead(f"https://job-boards.greenhouse.io/acme/jobs/{n}", company="Acme", description_text="ML role.")],
+        )
+    await db_session.commit()
+    await resolve_leads(db_session, [], client=None)
+    route = respx.post("https://openrouter.test/chat/completions").respond(
+        404, json={"error": {"message": "No endpoints found that can handle the requested parameters."}}
+    )
+    async with HttpClient() as client:
+        llm = OpenRouterClient(client, SecretStr("k"), "https://openrouter.test")
+        with pytest.raises(LlmConfigError, match="No endpoints found"):
+            await extract_jobs(db_session, llm, "anthropic/claude-haiku-5.5", aliases, max_chars=1000)
+    assert route.call_count == 1  # stopped at the first job instead of failing all of them
+    body = route.calls[0].request.content
+    assert b"temperature" not in body
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_one_failed_extraction_does_not_break_the_next(db_session, requirements: JobRequirements, aliases):
+    # Regression: after a failed job, reading ORM attributes raised MissingGreenlet and crashed the run.
+    for n in (1, 2):
+        await upsert_leads(
+            db_session,
+            [lead(f"https://job-boards.greenhouse.io/acme/jobs/{n}", company="Acme", description_text=f"Role {n}.")],
+        )
+    await db_session.commit()
+    await resolve_leads(db_session, [], client=None)
+    bad = httpx.Response(200, json=openrouter_reply("{}"))
+    good = httpx.Response(200, json=openrouter_reply(requirements.model_dump_json()))
+    respx.post("https://openrouter.test/chat/completions").mock(side_effect=[bad, bad, good])
+    async with HttpClient() as client:
+        llm = OpenRouterClient(client, SecretStr("k"), "https://openrouter.test")
+        stats = await extract_jobs(db_session, llm, "m", aliases, max_chars=1000)
+    assert (stats.extracted, stats.failed) == (1, 1)
+    assert "Acme - AI Engineer" in stats.errors[0]
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_hydration_groups_failure_reasons(db_session):
+    await upsert_leads(
+        db_session, [lead("https://careers.example.com/jobs/1"), lead("https://careers.example.com/jobs/2")]
+    )
+    await db_session.commit()
+    await resolve_leads(db_session, [], client=None)
+    respx.get("https://careers.example.com/jobs/1").respond(403)
+    respx.get("https://careers.example.com/jobs/2").respond(200, text="<div id='app'></div>")
+    async with HttpClient() as client:
+        stats = await hydrate_jobs(db_session, client)
+    assert stats.reasons == {"careers.example.com: HTTP 403": 1, "careers.example.com: JavaScript-only page": 1}
+
+
+class FilteredOutSource(Source):
+    """A working board whose postings all fail the filters."""
+
+    name = "board:greenhouse:quiet"
+
+    async def fetch(self, client: HttpClient) -> list[RawLead]:
+        self.items_fetched = 4
+        return []
+
+
+class EmptySource(Source):
+    name = "board:greenhouse:empty"
+
+    async def fetch(self, client: HttpClient) -> list[RawLead]:
+        self.items_fetched = 0
+        return []
+
+
+@pytest.mark.asyncio
+async def test_health_separates_no_matches_from_broken_and_ignores_removed_sources(db_session):
+    async with HttpClient() as client:
+        await ingest(db_session, client, [BrokenSource()])
+        for _ in range(3):
+            await ingest(db_session, client, [FilteredOutSource(), EmptySource()])
+    configured = {"board:greenhouse:quiet", "board:greenhouse:empty"}  # "broken" was removed from config
+    health = {row.source: row for row in await source_health(db_session, configured=configured)}
+    assert health["board:greenhouse:quiet"].healthy and health["board:greenhouse:quiet"].last_fetched == 4
+    assert not health["board:greenhouse:empty"].healthy and health["board:greenhouse:empty"].zero_streak == 3
+    assert not health["broken"].configured and health["broken"].healthy
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_concurrent_extraction_isolates_failures(db_session, requirements: JobRequirements, aliases):
+    for n in (1, 2, 3, 4):
+        await upsert_leads(
+            db_session,
+            [
+                lead(
+                    f"https://job-boards.greenhouse.io/acme/jobs/{n}", company=f"Acme{n}", description_text=f"Role {n}."
+                )
+            ],
+        )
+    await db_session.commit()
+    await resolve_leads(db_session, [], client=None)
+
+    def answer(request: httpx.Request) -> httpx.Response:
+        body = request.content.decode()
+        if "Acme2" in body:
+            return httpx.Response(200, json=openrouter_reply("{}"))  # invalid every time -> fails after retry
+        return httpx.Response(200, json=openrouter_reply(requirements.model_dump_json()))
+
+    respx.post("https://openrouter.test/chat/completions").mock(side_effect=answer)
+    async with HttpClient() as client:
+        llm = OpenRouterClient(client, SecretStr("k"), "https://openrouter.test")
+        stats = await extract_jobs(db_session, llm, "m", aliases, max_chars=1000, concurrency=3)
+    assert (stats.extracted, stats.failed) == (3, 1)
+    assert "Acme2" in stats.errors[0]

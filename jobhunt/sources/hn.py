@@ -80,8 +80,10 @@ class HackerNewsSource(Source):
         )
         threads = [hit for hit in search.get("hits", []) if "who is hiring" in (hit.get("title") or "").lower()]
         leads: list[RawLead] = []
+        self.items_fetched = 0
         for thread in threads[: settings.hn_months_back]:
             item = await client.get_json(f"{ALGOLIA}/items/{thread['objectID']}")
+            self.items_fetched += len(item.get("children") or [])
             for comment in item.get("children") or []:
                 if lead := parse_comment(comment):
                     leads.append(lead)

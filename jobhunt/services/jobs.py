@@ -4,6 +4,7 @@ The three stages are separate functions so each can be re-run on its own and eve
 """
 
 import asyncio
+from collections import Counter
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
@@ -14,6 +15,7 @@ from uuid import UUID
 import httpx
 from sqlalchemy import and_, exists, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from yarl import URL
 
 from ..models.enums import Ats, JobStatus, LeadStatus, RunStatus
 from ..models.pipeline import IngestRun, Job, JobSnapshot, Lead
@@ -55,6 +57,8 @@ class IngestResult:
     seen: int = 0
     new: int = 0
     error: str | None = None
+    items: int | None = None
+    not_found: bool = False
 
 
 async def upsert_leads(session: AsyncSession, leads: Sequence[RawLead]) -> int:
@@ -117,16 +121,29 @@ async def ingest(session: AsyncSession, client: HttpClient, sources: Sequence[So
     results: list[IngestResult] = []
     for source, run, outcome in zip(sources, runs, fetched, strict=True):
         if isinstance(outcome, BaseException):
-            logger.error("Source %s failed: %r", source.name, outcome, exc_info=outcome)
+            # HTTP failures are expected (a moved board, an outage); a traceback adds nothing. Bugs keep theirs.
+            expected = isinstance(outcome, (NotFoundError, httpx.HTTPError))
+            logger.error("Source %s failed: %s", source.name, outcome, exc_info=None if expected else outcome)
             run.status = RunStatus.FAILED
             run.error = f"{type(outcome).__name__}: {outcome}"[:2000]
         else:
+            run.items_fetched = source.items_fetched
             run.leads_seen = len(outcome)
             run.leads_new = await upsert_leads(session, outcome)
             run.status = RunStatus.OK
         run.finished_at = utcnow()
         await session.commit()
-        results.append(IngestResult(source.name, run.status, run.leads_seen, run.leads_new, run.error))
+        results.append(
+            IngestResult(
+                source.name,
+                run.status,
+                run.leads_seen,
+                run.leads_new,
+                run.error,
+                items=run.items_fetched,
+                not_found=isinstance(outcome, NotFoundError),
+            )
+        )
     return results
 
 
@@ -139,6 +156,7 @@ class ResolveStats:
     needs_url: int = 0
     failed: int = 0
     new_jobs: int = 0
+    boards_discovered: int = 0
     errors: list[str] = field(default_factory=list)
 
 
@@ -273,6 +291,10 @@ async def resolve_leads(
                 stats.resolved += 1
                 stats.new_jobs += int(created)
         await session.commit()
+    # Watch the full board of every company a lead just led us to (imported here to avoid an import cycle).
+    from .boards import discover_boards
+
+    stats.boards_discovered = await discover_boards(session, boards)
     return stats
 
 
@@ -300,6 +322,12 @@ class HydrateStats:
     closed: int = 0
     failed: int = 0
     errors: list[str] = field(default_factory=list)
+    reasons: Counter[str] = field(default_factory=Counter)
+
+    def note_failure(self, url: str, reason: str) -> None:
+        self.failed += 1
+        self.errors.append(f"{url}: {reason}")
+        self.reasons[f"{URL(url).host or '?'}: {reason[:70]}"] += 1
 
 
 async def _fetch_for_job(client: HttpClient, job: Job) -> AtsPosting | tuple[str, str]:
@@ -338,13 +366,12 @@ async def hydrate_jobs(
         elif isinstance(outcome, NotFoundError):
             # Never fetched successfully: more likely a wrong board slug than a closed job. Keep it open.
             job.hydrate_error = f"{outcome} (never fetched before: check the board slug or attach the link by hand)"
-            stats.failed += 1
-            stats.errors.append(f"{job.posting_url}: {job.hydrate_error}")
+            stats.note_failure(job.posting_url, "404 on first fetch")
         elif isinstance(outcome, BaseException):
-            logger.warning("Hydration failed for %s: %r", job.posting_url, outcome)
+            logger.debug("Hydration failed for %s: %r", job.posting_url, outcome)
             job.hydrate_error = f"{type(outcome).__name__}: {outcome}"[:2000]
-            stats.failed += 1
-            stats.errors.append(f"{job.posting_url}: {job.hydrate_error}")
+            status = outcome.response.status_code if isinstance(outcome, httpx.HTTPStatusError) else None
+            stats.note_failure(job.posting_url, f"HTTP {status}" if status else type(outcome).__name__)
         elif isinstance(outcome, AtsPosting):
             job.title = outcome.title or job.title
             if outcome.company and job.company in ("", "Unknown"):
@@ -360,7 +387,7 @@ async def hydrate_jobs(
             _final_url, text = outcome
             if len(text) < MIN_DESCRIPTION_CHARS:
                 job.hydrate_error = "Page has too little text (likely rendered by JavaScript); open it manually."
-                stats.failed += 1
+                stats.note_failure(job.posting_url, "JavaScript-only page")
             else:
                 snapshot = await add_snapshot(session, job, text, {"source_url": job.posting_url})
                 stats.hydrated += int(snapshot is not None)

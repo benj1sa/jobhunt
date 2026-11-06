@@ -28,28 +28,31 @@ specific companies' Greenhouse, Lever or Ashby boards.
 
 ## Daily use
 
-| Task                                   | Command                                                         |
-| -------------------------------------- | --------------------------------------------------------------- |
-| Add a job you saw (Slack, a friend, …) | `jobhunt add <url> -c Company -t "Title" -s "ColorStack Slack"` |
-| See links that need a real posting URL | `jobhunt unresolved`                                            |
-| Attach the company's ATS link to one   | `jobhunt resolve <lead-id> <ats-url>`                           |
-| Pull what the scheduled run found      | `make pull-data`, then `jobhunt score`                          |
-| Review                                 | `jobhunt review` (o open, a apply, d applied, l later, s skip)  |
-| Which skills to build projects around  | `jobhunt skills --gaps`                                         |
-| Is every source still working?         | `jobhunt health`                                                |
-| Export the queue                       | `jobhunt export > queue.csv`                                    |
+| Task                                            | Command                                                         |
+| ----------------------------------------------- | --------------------------------------------------------------- |
+| Add a job you saw (Slack, a friend, …)          | `jobhunt add <url> -c Company -t "Title" -s "ColorStack Slack"` |
+| See links that need a real posting URL          | `jobhunt unresolved`                                            |
+| Attach the company's ATS link to one            | `jobhunt resolve <lead-id> <ats-url>`                           |
+| Pull what the scheduled run found               | `make pull-data`, then `jobhunt score`                          |
+| Review                                          | `jobhunt review` (o open, a apply, d applied, l later, s skip)  |
+| Skill areas and the specific tools jobs ask for | `jobhunt skills`, then `jobhunt skills --group cloud`           |
+| Skills you don't list yet                       | `jobhunt skills --gaps` (or `--flat --gaps`)                    |
+| What jobs expect you to _do_, with every phrase | `jobhunt capabilities`, then `jobhunt capabilities <id>`        |
+| Sort new skills into groups                     | `jobhunt skills --unsorted`, `jobhunt skills-classify`          |
+| Is every source still working?                  | `jobhunt health`                                                |
+| Export the queue                                | `jobhunt export > queue.csv`                                    |
 
 ## Sources
 
-| Source                                  | How                                               | Automatic    |
-| --------------------------------------- | ------------------------------------------------- | ------------ |
-| SimplifyJobs New-Grad-Positions         | `listings.json` from GitHub                       | yes          |
-| Hacker News "Who is hiring?"            | Algolia HN API, entry-level comments only         | yes          |
-| Company boards                          | Greenhouse, Lever, Ashby public APIs              | yes          |
-| Greenhouse, Lever, Ashby, Workday links | Resolved and fetched from any source              | yes          |
-| BuiltIn, Idealist, Vaia                 | Page fetched, ATS link extracted when present     | yes          |
-| LinkedIn, Wellfound, Indeed             | Saved as `needs_url`; attach the ATS link by hand | no (blocked) |
-| Slack, CodePath, ColorStack             | `jobhunt add` or `import-csv`                     | manual       |
+| Source                                  | How                                                                                                                                                                                                                  | Automatic    |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| SimplifyJobs New-Grad-Positions         | `listings.json` from GitHub                                                                                                                                                                                          | yes          |
+| Hacker News "Who is hiring?"            | Algolia HN API, entry-level comments only                                                                                                                                                                            | yes          |
+| Company boards                          | Greenhouse, Lever, Ashby public APIs: `config/boards.toml` plus a self-maintaining watchlist (`jobhunt boards`) seeded from every company that has posted early-career roles on SimplifyJobs and grown by every lead | yes          |
+| Greenhouse, Lever, Ashby, Workday links | Resolved and fetched from any source                                                                                                                                                                                 | yes          |
+| BuiltIn, Idealist, Vaia                 | Page fetched, ATS link extracted when present                                                                                                                                                                        | yes          |
+| LinkedIn, Wellfound, Indeed             | Saved as `needs_url`; attach the ATS link by hand                                                                                                                                                                    | no (blocked) |
+| Slack, CodePath, ColorStack             | `jobhunt add` or `import-csv`                                                                                                                                                                                        | manual       |
 
 ## Scheduled runs
 

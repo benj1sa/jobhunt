@@ -46,3 +46,17 @@ class ScreenOutcome(StrEnum):
     PASS = "pass"
     UNSETTLED = "unsettled"
     REJECT = "reject"
+
+
+class BoardOrigin(StrEnum):
+    """How a company board got onto the watchlist."""
+
+    DISCOVERED = "discovered"  # a lead from any source resolved to this board
+    SEED = "seed"  # imported from a seed list in config/board_seeds.toml
+    MANUAL = "manual"  # added with `jobhunt boards add`
+
+
+class BoardStatus(StrEnum):
+    ACTIVE = "active"
+    PAUSED = "paused"  # no matching jobs for a long time; reactivated when a new lead points at it
+    DEAD = "dead"  # board not found repeatedly (moved, renamed or closed)

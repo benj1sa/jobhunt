@@ -7,13 +7,22 @@ from logging import getLogger
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..schemas.config import BoardConfig, load_boards, load_skill_aliases
+from ..schemas.config import (
+    BoardConfig,
+    Capability,
+    SkillTaxonomy,
+    load_boards,
+    load_capabilities,
+    load_skill_aliases,
+    load_skill_taxonomy,
+)
 from ..schemas.profile import Profile, load_profile
 from ..settings import settings
 from ..sources.base import Source
 from ..sources.boards import BoardSource
 from ..sources.hn import HackerNewsSource
 from ..sources.simplify import SimplifySource
+from .boards import watched_sources
 from .db import get_session
 from .fit import FitProvider, JevFitProvider, LlmFitProvider
 from .http import HttpClient
@@ -34,6 +43,12 @@ class AppContext:
     boards: list[BoardConfig]
     aliases: dict[str, str]
 
+    def taxonomy(self) -> SkillTaxonomy:
+        return load_skill_taxonomy(settings.skill_groups_path)
+
+    def capabilities(self) -> list[Capability]:
+        return load_capabilities(settings.capabilities_path)
+
     def profile(self) -> Profile:
         return load_profile(settings.profile_path)
 
@@ -51,6 +66,13 @@ class AppContext:
                 raise ValueError("fit provider 'openrouter' needs OPENROUTER_API_KEY")
             return LlmFitProvider(self.llm, settings.fit_model)
         return None
+
+    async def all_sources(self, groups: list[str] | None = None) -> list[Source]:
+        """Configured sources plus every active watched board (when the "boards" group is included)."""
+        sources = self.sources(groups)
+        if groups is None or "boards" in groups:
+            sources.extend(await watched_sources(self.session, self.boards, settings.max_active_boards))
+        return sources
 
     def sources(self, groups: list[str] | None = None) -> list[Source]:
         selected = set(groups or SOURCE_GROUPS)

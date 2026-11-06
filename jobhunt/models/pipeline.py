@@ -14,7 +14,7 @@ from sqlalchemy import JSON, DateTime, Enum, Float, ForeignKey, Integer, String,
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .base import Base
-from .enums import Ats, Decision, JobStatus, LeadStatus, RunStatus, ScreenOutcome
+from .enums import Ats, BoardOrigin, BoardStatus, Decision, JobStatus, LeadStatus, RunStatus, ScreenOutcome
 
 
 def utcnow() -> datetime:
@@ -41,9 +41,37 @@ class IngestRun(Base):
     status: Mapped[RunStatus] = mapped_column(db_enum(RunStatus), nullable=False, default=RunStatus.RUNNING)
     leads_seen: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     leads_new: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    # Raw items the source returned before filtering (null for runs recorded before this column existed).
+    items_fetched: Mapped[int | None] = mapped_column(Integer, nullable=True)
     error: Mapped[str | None] = mapped_column(Text, nullable=True)
     started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=utcnow)
     finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class WatchedBoard(Base):
+    """A company's whole Greenhouse, Lever or Ashby board, polled on every ingest.
+
+    Boards in config/boards.toml are always polled and are not stored here. `token` is stored lowercased.
+    """
+
+    __tablename__ = "watched_board"
+    __table_args__ = (UniqueConstraint("ats", "token", name="uq_watched_board_ats_token"),)
+
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    ats: Mapped[str] = mapped_column(String(16), nullable=False)
+    token: Mapped[str] = mapped_column(String(256), nullable=False)
+    company: Mapped[str] = mapped_column(String(256), nullable=False)
+    origin: Mapped[BoardOrigin] = mapped_column(db_enum(BoardOrigin), nullable=False)
+    origin_detail: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    status: Mapped[BoardStatus] = mapped_column(db_enum(BoardStatus), nullable=False, default=BoardStatus.ACTIVE)
+    status_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    added_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=utcnow)
+    last_polled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_ok_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    # Last time the board produced at least one lead that passed the title and location filters.
+    last_lead_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    consecutive_failures: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    items_last: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
 
 class Job(Base):
@@ -168,6 +196,24 @@ class JobSkill(Base):
     )
     skill: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
     required: Mapped[bool] = mapped_column(nullable=False)
+
+
+class JobCapability(Base):
+    """A verbatim phrase from a posting and one capability it shows. A phrase tagged with two capabilities is two rows.
+
+    `verbatim` is False when the phrase could not be found in the snapshot text, i.e. the model paraphrased.
+    """
+
+    __tablename__ = "job_capability"
+
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    job_id: Mapped[UUID] = mapped_column(ForeignKey("job.id", ondelete="CASCADE"), nullable=False, index=True)
+    extraction_id: Mapped[UUID] = mapped_column(
+        ForeignKey("job_extraction.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    capability: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    phrase: Mapped[str] = mapped_column(Text, nullable=False)
+    verbatim: Mapped[bool] = mapped_column(nullable=False)
 
 
 class JobScore(Base):

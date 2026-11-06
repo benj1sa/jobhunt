@@ -7,7 +7,10 @@ from pathlib import Path
 # database before anything from `jobhunt` is imported.
 _TEST_DIR = Path(tempfile.mkdtemp(prefix="jobhunt-tests-"))
 os.environ["DATABASE_URL"] = f"sqlite:///{_TEST_DIR / 'cli.db'}"
-os.environ.pop("OPENROUTER_API_KEY", None)
+# Never read the developer's real .env: tests must not see (or spend) real API keys.
+os.environ["JOBHUNT_ENV_FILE"] = str(_TEST_DIR / "no.env")
+for _key in ("OPENROUTER_API_KEY", "TYPESAFE_API_KEY", "FIT_PROVIDER", "EXTRACTION_MODEL", "JEV_MODEL"):
+    os.environ.pop(_key, None)
 
 import pytest
 import pytest_asyncio

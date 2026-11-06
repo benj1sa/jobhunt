@@ -62,6 +62,12 @@ jobs:
       - name: Migrate database
         run: uv run jobhunt migrate
 
+      - name: Refresh board seeds (Sundays or on request)
+        run: |
+          if [ "$(date -u +%u)" = "7" ] || [ "${{ github.event.inputs.refresh }}" = "true" ]; then
+            uv run jobhunt boards seed
+          fi
+
       - name: Run pipeline (ingest, resolve, hydrate, screen, extract)
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}

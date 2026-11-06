@@ -11,8 +11,20 @@ from sqlalchemy import and_, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..models.enums import Decision, JobStatus, LeadStatus, ScreenOutcome
-from ..models.pipeline import IngestRun, Job, JobExtraction, JobScore, JobScreen, JobSkill, JobSnapshot, Lead, Review
+from ..models.pipeline import (
+    IngestRun,
+    Job,
+    JobCapability,
+    JobExtraction,
+    JobScore,
+    JobScreen,
+    JobSkill,
+    JobSnapshot,
+    Lead,
+    Review,
+)
 from ..questions import SCREEN_VERSION
+from ..schemas.config import SkillTaxonomy, skill_key
 
 
 @dataclass
@@ -163,17 +175,33 @@ class SourceHealth:
     last_run: datetime | None
     last_status: str
     last_error: str | None
+    last_fetched: int | None
     last_seen: int
     avg_seen: float
     zero_streak: int
+    configured: bool = True
 
     @property
     def healthy(self) -> bool:
+        """Removed sources never count. Otherwise: last run succeeded and it hasn't come back empty 3 times running."""
+        if not self.configured:
+            return True
         return self.last_status == "ok" and self.zero_streak < 3
 
 
-async def source_health(session: AsyncSession, window_days: int = 30) -> list[SourceHealth]:
-    """Per-source summary of recent ingest runs. Three zero-lead runs in a row counts as unhealthy."""
+def _fetched_nothing(run: IngestRun) -> bool:
+    # Prefer the raw count: a board with postings but no entry-level matches is healthy.
+    return run.items_fetched == 0 if run.items_fetched is not None else run.leads_seen == 0
+
+
+async def source_health(
+    session: AsyncSession, window_days: int = 30, configured: set[str] | None = None
+) -> list[SourceHealth]:
+    """Per-source summary of recent ingest runs.
+
+    A source is unhealthy when its last run failed, or when it fetched nothing (not merely matched nothing) three
+    runs in a row. Sources missing from `configured` are reported as removed and never count as unhealthy.
+    """
     since = datetime.now(tz=UTC) - timedelta(days=window_days)
     runs = (
         (
@@ -192,7 +220,7 @@ async def source_health(session: AsyncSession, window_days: int = 30) -> list[So
         latest = source_runs[0]
         zero_streak = 0
         for run in source_runs:
-            if run.status.value == "ok" and run.leads_seen == 0:
+            if run.status.value == "ok" and _fetched_nothing(run):
                 zero_streak += 1
             else:
                 break
@@ -203,9 +231,11 @@ async def source_health(session: AsyncSession, window_days: int = 30) -> list[So
                 last_run=latest.started_at,
                 last_status=latest.status.value,
                 last_error=latest.error,
+                last_fetched=latest.items_fetched,
                 last_seen=latest.leads_seen,
                 avg_seen=sum(run.leads_seen for run in ok_runs) / len(ok_runs) if ok_runs else 0.0,
                 zero_streak=zero_streak,
+                configured=configured is None or source in configured,
             )
         )
     return report
@@ -218,28 +248,49 @@ class SkillStat:
     required_in: int
     weighted: float
     have: bool
+    group: str | None = None
+    kind: str | None = None
 
 
-async def skill_report(
-    session: AsyncSession, profile_hash: str, have: set[str], include_skipped: bool = False
-) -> list[SkillStat]:
-    """Skill frequency across relevant open jobs (newest extraction per job).
-
-    `weighted` sums each job's value score (0.5 if unscored), so skills from jobs Ben actually wants count more.
-    Jobs he skipped are excluded unless `include_skipped`.
-    """
+async def _relevant_extractions(session: AsyncSession) -> Any:
+    """Subquery of (extraction id, job id) for the newest relevant extraction of each open job."""
     newest = (
         select(JobExtraction.job_id, func.max(JobExtraction.created_at).label("created_at"))
         .group_by(JobExtraction.job_id)
         .subquery()
     )
-    relevant = (
+    return (
         select(JobExtraction.id, JobExtraction.job_id)
         .join(newest, and_(newest.c.job_id == JobExtraction.job_id, newest.c.created_at == JobExtraction.created_at))
         .join(Job, Job.id == JobExtraction.job_id)
         .where(and_(JobExtraction.is_relevant.is_(True), Job.status == JobStatus.OPEN))
         .subquery()
     )
+
+
+async def _job_values(session: AsyncSession, profile_hash: str) -> dict[UUID, float]:
+    scores = (await session.execute(select(JobScore).where(JobScore.profile_hash == profile_hash))).scalars().all()
+    return {score.job_id: score.value for score in scores}
+
+
+async def _skipped_jobs(session: AsyncSession) -> set[UUID]:
+    return {job_id for job_id, review in (await latest_reviews(session)).items() if review.decision == Decision.SKIP}
+
+
+async def skill_report(
+    session: AsyncSession,
+    profile_hash: str,
+    have: set[str],
+    include_skipped: bool = False,
+    taxonomy: SkillTaxonomy | None = None,
+) -> list[SkillStat]:
+    """Skill frequency across relevant open jobs (newest extraction per job).
+
+    Spellings are merged case- and punctuation-insensitively and through `same_as` in the taxonomy. A job counts
+    once per skill. `weighted` sums each job's value score (0.5 if unscored), so skills from jobs Ben actually
+    wants count more. Jobs he skipped are excluded unless `include_skipped`.
+    """
+    relevant = await _relevant_extractions(session)
     rows = (
         await session.execute(
             select(JobSkill.skill, JobSkill.required, JobSkill.job_id).join(
@@ -247,24 +298,153 @@ async def skill_report(
             )
         )
     ).all()
-    values = {
-        score.job_id: score.value
-        for score in (await session.execute(select(JobScore).where(JobScore.profile_hash == profile_hash)))
-        .scalars()
-        .all()
-    }
-    skipped = set()
-    if not include_skipped:
-        skipped = {
-            job_id for job_id, review in (await latest_reviews(session)).items() if review.decision == Decision.SKIP
-        }
+    values = await _job_values(session, profile_hash)
+    skipped = set() if include_skipped else await _skipped_jobs(session)
+    have_keys = {skill_key(name) for name in have}
 
     stats: dict[str, SkillStat] = {}
+    seen: dict[str, set[UUID]] = defaultdict(set)
     for skill, required, job_id in rows:
         if job_id in skipped:
             continue
-        stat = stats.setdefault(skill, SkillStat(skill, 0, 0, 0.0, skill.lower() in have))
+        cls = taxonomy.classify(skill) if taxonomy else None
+        name = cls.name if cls else skill
+        key = skill_key(name)
+        stat = stats.setdefault(
+            key,
+            SkillStat(
+                name, 0, 0, 0.0, key in have_keys or skill_key(skill) in have_keys, cls.group if cls else None,
+                cls.kind if cls else None,
+            ),
+        )  # fmt: skip
+        if job_id in seen[key]:
+            continue
+        seen[key].add(job_id)
         stat.jobs += 1
         stat.required_in += int(required)
         stat.weighted += values.get(job_id, 0.5)
     return sorted(stats.values(), key=lambda s: (-s.weighted, -s.jobs, s.skill))
+
+
+@dataclass
+class GroupStat:
+    group: str
+    name: str
+    jobs: int = 0
+    weighted: float = 0.0
+    concept_only_jobs: int = 0
+    tools: list[SkillStat] = field(default_factory=list)
+    concepts: list[SkillStat] = field(default_factory=list)
+
+
+async def skill_group_report(
+    session: AsyncSession,
+    profile_hash: str,
+    have: set[str],
+    taxonomy: SkillTaxonomy,
+    include_skipped: bool = False,
+) -> tuple[list[GroupStat], list[SkillStat]]:
+    """Skills rolled up into groups, plus the skills no group claims yet.
+
+    A group's `jobs` counts jobs that mention any of its skills, so a broad "AI" and a specific "SageMaker" in
+    the same posting count once. `concept_only_jobs` are jobs that named only broad concepts in the group, never a
+    specific tool: a hint that the posting cares about the area, not a product.
+    """
+    stats = await skill_report(session, profile_hash, have, include_skipped, taxonomy)
+    relevant = await _relevant_extractions(session)
+    rows = (
+        await session.execute(
+            select(JobSkill.skill, JobSkill.job_id).join(relevant, relevant.c.id == JobSkill.extraction_id)
+        )
+    ).all()
+    values = await _job_values(session, profile_hash)
+    skipped = set() if include_skipped else await _skipped_jobs(session)
+
+    group_jobs: dict[str, set[UUID]] = defaultdict(set)
+    tool_jobs: dict[str, set[UUID]] = defaultdict(set)
+    for skill, job_id in rows:
+        if job_id in skipped:
+            continue
+        cls = taxonomy.classify(skill)
+        if cls is None:
+            continue
+        group_jobs[cls.group].add(job_id)
+        if cls.kind == "tool":
+            tool_jobs[cls.group].add(job_id)
+
+    groups: dict[str, GroupStat] = {
+        gid: GroupStat(gid, name) for gid, name in taxonomy.groups.items() if gid in group_jobs
+    }
+    for gid, stat in groups.items():
+        jobs = group_jobs[gid]
+        stat.jobs = len(jobs)
+        stat.weighted = sum(values.get(job_id, 0.5) for job_id in jobs)
+        stat.concept_only_jobs = len(jobs - tool_jobs[gid])
+    unsorted: list[SkillStat] = []
+    for stat_row in stats:
+        if stat_row.group is None:
+            unsorted.append(stat_row)
+        elif stat_row.kind == "tool":
+            groups[stat_row.group].tools.append(stat_row)
+        else:
+            groups[stat_row.group].concepts.append(stat_row)
+    for group_stat in groups.values():
+        group_stat.tools.sort(key=lambda t: (-t.jobs, t.skill))
+        group_stat.concepts.sort(key=lambda c: (-c.jobs, c.skill))
+    return sorted(groups.values(), key=lambda g: (-g.weighted, g.name)), unsorted
+
+
+@dataclass
+class CapabilityStat:
+    capability: str
+    jobs: int = 0
+    weighted: float = 0.0
+    phrases: int = 0
+    example: str = ""
+
+
+@dataclass
+class CapabilityPhrase:
+    capability: str
+    phrase: str
+    verbatim: bool
+    company: str
+    title: str
+    job_id: UUID
+
+
+async def capability_phrases(
+    session: AsyncSession, capability: str | None = None, include_skipped: bool = False
+) -> list[CapabilityPhrase]:
+    """Every phrase behind one capability (or all capabilities), newest relevant extraction per open job."""
+    relevant = await _relevant_extractions(session)
+    stmt = (
+        select(JobCapability.capability, JobCapability.phrase, JobCapability.verbatim, Job.company, Job.title, Job.id)
+        .join(relevant, relevant.c.id == JobCapability.extraction_id)
+        .join(Job, Job.id == JobCapability.job_id)
+        .order_by(Job.company, Job.title)
+    )
+    if capability:
+        stmt = stmt.where(JobCapability.capability == capability)
+    skipped = set() if include_skipped else await _skipped_jobs(session)
+    return [CapabilityPhrase(*row) for row in (await session.execute(stmt)).all() if row[5] not in skipped]
+
+
+async def capability_report(
+    session: AsyncSession, profile_hash: str, include_skipped: bool = False
+) -> list[CapabilityStat]:
+    """How many relevant jobs ask for each capability, weighted by job value like the skills report."""
+    phrases = await capability_phrases(session, include_skipped=include_skipped)
+    values = await _job_values(session, profile_hash)
+    jobs: dict[str, set[UUID]] = defaultdict(set)
+    stats: dict[str, CapabilityStat] = {}
+    for item in phrases:
+        stat = stats.setdefault(item.capability, CapabilityStat(item.capability))
+        stat.phrases += 1
+        if not stat.example or (item.verbatim and len(item.phrase) < len(stat.example)):
+            stat.example = item.phrase
+        jobs[item.capability].add(item.job_id)
+    for key, stat in stats.items():
+        stat.jobs = len(jobs[key])
+        stat.weighted = sum(values.get(job_id, 0.5) for job_id in jobs[key])
+    return sorted(stats.values(), key=lambda s: (-s.weighted, s.capability))

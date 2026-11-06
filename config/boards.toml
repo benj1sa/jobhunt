@@ -35,12 +35,6 @@ company = "Pinterest"
 domains = ["pinterestcareers.com"]
 
 [[board]]
-ats = "greenhouse"
-token = "trexsolutionsllc"  # unverified slug: `jobhunt health` flags it if wrong
-company = "T-Rex Solutions"
-domains = ["trexsolutionsllc.com"]
-
-[[board]]
 ats = "ashby"
 token = "openai"
 company = "OpenAI"

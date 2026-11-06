@@ -124,3 +124,37 @@ async def test_merge_collapses_jobs_by_canonical_key_and_is_idempotent(db_sessio
     again = await merge_database(db_session, remote)
     assert (again.jobs_new, again.leads_new, again.snapshots_new, again.screens_new) == (0, 0, 0, 0)
     assert (await db_session.execute(select(func.count()).select_from(JobSnapshot))).scalar_one() == 1
+
+
+@pytest.mark.asyncio
+async def test_merge_watched_boards_newest_poll_wins_but_manual_status_stays(db_session, tmp_path: Path):
+    from datetime import timedelta
+
+    from jobhunt.models.enums import BoardOrigin, BoardStatus
+    from jobhunt.models.pipeline import WatchedBoard
+    from jobhunt.services.boards import utcnow
+
+    remote = tmp_path / "remote.db"
+    engine = create_async_engine(f"sqlite+aiosqlite:///{remote}")
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    now = utcnow()
+    async with async_sessionmaker(engine, expire_on_commit=False)() as session:
+        session.add_all([
+            WatchedBoard(ats="lever", token="a", company="A", origin=BoardOrigin.SEED, status=BoardStatus.DEAD,
+                         status_reason="not found 2 times in a row", last_polled_at=now, consecutive_failures=2),
+            WatchedBoard(ats="lever", token="b", company="B", origin=BoardOrigin.DISCOVERED, last_polled_at=now),
+        ])  # fmt: skip
+        await session.commit()
+    await engine.dispose()
+
+    db_session.add(
+        WatchedBoard(ats="lever", token="a", company="A", origin=BoardOrigin.MANUAL, status=BoardStatus.ACTIVE,
+                     status_reason="resumed by hand", last_polled_at=now - timedelta(days=1))
+    )  # fmt: skip
+    await db_session.commit()
+    stats = await merge_database(db_session, remote)
+    assert stats.boards_new == 1
+    boards = {b.token: b for b in (await db_session.execute(select(WatchedBoard))).scalars()}
+    assert boards["a"].status == BoardStatus.ACTIVE and boards["a"].consecutive_failures == 2
+    assert boards["b"].origin == BoardOrigin.DISCOVERED

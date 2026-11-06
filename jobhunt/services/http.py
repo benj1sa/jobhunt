@@ -25,7 +25,14 @@ RETRYABLE_STATUS = {408, 425, 429, 500, 502, 503, 504, 529}
 
 
 class NotFoundError(Exception):
-    """The resource returned 404/410. For job postings this usually means the job closed."""
+    """The resource returned 404/410. For job postings this usually means the job closed.
+
+    `body` keeps the start of the response so APIs that use 404 for configuration errors stay debuggable.
+    """
+
+    def __init__(self, message: str, body: str = "") -> None:
+        super().__init__(f"{message}: {body}" if body else message)
+        self.body = body
 
 
 def _is_retryable(exc: BaseException) -> bool:
@@ -72,7 +79,7 @@ class HttpClient:
                 async with self._semaphore:
                     response = await self._client.request(method, url, **kwargs)
                 if response.status_code in (404, 410):
-                    raise NotFoundError(f"{response.status_code} for {url}")
+                    raise NotFoundError(f"{response.status_code} for {url}", body=response.text[:500])
                 response.raise_for_status()
                 return response
         raise RuntimeError("unreachable: tenacity reraises on final failure")

@@ -11,7 +11,8 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, Field
 
 # Bump when JobRequirements changes shape; old extractions are kept and re-run alongside.
-EXTRACTION_SCHEMA_VERSION = 1
+# v2: capability_evidence (verbatim responsibility phrases tagged with config/capabilities.toml ids).
+EXTRACTION_SCHEMA_VERSION = 2
 
 
 class RoleFamily(StrEnum):
@@ -51,6 +52,15 @@ class Tristate(StrEnum):
     UNKNOWN = "unknown"
 
 
+class CapabilityEvidence(BaseModel):
+    """One responsibility or expectation from the posting, copied verbatim, tagged with capability ids."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    phrase: str = Field(description="The phrase exactly as written in the posting (trim to the relevant clause).")
+    capabilities: list[str] = Field(description="One to three capability ids it demonstrates, or 'other'.")
+
+
 class JobRequirements(BaseModel):
     """What a job description asks for. Extracted once per snapshot."""
 
@@ -80,6 +90,13 @@ class JobRequirements(BaseModel):
     preferred_skills: list[str] = Field(description="Skills listed as preferred, nice-to-have or a plus.")
     domain: str = Field(description="Industry or problem domain in 1-3 words, e.g. 'healthcare', 'defense', 'fintech'.")
     summary: str = Field(description="One sentence describing what the person in this role would actually do.")
+    capability_evidence: list[CapabilityEvidence] = Field(
+        default_factory=list,
+        description=(
+            "Every responsibility or expectation about how the person works (not tools, degrees, years, benefits "
+            "or company description), copied verbatim and tagged with capability ids."
+        ),
+    )
 
 
 class Alignment(StrEnum):
@@ -125,4 +142,12 @@ def strict_json_schema(model: type[BaseModel]) -> dict[str, Any]:
                 walk(item)
 
     walk(schema)
+    return schema
+
+
+def extraction_json_schema(capability_ids: list[str]) -> dict[str, Any]:
+    """Strict schema for JobRequirements with the capability ids from config injected as an enum."""
+    schema = strict_json_schema(JobRequirements)
+    evidence = schema["$defs"]["CapabilityEvidence"]["properties"]["capabilities"]
+    evidence["items"] = {"type": "string", "enum": [*capability_ids, "other"]}
     return schema

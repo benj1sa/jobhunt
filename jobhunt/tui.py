@@ -104,6 +104,14 @@ def render_detail(item: QueueItem, description: str | None, have: set[str], alia
             f"[b]Required[/b] {mark(required) or 'none listed'}",
             f"[b]Preferred[/b] {mark(preferred) or 'none listed'}",
         ]
+        evidence = req.get("capability_evidence") or []
+        if evidence:
+            lines.append("[b]How you'd work[/b]")
+            for entry in evidence[:10]:
+                tags = ", ".join(entry.get("capabilities", []))
+                lines.append(f"  - {escape(entry.get('phrase', ''))} [dim]({escape(tags)})[/dim]")
+            if len(evidence) > 10:
+                lines.append(f"  [dim]… {len(evidence) - 10} more[/dim]")
     if description:
         preview = description[:DESCRIPTION_PREVIEW_CHARS]
         lines += ["", "[b]Description[/b]", escape(preview) + ("…" if len(description) > len(preview) else "")]

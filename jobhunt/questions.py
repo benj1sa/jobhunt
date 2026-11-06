@@ -18,7 +18,9 @@ from .schemas.typesafe import NoulCriteria, NoulQuestion, Question, ScoreQuestio
 YES = 0.7
 NO = 0.3
 
-SCREEN_VERSION = "screen-v1"
+# v2: added `open_to_new_grads` (direct, observable) because reading "max 2 years out of school" as a level was
+# unreliable in the first live run, and named the new-grad-program case in the internship criteria.
+SCREEN_VERSION = "screen-v2"
 FIT_VERSION = "fit-v1"
 
 
@@ -29,7 +31,8 @@ def _slug(name: str) -> str:
 # --- Screen: should this posting go to (paid) LLM extraction? ---------------------------------------------------
 #
 # Truth table (code below):
-#   any signal clearly no  (role < NO, internship > YES, US < NO, P(entry level) < NO) -> REJECT, skip extraction
+#   entry_level = max(open_to_new_grads, P(experience level is "new grad" or "1-2 years"))
+#   any signal clearly no  (role < NO, internship > YES, US < NO, entry_level < NO)    -> REJECT, skip extraction
 #   every signal clearly yes                                                          -> PASS
 #   anything else                                                                     -> UNSETTLED
 # PASS and UNSETTLED both go to extraction, where the LLM's reading settles it; only REJECT saves the call.
@@ -71,8 +74,11 @@ def screen_questions() -> dict[str, Question]:
         "internship": NoulQuestion(
             instructions="Is the job in `posting` an internship or co-op?",
             criteria=NoulCriteria(
-                true="The posting describes a temporary internship or co-op position for students.",
-                false="The posting describes a regular full-time or part-time position.",
+                true="The posting describes a temporary internship or co-op position for current students.",
+                false=(
+                    "The posting describes a regular full-time or part-time position, including a full-time "
+                    "program or rotation for new college graduates."
+                ),
             ),
         ),
         "us_location": NoulQuestion(
@@ -80,6 +86,16 @@ def screen_questions() -> dict[str, Question]:
             criteria=NoulCriteria(
                 true="The posting lists a location in the United States, or is remote with the United States allowed.",
                 false="Every location in the posting is outside the United States, such as 'London, UK' or 'Remote - Canada'.",
+            ),
+        ),
+        "open_to_new_grads": NoulQuestion(
+            instructions="Does `posting` say that new or recent graduates can apply for this job?",
+            criteria=NoulCriteria(
+                true=(
+                    "The posting invites new or recent graduates, for example 'new grad', 'early career', "
+                    "'recent graduates welcome' or 'up to 2 years out of school'."
+                ),
+                false="The posting asks for several years of professional experience and does not mention graduates.",
             ),
         ),
         "experience_level": ScoreQuestion(
@@ -103,8 +119,11 @@ def decide_screen(response: SystemOneResponse) -> ScreenDecision:
         "internship": response.noul("internship"),
         "us_location": response.noul("us_location"),
         # Probability mass on "new grad" and "1-2 years". Read the levels, not the averaged position.
-        "entry_level": level.level_probability(0) + level.level_probability(1),
+        "experience_entry_levels": level.level_probability(0) + level.level_probability(1),
+        "open_to_new_grads": response.noul("open_to_new_grads"),
     }
+    # Either signal is enough evidence that the role is entry level; reject only when both say no.
+    signals["entry_level"] = max(signals["experience_entry_levels"], signals["open_to_new_grads"])
     clear_no = {
         "not a software/AI/ML role": signals["software_ai_ml_role"] < NO,
         "internship": signals["internship"] > YES,
@@ -121,7 +140,8 @@ def decide_screen(response: SystemOneResponse) -> ScreenDecision:
         return ScreenDecision(ScreenOutcome.REJECT, "; ".join(k for k, v in clear_no.items() if v), signals)
     if clear_yes:
         return ScreenDecision(ScreenOutcome.PASS, "all screen signals clear", signals)
-    unsettled = [name for name, value in signals.items() if NO <= value <= YES]
+    decisive = ("software_ai_ml_role", "internship", "us_location", "entry_level")
+    unsettled = [name for name in decisive if NO <= signals[name] <= YES]
     return ScreenDecision(ScreenOutcome.UNSETTLED, "unsettled: " + ", ".join(unsettled), signals)
 
 

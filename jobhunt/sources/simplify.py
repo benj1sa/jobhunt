@@ -25,6 +25,7 @@ class SimplifySource(Source):
 
     async def fetch(self, client: HttpClient) -> list[RawLead]:
         listings: list[dict[str, Any]] = await client.get_json(settings.simplify_listings_url)
+        self.items_fetched = len(listings)
         cutoff = datetime.now(tz=UTC) - timedelta(days=settings.simplify_max_age_days)
         leads: list[RawLead] = []
         for item in listings:

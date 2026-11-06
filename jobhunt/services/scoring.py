@@ -20,6 +20,7 @@ from ..questions import FitSignals
 from ..schemas.extraction import Degree, JobRequirements, Seniority, WorkMode
 from ..schemas.profile import Profile
 from .fit import FitProvider
+from .llm import LlmConfigError
 from .queue import load_description
 from .skills import normalize_skills
 
@@ -256,6 +257,8 @@ async def score_jobs(
                 fit = await fit_provider.judge(job, requirements, description, profile)
                 stats.fit_calls += 1
             result = compute_score(job, requirements, profile, aliases, fit)
+        except LlmConfigError:
+            raise
         except Exception as exc:
             logger.exception("Scoring failed for job %s", job.id)
             stats.failed += 1

@@ -4,16 +4,32 @@
 [candidate]
 name = "Ben Saenz"
 graduation = "December 2026 (may slip to Spring 2027)"
-years_experience = 0.5  # two internships
+years_experience = 1  # two internships and working for OMSE
 us_citizen = true
 needs_sponsorship = false
 has_clearance = false
 degree = "bachelors"
 skills = [
-  "Python", "TypeScript", "JavaScript", "C", "C++", "SQL",
-  "PyTorch", "Machine Learning", "Computer Vision",
-  "Next.js", "React", "Node.js", "Supabase", "PostgreSQL", "Vercel",
-  "Git", "CI/CD", "Linux", "Embedded Systems", "REST APIs",
+  "Python",
+  "TypeScript",
+  "JavaScript",
+  "C",
+  "C++",
+  "SQL",
+  "PyTorch",
+  "Machine Learning",
+  "Computer Vision",
+  "Next.js",
+  "React",
+  "Node.js",
+  "Supabase",
+  "PostgreSQL",
+  "Vercel",
+  "Git",
+  "CI/CD",
+  "Linux",
+  "Embedded Systems",
+  "REST APIs",
 ]
 interests = """
 Computer engineering senior. Most excited by applied ML and AI engineering: building and evaluating
@@ -23,7 +39,7 @@ Next.js + Supabase platform for a 200+ student program) and embedded/systems int
 want a stable path with room to grow, ideally toward a field where a later PhD makes sense, such as
 healthcare/biomedical ML. Values mentorship and engineering rigor over brand name.
 """
-preferred_locations = ["Maryland", "MD", "Washington, DC", "Virginia", "VA", "Remote", "New York", "Philadelphia"]
+preferred_locations = ["Maryland", "MD", "Washington, DC", "Virginia", "VA", "Remote", "New York", "California", "CA"]
 preferred_domains = ["healthcare", "biomedical", "ai safety", "education", "research", "developer tools"]
 
 # Each topic becomes one Jev yes/no question: "Would the person in this job spend much of their time on <description>?"
@@ -63,7 +79,7 @@ name = "systems at scale"
 description = "designing or operating software systems that serve many users"
 
 [companies]
-dream = ["Anthropic", "OpenAI", "Google", "Pinterest"]
+dream = ["Anthropic", "OpenAI", "Google"]
 warm = ["Comcast"]
 high_competition = ["Google", "Meta", "Apple", "Amazon", "Microsoft", "OpenAI", "Anthropic", "SpaceX", "Pinterest", "Netflix"]
 avoid = []

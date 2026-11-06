@@ -125,7 +125,7 @@ def test_screen_pass_when_every_signal_is_clear():
         ({"role": 0.1}, "not a software/AI/ML role"),
         ({"internship": 0.9}, "internship"),
         ({"us": 0.05}, "not in the US"),
-        ({"levels": [0.05, 0.1, 0.35, 0.5]}, "not entry level"),
+        ({"levels": [0.05, 0.1, 0.35, 0.5], "new_grads": 0.1}, "not entry level"),
     ],
 )
 def test_screen_rejects_on_any_clear_no(kwargs, reason):
@@ -134,8 +134,15 @@ def test_screen_rejects_on_any_clear_no(kwargs, reason):
     assert reason in decision.reason
 
 
+def test_explicit_new_grad_invitation_overrides_a_low_experience_level():
+    # First live run: "New grads ... (max 2 years out of school)" scored 0.13 on the experience levels.
+    decision = decide_screen(screen(levels=[0.05, 0.08, 0.6, 0.27], new_grads=0.95))
+    assert decision.outcome == ScreenOutcome.PASS
+    assert decision.signals["entry_level"] == pytest.approx(0.95)
+
+
 def test_screen_middle_band_is_its_own_outcome():
-    decision = decide_screen(screen(us=0.5, levels=[0.3, 0.3, 0.3, 0.1]))
+    decision = decide_screen(screen(us=0.5, levels=[0.3, 0.3, 0.3, 0.1], new_grads=0.4))
     assert decision.outcome == ScreenOutcome.UNSETTLED
     assert "us_location" in decision.reason and "entry_level" in decision.reason
 
@@ -184,7 +191,7 @@ async def test_rejected_jobs_skip_extraction_and_failed_screens_do_not(
     def reply(request: httpx.Request) -> httpx.Response:
         description = json.loads(request.content)["state"]["posting"]["description"]
         if "Senior" in description:
-            return httpx.Response(200, json=jev.screen_response(levels=[0.01, 0.02, 0.07, 0.9]))
+            return httpx.Response(200, json=jev.screen_response(levels=[0.01, 0.02, 0.07, 0.9], new_grads=0.02))
         if "chokes" in description:
             return httpx.Response(400, json={"error": "max_tokens_exceeded"})
         return httpx.Response(200, json=jev.screen_response())

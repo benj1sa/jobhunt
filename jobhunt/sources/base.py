@@ -34,6 +34,9 @@ class Source(ABC):
     """A discovery source. `name` is stored on every lead and ingest run, so keep it stable."""
 
     name: str
+    # Raw items read before any filtering, set by `fetch`. Health checks use it to tell "the source is broken"
+    # (nothing fetched) apart from "nothing matched the filters today" (items fetched, zero leads).
+    items_fetched: int | None = None
 
     @abstractmethod
     async def fetch(self, client: HttpClient) -> list[RawLead]:

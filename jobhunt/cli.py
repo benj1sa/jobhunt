@@ -3,6 +3,7 @@ import csv
 import json
 import logging
 import sys
+from collections import Counter
 from collections.abc import Callable
 from functools import wraps
 from pathlib import Path
@@ -13,6 +14,7 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
+from .services.llm import LlmConfigError
 from .settings import settings
 
 app = typer.Typer(help="Collect, score and review entry-level SWE / AI / ML job postings.", no_args_is_help=True)
@@ -49,6 +51,14 @@ def main(
 def _fail(message: str) -> None:
     err_console.print(f"[bold red]Error:[/] {message}")
     raise typer.Exit(code=1)
+
+
+def _print_reasons(reasons: "Counter[str]", limit: int = 8) -> None:
+    """Grouped failure reasons, e.g. '28 x apply.workable.com: JavaScript-only page'."""
+    for reason, count in reasons.most_common(limit):
+        err_console.print(f"  [yellow]![/] {count} x {reason}")
+    if len(reasons) > limit:
+        err_console.print(f"  ... and {len(reasons) - limit} more kinds (run with -v for details)")
 
 
 def _print_errors(errors: list[str], limit: int = 10) -> None:
@@ -97,26 +107,62 @@ def version() -> None:
 # --- Pipeline stages --------------------------------------------------------------------------------------------
 
 
+def _changes_note(changes: "Counter[str]") -> str:
+    parts = [f"{count} marked {name}" for name, count in changes.items() if count]
+    return ", ".join(parts)
+
+
+async def _ingest_all(ctx: Any, groups: list[str] | None) -> tuple[list[Any], "Counter[str]", set[str]]:
+    """Ingest configured sources plus watched boards, record each board's poll, and prune old run rows."""
+    from .services.boards import PollOutcome, prune_ingest_runs, record_polls
+    from .services.jobs import ingest as run_ingest
+
+    try:
+        configured = ctx.sources(groups)
+        sources = await ctx.all_sources(groups)
+    except ValueError as exc:
+        _fail(str(exc))
+    configured_names = {source.name for source in configured}
+    watched = {source.name for source in sources if source.name not in configured_names}
+    results = await run_ingest(ctx.session, ctx.http, sources)
+    outcomes = [
+        PollOutcome(r.source, r.status.value == "ok", r.not_found, r.items, r.seen)
+        for r in results
+        if r.source in watched
+    ]
+    changes = await record_polls(ctx.session, outcomes, settings.board_idle_days, settings.board_dead_after_failures)
+    await prune_ingest_runs(ctx.session, settings.ingest_run_retention_days)
+    return results, changes, watched
+
+
 @app.command(help="Discover leads from sources (simplify, hn, boards). Default: all.")
 @syncify
 async def ingest(
     source: Annotated[list[str] | None, typer.Option("--source", "-s", help="Source group to run; repeatable.")] = None,
 ) -> None:
     from .services.context import app_context
-    from .services.jobs import ingest as run_ingest
 
     async with app_context() as ctx:
-        try:
-            sources = ctx.sources(source)
-        except ValueError as exc:
-            _fail(str(exc))
-        results = await run_ingest(ctx.session, ctx.http, sources)
-    table = Table("Source", "Status", "Seen", "New", "Error")
+        results, changes, watched = await _ingest_all(ctx, source)
+    table = Table("Source", "Status", "Fetched", "Leads", "New", "Error")
+    boards_ok = boards_failed = boards_new = boards_leads = 0
     for result in results:
+        if result.source in watched:
+            boards_ok += int(result.status.value == "ok")
+            boards_failed += int(result.status.value != "ok")
+            boards_new += result.new
+            boards_leads += result.seen
+            continue
         style = "green" if result.status.value == "ok" else "red"
         table.add_row(
-            result.source, f"[{style}]{result.status.value}[/]", str(result.seen), str(result.new), result.error or ""
-        )
+            result.source, f"[{style}]{result.status.value}[/]", "-" if result.items is None else str(result.items),
+            str(result.seen), str(result.new), result.error or "",
+        )  # fmt: skip
+    if boards_ok or boards_failed:
+        table.add_row(
+            f"watched boards ({boards_ok + boards_failed})", f"{boards_ok} ok, {boards_failed} failed", "-",
+            str(boards_leads), str(boards_new), _changes_note(changes),
+        )  # fmt: skip
     console.print(table)
 
 
@@ -203,13 +249,16 @@ async def hydrate(
     console.print(
         f"Hydrated {stats.hydrated}, unchanged {stats.unchanged}, closed {stats.closed}, failed {stats.failed}."
     )
-    _print_errors(stats.errors)
+    _print_reasons(stats.reasons)
 
 
 @app.command(help="Extract structured requirements and skills with the LLM.")
 @syncify
 async def extract(
     limit: Annotated[int | None, typer.Option(help="Extract at most this many jobs.")] = None,
+    rerun: Annotated[
+        bool, typer.Option(help="Re-extract jobs already extracted (e.g. after editing config/capabilities.toml).")
+    ] = False,
 ) -> None:
     from .services.context import app_context
     from .services.extraction import extract_jobs
@@ -218,9 +267,20 @@ async def extract(
         if ctx.llm is None:
             _fail("OPENROUTER_API_KEY is not set; extraction needs it.")
         assert ctx.llm is not None
-        stats = await extract_jobs(
-            ctx.session, ctx.llm, settings.extraction_model, ctx.aliases, settings.llm_max_description_chars, limit
-        )
+        try:
+            stats = await extract_jobs(
+                ctx.session,
+                ctx.llm,
+                settings.extraction_model,
+                ctx.aliases,
+                settings.llm_max_description_chars,
+                limit,
+                capabilities=ctx.capabilities(),
+                rerun=rerun,
+                concurrency=settings.llm_concurrency,
+            )
+        except LlmConfigError as exc:
+            _fail(str(exc))
     console.print(f"Extracted {stats.extracted} ({stats.relevant} relevant), failed {stats.failed}.")
     _print_errors(stats.errors)
 
@@ -264,7 +324,10 @@ async def score(
             provider = ctx.fit_provider(fit)
         except ValueError as exc:
             _fail(str(exc))
-        stats = await score_jobs(ctx.session, ctx.profile(), ctx.aliases, provider, rescore=rescore)
+        try:
+            stats = await score_jobs(ctx.session, ctx.profile(), ctx.aliases, provider, rescore=rescore)
+        except LlmConfigError as exc:
+            _fail(str(exc))
     name = provider.name if provider else "none"
     console.print(f"Scored {stats.scored} jobs ({stats.fit_calls} {name} fit calls), failed {stats.failed}.")
     _print_errors(stats.errors)
@@ -280,22 +343,30 @@ async def run(
     from .services.context import app_context
     from .services.extraction import extract_jobs
     from .services.jobs import hydrate_jobs, resolve_leads
-    from .services.jobs import ingest as run_ingest
     from .services.scoring import score_jobs
     from .services.screening import screen_jobs
 
     async with app_context() as ctx:
         if not skip_ingest:
-            results = await run_ingest(ctx.session, ctx.http, ctx.sources(source))
-            failed = [r.source for r in results if r.status.value != "ok"]
+            results, changes, watched = await _ingest_all(ctx, source)
+            failed = [r.source for r in results if r.status.value != "ok" and r.source not in watched]
+            boards_failed = sum(1 for r in results if r.status.value != "ok" and r.source in watched)
             console.print(
-                f"Ingest: {sum(r.new for r in results)} new leads from {len(results)} sources"
+                f"Ingest: {sum(r.new for r in results)} new leads from {len(results)} sources "
+                f"({len(watched)} watched boards"
+                + (f", {boards_failed} failed" if boards_failed else "")
+                + (f", {_changes_note(changes)}" if changes else "")
+                + ")"
                 + (f"; [red]failed: {', '.join(failed)}[/]" if failed else "")
             )
         resolved = await resolve_leads(ctx.session, ctx.boards, ctx.http)
-        console.print(f"Resolve: {resolved.new_jobs} new jobs, {resolved.needs_url} need a link")
+        console.print(
+            f"Resolve: {resolved.new_jobs} new jobs, {resolved.needs_url} need a link, "
+            f"{resolved.boards_discovered} new boards watched"
+        )
         hydrated = await hydrate_jobs(ctx.session, ctx.http)
         console.print(f"Hydrate: {hydrated.hydrated} described, {hydrated.closed} closed, {hydrated.failed} failed")
+        _print_reasons(hydrated.reasons, limit=5)
         if ctx.jev is not None:
             screened = await screen_jobs(ctx.session, ctx.jev, settings.screen_max_description_chars)
             console.print(
@@ -305,12 +376,24 @@ async def run(
         if ctx.llm is None:
             console.print("[yellow]OPENROUTER_API_KEY not set: skipping extraction and scoring.[/]")
             return
-        extracted = await extract_jobs(
-            ctx.session, ctx.llm, settings.extraction_model, ctx.aliases, settings.llm_max_description_chars
-        )
+        try:
+            extracted = await extract_jobs(
+                ctx.session,
+                ctx.llm,
+                settings.extraction_model,
+                ctx.aliases,
+                settings.llm_max_description_chars,
+                capabilities=ctx.capabilities(),
+                concurrency=settings.llm_concurrency,
+            )
+        except LlmConfigError as exc:
+            _fail(str(exc))
         console.print(f"Extract: {extracted.extracted} jobs, {extracted.relevant} relevant, {extracted.failed} failed")
         if not skip_score:
-            scored = await score_jobs(ctx.session, ctx.profile(), ctx.aliases, ctx.fit_provider())
+            try:
+                scored = await score_jobs(ctx.session, ctx.profile(), ctx.aliases, ctx.fit_provider())
+            except LlmConfigError as exc:
+                _fail(str(exc))
             console.print(f"Score: {scored.scored} jobs")
 
 
@@ -392,33 +475,184 @@ async def unresolved(
     console.print("Attach a posting with: jobhunt resolve <lead id> <company ATS link>")
 
 
-@app.command(help="Most-requested skills across relevant jobs, weighted by job value.")
+def _have_skills(ctx: Any) -> set[str]:
+    from .services.skills import normalize_skills
+
+    return {s.lower() for s in normalize_skills(ctx.profile().candidate.skills, ctx.aliases)}
+
+
+def _tool_list(tools: list[Any], limit: int) -> str:
+    shown = [f"{t.skill} {t.jobs}{'*' if t.have else ''}" for t in tools[:limit]]
+    return ", ".join(shown) + (f", +{len(tools) - limit} more" if len(tools) > limit else "")
+
+
+@app.command(help="Skills across relevant jobs, grouped into families, weighted by job value.")
 @syncify
 async def skills(
-    top: Annotated[int, typer.Option(help="Number of skills to show.")] = 30,
-    gaps: Annotated[bool, typer.Option(help="Only show skills you don't list in your profile.")] = False,
+    group: Annotated[str | None, typer.Option(help="Show every skill in one group (id from the table).")] = None,
+    flat: Annotated[bool, typer.Option(help="One row per skill instead of grouped.")] = False,
+    unsorted: Annotated[bool, typer.Option(help="Skills no group claims yet (add them to skill_groups.toml).")] = False,
+    gaps: Annotated[bool, typer.Option(help="Only skills you don't list in your profile.")] = False,
+    top: Annotated[int, typer.Option(help="Rows to show (flat and unsorted views).")] = 40,
     as_json: Annotated[bool, typer.Option("--json", help="Machine-readable output.")] = False,
 ) -> None:
     from .services.context import app_context
-    from .services.queue import skill_report
-    from .services.skills import normalize_skills
+    from .services.queue import GroupStat, SkillStat, skill_group_report, skill_report
 
+    report: list[SkillStat] = []
+    groups: list[GroupStat] = []
+    leftovers: list[SkillStat] = []
     async with app_context() as ctx:
         profile = ctx.profile()
-        have = {s.lower() for s in normalize_skills(profile.candidate.skills, ctx.aliases)}
-        report = await skill_report(ctx.session, profile.content_hash, have)
-    if gaps:
-        report = [stat for stat in report if not stat.have]
-    report = report[:top]
-    if as_json:
-        typer.echo(json.dumps([stat.__dict__ for stat in report], indent=2))
+        have = _have_skills(ctx)
+        taxonomy = ctx.taxonomy()
+        if flat or unsorted:
+            report = await skill_report(ctx.session, profile.content_hash, have, taxonomy=taxonomy)
+        else:
+            groups, leftovers = await skill_group_report(ctx.session, profile.content_hash, have, taxonomy)
+
+    if flat or unsorted:
+        rows = [s for s in report if (not unsorted or s.group is None) and (not gaps or not s.have)][:top]
+        if as_json:
+            typer.echo(json.dumps([s.__dict__ for s in rows], indent=2))
+            return
+        table = Table("Skill", "Group", "Kind", "Weighted", "Jobs", "Required in", "You have it")
+        for s in rows:
+            table.add_row(
+                s.skill, s.group or "-", s.kind or "-", f"{s.weighted:.1f}", str(s.jobs), str(s.required_in),
+                "yes" if s.have else "no",
+            )  # fmt: skip
+        console.print(table)
+        if unsorted:
+            console.print("Add these to config/skill_groups.toml, or run `jobhunt skills-classify`.")
         return
-    table = Table("Skill", "Weighted", "Jobs", "Required in", "You have it")
-    for stat in report:
+
+    if group:
+        match = next((g for g in groups if g.group == group), None)
+        if match is None:
+            _fail(f"No jobs mention group {group!r}. Groups: {', '.join(g.group for g in groups)}")
+        assert match is not None
+        if as_json:
+            typer.echo(json.dumps({"group": match.__dict__ | {
+                "tools": [t.__dict__ for t in match.tools], "concepts": [c.__dict__ for c in match.concepts]}},
+                default=str, indent=2))  # fmt: skip
+            return
+        console.print(
+            f"[b]{match.name}[/b]: {match.jobs} jobs; {match.concept_only_jobs} named only broad concepts, no tool."
+        )
+        table = Table("Skill", "Kind", "Jobs", "Required in", "Weighted", "You have it")
+        for s in sorted(match.tools + match.concepts, key=lambda x: (-x.jobs, x.skill)):
+            if gaps and s.have:
+                continue
+            table.add_row(
+                s.skill, s.kind or "-", str(s.jobs), str(s.required_in), f"{s.weighted:.1f}", "yes" if s.have else "no"
+            )
+        console.print(table)
+        return
+
+    if as_json:
+        typer.echo(json.dumps([
+            g.__dict__ | {"tools": [t.__dict__ for t in g.tools], "concepts": [c.__dict__ for c in g.concepts]}
+            for g in groups], indent=2))  # fmt: skip
+        return
+    table = Table("Group", "Jobs", "Weighted", "Broad only", "Most-asked specific tools (jobs; * = you have it)")
+    for g in groups:
+        tools = [t for t in g.tools if not (gaps and t.have)]
+        table.add_row(f"{g.name}\n[dim]{g.group}[/dim]", str(g.jobs), f"{g.weighted:.1f}", str(g.concept_only_jobs),
+                      _tool_list(tools, 6) or "[dim]concepts only[/dim]")  # fmt: skip
+    console.print(table)
+    unsorted_mentions = sum(s.jobs for s in leftovers)
+    console.print(
+        f"{len(leftovers)} skills ({unsorted_mentions} mentions) aren't in a group yet: "
+        "`jobhunt skills --unsorted` or `jobhunt skills-classify`. Details: `jobhunt skills --group <id>`."
+    )
+
+
+@app.command("skills-classify", help="Ask the LLM to place unsorted skills into groups (writes a suggestions file).")
+@syncify
+async def skills_classify(
+    min_jobs: Annotated[int, typer.Option(help="Only skills mentioned by at least this many jobs.")] = 1,
+    limit: Annotated[int, typer.Option(help="At most this many skills per run.")] = 300,
+) -> None:
+    from .schemas.config import suggested_path
+    from .services.context import app_context
+    from .services.queue import skill_report
+    from .services.skill_classify import classify_skills
+
+    async with app_context() as ctx:
+        if ctx.llm is None:
+            _fail("OPENROUTER_API_KEY is not set.")
+        assert ctx.llm is not None
+        taxonomy = ctx.taxonomy()
+        report = await skill_report(ctx.session, ctx.profile().content_hash, set(), taxonomy=taxonomy)
+        todo = [s.skill for s in report if s.group is None and s.jobs >= min_jobs][:limit]
+        if not todo:
+            console.print("Every skill already has a group.")
+            return
+        try:
+            stats = await classify_skills(
+                ctx.llm, settings.extraction_model, taxonomy, todo, settings.skill_groups_path
+            )
+        except LlmConfigError as exc:
+            _fail(str(exc))
+    console.print(
+        f"Proposed groups for {stats.suggested} of {len(todo)} skills ({stats.skipped} skipped as non-skills). "
+        f"Review {suggested_path(settings.skill_groups_path)}."
+    )
+    _print_errors(stats.errors)
+
+
+@app.command(help="What postings expect you to DO (customer iteration, testing, ...), with the phrases behind it.")
+@syncify
+async def capabilities(
+    capability: Annotated[
+        str | None, typer.Argument(help="Capability id to list every phrase for (ids are in the table).")
+    ] = None,
+    other: Annotated[bool, typer.Option(help="List phrases tagged 'other' (candidates for new capabilities).")] = False,
+    as_json: Annotated[bool, typer.Option("--json", help="Machine-readable output.")] = False,
+) -> None:
+    from .services.context import app_context
+    from .services.queue import capability_phrases, capability_report
+
+    async with app_context() as ctx:
+        names = {c.id: c.name for c in ctx.capabilities()}
+        wanted = "other" if other else capability
+        if wanted:
+            if wanted != "other" and wanted not in names:
+                _fail(f"Unknown capability {wanted!r}. Ids: {', '.join(names)}")
+            phrases = await capability_phrases(ctx.session, wanted)
+            report = []
+        else:
+            report = await capability_report(ctx.session, ctx.profile().content_hash)
+            phrases = []
+
+    if wanted:
+        if as_json:
+            typer.echo(json.dumps([p.__dict__ for p in phrases], default=str, indent=2))
+            return
+        jobs = len({p.job_id for p in phrases})
+        console.print(f"[b]{names.get(wanted, 'Other')}[/b]: {len(phrases)} phrases from {jobs} jobs")
+        table = Table("Company", "Title", "Phrase")
+        for p in phrases:
+            mark = "" if p.verbatim else " [dim](paraphrased)[/dim]"
+            table.add_row(p.company[:28], p.title[:40], p.phrase + mark)
+        console.print(table)
+        return
+
+    if as_json:
+        typer.echo(json.dumps([s.__dict__ | {"name": names.get(s.capability, s.capability)} for s in report], indent=2))
+        return
+    if not report:
+        console.print("No capability evidence yet. Run `jobhunt extract` (or `jobhunt extract --rerun`) first.")
+        return
+    table = Table("Capability", "Jobs", "Weighted", "Phrases", "Shortest example")
+    for s in report:
+        label = names.get(s.capability, "Other (unmatched)")
         table.add_row(
-            stat.skill, f"{stat.weighted:.1f}", str(stat.jobs), str(stat.required_in), "yes" if stat.have else "no"
+            f"{label}\n[dim]{s.capability}[/dim]", str(s.jobs), f"{s.weighted:.1f}", str(s.phrases), s.example
         )
     console.print(table)
+    console.print("Every phrase behind one: `jobhunt capabilities <id>`.")
 
 
 @app.command(help="Show per-source ingest health. With --strict, exits 1 if any source is unhealthy.")
@@ -426,26 +660,52 @@ async def skills(
 async def health(
     window_days: Annotated[int, typer.Option(help="Look at runs from the last N days.")] = 30,
     strict: Annotated[bool, typer.Option(help="Exit with code 1 when a source is unhealthy.")] = False,
+    boards: Annotated[
+        bool, typer.Option("--boards", help="List every watched board instead of a summary row.")
+    ] = False,
 ) -> None:
+    """Configured sources get a row each. Watched boards are summarized: they retire themselves (dead / paused), so
+    individual failures are expected and only a widespread failure counts against --strict."""
     from .services.context import app_context
     from .services.queue import source_health
 
     async with app_context() as ctx:
-        report = await source_health(ctx.session, window_days)
-    table = Table("Source", "Last run", "Status", "Last seen", "Avg seen", "Zero streak", "Error")
+        configured = {source.name for source in ctx.sources()}
+        watched = {source.name for source in await ctx.all_sources()} - configured
+        report = await source_health(ctx.session, window_days, configured | watched)
+    table = Table("Source", "Last run", "Status", "Fetched", "Leads", "Avg leads", "Empty streak", "Error")
+    watched_rows = [row for row in report if row.source in watched]
     for row in report:
-        style = "green" if row.healthy else "red"
+        if row.source in watched and not boards:
+            continue
+        if not row.configured:
+            status = "[dim]inactive[/]"  # removed from config, or a watched board that is now paused or dead
+        else:
+            style = "green" if row.healthy else "red"
+            status = f"[{style}]{row.last_status}[/]"
         table.add_row(
             row.source,
             row.last_run.strftime("%Y-%m-%d %H:%M") if row.last_run else "-",
-            f"[{style}]{row.last_status}[/]",
+            status,
+            "-" if row.last_fetched is None else str(row.last_fetched),
             str(row.last_seen),
             f"{row.avg_seen:.1f}",
             str(row.zero_streak),
             (row.last_error or "")[:60],
         )
+    failing_boards = [row for row in watched_rows if row.last_status != "ok"]
+    if watched_rows and not boards:
+        share = len(failing_boards) / len(watched_rows)
+        style = "red" if share > 0.5 else "green"
+        table.add_row(
+            f"watched boards ({len(watched_rows)} polled)", "-", f"[{style}]{len(failing_boards)} failing[/]",
+            str(sum(r.last_fetched or 0 for r in watched_rows)), str(sum(r.last_seen for r in watched_rows)),
+            "-", "-", "see `jobhunt boards` / `health --boards`",
+        )  # fmt: skip
     console.print(table)
-    if strict and any(not row.healthy for row in report):
+    configured_unhealthy = any(not row.healthy for row in report if row.source in configured)
+    widespread = bool(watched_rows) and len(failing_boards) / len(watched_rows) > 0.5
+    if strict and (configured_unhealthy or widespread):
         raise typer.Exit(code=1)
 
 
@@ -560,6 +820,110 @@ async def jev_probe(
     console.print(table)
     if not send:
         console.print("Payloads written. Review them, then rerun with --send to call the API.")
+
+
+boards_app = typer.Typer(help="The company-board watchlist (Greenhouse, Lever, Ashby boards polled in full).")
+app.add_typer(boards_app, name="boards")
+
+
+@boards_app.callback(invoke_without_command=True)
+@syncify
+async def boards_summary(ctx_typer: typer.Context) -> None:
+    """Summary of the watchlist when run without a subcommand."""
+    if ctx_typer.invoked_subcommand is not None:
+        return
+    from .services.boards import board_summary
+    from .services.context import app_context
+
+    async with app_context() as ctx:
+        summary = await board_summary(ctx.session)
+        configured = len(ctx.boards)
+    console.print(
+        f"Watched boards: {dict(summary.by_status) or 'none'}  ·  by origin: {dict(summary.by_origin) or '-'}  ·  "
+        f"active by ATS: {dict(summary.by_ats) or '-'}  ·  never polled yet: {summary.never_polled}  ·  "
+        f"plus {configured} from config/boards.toml"
+    )
+    if summary.productive:
+        table = Table("Board", "Company", "Origin", "Last matching job", "Postings last poll")
+        for board in summary.productive:
+            table.add_row(
+                f"{board.ats}:{board.token}", board.company, board.origin.value,
+                board.last_lead_at.strftime("%Y-%m-%d") if board.last_lead_at else "-",
+                "-" if board.items_last is None else str(board.items_last),
+            )  # fmt: skip
+        console.print(table)
+    console.print("Subcommands: seed, add, pause, resume. `jobhunt boards --help` for details.")
+
+
+@boards_app.command("seed", help="Import boards from the lists in config/board_seeds.toml.")
+@syncify
+async def boards_seed(
+    name: Annotated[list[str] | None, typer.Option("--name", help="Only this seed (repeatable).")] = None,
+) -> None:
+    from .schemas.config import load_board_seeds
+    from .services.boards import seed_boards
+    from .services.context import app_context
+
+    seeds = load_board_seeds(settings.board_seeds_path)
+    if name:
+        seeds = [seed for seed in seeds if seed.name in name]
+    if not seeds:
+        _fail(f"No seeds to run. Check {settings.board_seeds_path}.")
+    async with app_context() as ctx:
+        results = await seed_boards(ctx.session, ctx.http, seeds, ctx.boards)
+    table = Table("Seed", "Boards in list", "Newly watched", "Error")
+    for result in results:
+        table.add_row(result.name, str(result.found), str(result.added), result.error or "")
+    console.print(table)
+    console.print("They're polled on the next `jobhunt run`; boards that 404 twice are retired automatically.")
+
+
+@boards_app.command("add", help="Watch a board: ats:token (greenhouse:stripe) or any board/posting link.")
+@syncify
+async def boards_add(
+    board: Annotated[str, typer.Argument(help="ats:token or a link.")],
+    company: Annotated[str | None, typer.Option(help="Display name.")] = None,
+) -> None:
+    from .models.enums import BoardOrigin
+    from .services.boards import add_boards, parse_board_ref
+    from .services.context import app_context
+
+    try:
+        key = parse_board_ref(board)
+    except ValueError as exc:
+        _fail(str(exc))
+    async with app_context() as ctx:
+        added = await add_boards(ctx.session, {key: company or key[1]}, BoardOrigin.MANUAL, "cli", ctx.boards)
+    console.print(f"Now watching {key[0]}:{key[1]}." if added else f"{key[0]}:{key[1]} was already watched.")
+
+
+async def _set_status(board: str, status_value: str, reason: str) -> None:
+    from .models.enums import BoardStatus
+    from .services.boards import parse_board_ref, set_board_status
+    from .services.context import app_context
+
+    try:
+        ats, token = parse_board_ref(board)
+    except ValueError as exc:
+        _fail(str(exc))
+    async with app_context() as ctx:
+        try:
+            await set_board_status(ctx.session, ats, token, BoardStatus(status_value), reason)
+        except LookupError as exc:
+            _fail(str(exc))
+    console.print(f"{ats}:{token} is now {status_value}.")
+
+
+@boards_app.command("pause", help="Stop polling a board (it stays paused even if new leads point at it).")
+@syncify
+async def boards_pause(board: Annotated[str, typer.Argument(help="ats:token or a link.")]) -> None:
+    await _set_status(board, "paused", "paused by hand")
+
+
+@boards_app.command("resume", help="Poll a paused or dead board again.")
+@syncify
+async def boards_resume(board: Annotated[str, typer.Argument(help="ats:token or a link.")]) -> None:
+    await _set_status(board, "active", "resumed by hand")
 
 
 if __name__ == "__main__":
